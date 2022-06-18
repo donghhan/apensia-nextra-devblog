@@ -374,14 +374,7 @@ class CustomPasswordValidator():
 
 ### Including at least one special characters
 
-Finally, we are going to check if user's password <a href="https://docs.python.org/3/library/stdtypes.html?highlight=isalpha#bytearray.isalpha"><code>isupper()</code></a> method, we will check all characters whether they are uppercases.
-If it is, then it will return `True`.
-
-Our final logic for this would be
-
-> If there is NO uppercases in the users' password at all ...
-
-If this true, then we will raise the <a href="https://docs.djangoproject.com/en/4.0/ref/exceptions/#django.core.exceptions.ValidationError" target="_blank"><code>ValidationError</code></a>.
+Finally, we are going to check if user's password contains any special characters.
 
 ```py users/validators.py focus=14:15
 from django.core.exceptions import ValidationError
