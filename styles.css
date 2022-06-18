@@ -1,0 +1,160 @@
+@tailwind utilities;
+
+html {
+  font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1, "ss06" 1 !important;
+}
+
+[data-reach-skip-link] {
+  @apply sr-only;
+}
+
+[data-reach-skip-link]:focus {
+  @apply not-sr-only fixed ml-6 top-0 bg-white text-lg px-6 py-2 mt-2 outline-none focus:ring z-50;
+}
+
+.dark .invert-on-dark {
+  filter: invert(1) brightness(1.8);
+}
+
+body {
+  background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 1) 300px
+    ),
+    fixed 0 0 / 20px 20px radial-gradient(#d1d1d1 1px, transparent 0),
+    fixed 10px 10px / 20px 20px radial-gradient(#d1d1d1 1px, transparent 0);
+}
+
+.dark body {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 0%, #111 300px),
+    fixed 0 0 / 20px 20px radial-gradient(#313131 1px, transparent 0),
+    fixed 10px 10px / 20px 20px radial-gradient(#313131 1px, transparent 0);
+}
+
+a {
+  text-decoration: none;
+}
+
+.wrapper {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.wrapper li {
+  list-style: none;
+  font-size: 2.5rem;
+  transition: color .2s ease-in-out;
+}
+
+.wrapper li span {
+  display: inline-block;
+  font-size: 1rem;
+}
+
+.wrapper li:hover {
+  transition: color .2s ease-in-out;
+}
+
+.wrapper > #html:hover {
+  color: #E34F26;
+}
+
+.wrapper > #css:hover {
+  color: #1572B6;
+}
+
+.wrapper > #sass:hover {
+  color: #CC6699;
+}
+
+.wrapper > #javascript:hover {
+  color: #F7DF1E;
+}
+
+.wrapper > #typescript:hover {
+  color: #3178C6;
+}
+
+.wrapper > #react:hover {
+  color: #61DAFB;
+}
+
+.wrapper > #gatsby:hover {
+  color: #663399;
+}
+
+.wrapper > #next:hover, #three-js:hover, #express:hover, #vercel:hover, #notion:hover, #jwt:hover {
+  color: #000000;
+}
+
+.wrapper > #svelte:hover {
+  color: #FF3E00;
+}
+
+.wrapper > #styled-components:hover {
+  color: #DB7093;
+}
+
+.wrapper > #react-router:hover {
+  color: #CA4245;
+}
+
+.wrapper > #graphql:hover {
+  color: #E10098;
+}
+
+.wrapper > #apollo-graphql:hover {
+  color: #311C87;
+}
+
+.wrapper > #django:hover {
+  color: #092E20;
+}
+
+.wrapper > #prisma:hover {
+  color: #2D3748;
+}
+
+.wrapper > #heroku:hover {
+  color: #430098;
+}
+
+.wrapper > #postgresql:hover {
+  color: #4169E1;
+}
+
+.wrapper > #aws:hover {
+  color: #232F3E;
+}
+
+.wrapper > #figma:hover {
+  color: #F24E1E;
+}
+
+.wrapper > #premiere-pro:hover, #after-effects:hover {
+  color: #9999FF;
+}
+
+.wrapper > #photoshop:hover {
+  color: #31A8FF
+}
+
+.wrapper > #illustrator:hover {
+  color: #FF9A00;
+}
+
+.wrapper > #blender:hover {
+  color: #F5792A;
+}
+
+.wrapper > #slack:hover {
+  color: #4A154B;
+}
+
+.wrapper > #confluence:hover {
+  color: #172B4D;
+}

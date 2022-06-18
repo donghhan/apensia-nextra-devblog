@@ -1,0 +1,85 @@
+---
+image: https://assets.vercel.com/image/upload/v1630059453/swr/v1.png
+description: In this post, we are going to learn how to build up customized password validator in Django. 
+date: March 25th, 2022
+---
+
+import Callout from 'nextra-theme-docs/callout'
+import Bleed from 'nextra-theme-docs/bleed'
+
+# Django password validator
+
+Django provides the awesome built-in <a href="https://docs.djangoproject.com/en/4.0/topics/auth/passwords/#module-django.contrib.auth.password_validation" target="_blank">password validator</a>
+that can be applied throughout the whole page by the time you initiate Django project.
+
+However, we might sometimes want to change Django's built-in password validators as they are too much or not necessary.
+
+## Project initialization
+
+### Creating virtual environment
+
+In order to start project, we will create project folder called `password-validator`.
+
+```bash
+mkdir password-validator
+cd password-validator
+```
+
+<br/>
+
+Next, we wil set up the virutal environment with using <a href="https://pypi.org/project/pipenv/" target="_blank">pipenv</a> package.
+
+```bash
+pipenv --three
+```
+
+Finally, we will activate the virutal environment.
+
+```bash
+pipenv shell
+```
+
+<br/>
+
+We will install Django with version of 4.0.0.
+
+```bash
+pipenv install django
+```
+
+> Make sure you always activate the virtual environment before installing Django!
+> If you would like to deactivate the virtual environment, you can simply type `deactivate` on the command console.[^1]
+
+If you successfully installed Django, Django will automatically create `Pipfile` file with contenst below for you.
+
+```
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
+```
+
+<br/>
+
+### Creating Django App
+
+In the console, run the following command with virutal environment being up.
+
+```bash
+django-admin startproject config .
+```
+
+This command allows us to create Django project name `config` within `password-validator` folder.
+
+If you go to `settings.py` file, you will be able to see the Django's built-in password validators in `AUTH_PASSWORD_VALIDATORS`.
+
+[^1]:
+    <a href="https://stackoverflow.com/a/49944909/13121145" target="_blank">Exiting virutal environment in pipenv</a>
