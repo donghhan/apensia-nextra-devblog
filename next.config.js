@@ -1,5 +1,5 @@
 const { remarkCodeHike } = require("@code-hike/mdx");
-const theme = require("shiki/themes/github-dark.json");
+const theme = require("shiki/themes/material-darker.json");
 
 const withNextra = require("nextra")({
   theme: "nextra-theme-docs",
@@ -7,12 +7,7 @@ const withNextra = require("nextra")({
   unstable_flexsearch: true,
   unstable_staticImage: true,
   mdxOptions: {
-    remarkPlugins: [
-      [
-        remarkCodeHike,
-        { theme, lineNumbers: false, showCopyButton: true, autoImport: true },
-      ],
-    ],
+    remarkPlugins: [[remarkCodeHike, { theme }]],
   },
 });
 

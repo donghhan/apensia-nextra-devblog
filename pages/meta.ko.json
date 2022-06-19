@@ -5,18 +5,18 @@
     "hidden": true
   },
   "docs": {
-    "title": "문서",
+    "title": "프로젝트",
     "type": "page"
   },
   "examples": {
-    "title": "예시",
+    "title": "예시코드",
     "type": "page"
   },
   "blog": {
     "title": "블로그",
     "type": "page",
     "theme": {
-      "sidebar": true
+      "sidebar": false
     }
   }
 }

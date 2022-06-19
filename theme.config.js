@@ -35,7 +35,7 @@ const FEEDBACK_LINK_WITH_TRANSLATIONS = {
 };
 
 export default {
-  projectLink: "https://github.com/donghhan?tab=repositories",
+  projectLink: "https://github.com/vercel/swr",
   docsRepositoryBase: "https://github.com/vercel/swr-site/blob/master/pages",
   titleSuffix: " – SWR",
   search: true,
@@ -53,12 +53,11 @@ export default {
     const { locale } = useRouter();
     return (
       <>
-        <Logo height={12} />
         <span
           className="mx-2 font-extrabold hidden md:inline select-none"
           title={"SWR: " + (TITLE_WITH_TRANSLATIONS[locale] || "")}
         >
-          SWR
+          Apensia's Devblog
         </span>
       </>
     );
@@ -252,11 +251,11 @@ export default {
   },
   i18n: [
     { locale: "en-US", text: "English" },
-    { locale: "es-ES", text: "Español" },
-    { locale: "zh-CN", text: "简体中文" },
-    { locale: "pt-BR", text: "Português Brasileiro" },
-    { locale: "ja", text: "日本語" },
+    // { locale: "es-ES", text: "Español" },
+    // { locale: "zh-CN", text: "简体中文" },
+    // { locale: "pt-BR", text: "Português Brasileiro" },
+    // { locale: "ja", text: "日本語" },
     { locale: "ko", text: "한국어" },
-    { locale: "ru", text: "Русский" },
+    // { locale: "ru", text: "Русский" },
   ],
 };
