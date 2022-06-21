@@ -1,0 +1,85 @@
+---
+title: Gulp configuration for making static websites
+image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
+description: 'In this post, we are going to go over how to use Gulp for making static websites.'
+date: June 21st, 2022
+---
+
+import Callout from 'nextra-theme-docs/callout'
+import Bleed from 'nextra-theme-docs/bleed'
+
+# Playing with Gulp
+
+## What is Gulp?
+
+<a href="https://gulpjs.com/" target="_blank">Gulp</a> is an automated task runner based on NodeJS and NPM.
+In this context, what do we mean by "tasks" indicate a series of JavaScript functions that are executed by the time they are called such as compiling SASS/SCSS into CSS, compiling TypeScript into JavaScript and so on.
+
+### Difference between Webpack and Gulp
+
+This will lead us to the question: Then what is the difference between Webpack and Gulp?
+
+I created the table that shows the difference between Webpack and Gulp.[^1]
+
+|                          |                                 Webpack                                 |                                        Gulp                                         |
+| :----------------------: | :---------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
+|        Definition        | Module Bundler that combines different files into one consolidated file | Automated task runner that carries out the different types of tasks simultaneously. |
+| Configuration Difficulty |                                  Hard                                   |                                        Easy                                         |
+|      Code required       |                                  More                                   |                                        Less                                         |
+|     Appropriate for      |               Application with multiple complex processes               |               Simple application that does not take too much memories               |
+
+[^1]: Source: <a href="https://www.educba.com/gulp-vs-webpack/" target="_blank">Difference between Webpack and Gulp</a>
+
+<hr/>
+
+## Setup for Gulp
+
+Let's go over each section one by one.
+
+### Installing Gulp
+
+We will installing the <a href="https://gulpjs.com/docs/en/getting-started/quick-start#install-the-gulp-command-line-utility" target="_blank">gulp-cli</a> first.
+
+```bash
+npm i -g gulp-cli
+```
+
+<br/>
+
+Next, inside the project folder, we will create `package.json` file with the following command:
+
+```bash
+npm init -y
+```
+
+This command will allow you to create `package.json` file automatically <a href="https://docs.npmjs.com/cli/v8/commands/npm-init#yes" target="_blank">with answering all questions "yes"</a>.
+
+<br/>
+
+Then, we will <a href="https://gulpjs.com/docs/en/getting-started/quick-start#install-the-gulp-package-in-your-devdependencies" target="_blank">install Gulp</a>.
+
+```bash
+npm i -D gulp
+
+#or
+
+yarn add -D gulp
+```
+
+<br/>
+
+### Creating `gulpfile.js`
+
+<a href="https://gulpjs.com/docs/en/getting-started/javascript-and-gulpfiles#gulpfile-explained" target="_blank"><code>gulpfile.js</code></a> is pretty much Gulp's configuration file where we can define all tasks that we desire.
+
+```bash
+# For MAC/Linux users
+touch gulpfile.js
+
+# For Windows users
+echo.> gulpfile.js
+```
+
+#### Connecting with Babel
+
+In order to use `gulpfile.js` with JavaScript ES6 version, we would need to use <a href="https://babeljs.io/" target="_blank">Babel</a>
