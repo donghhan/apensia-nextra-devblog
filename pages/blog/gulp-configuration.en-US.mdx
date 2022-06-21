@@ -59,10 +59,10 @@ This command will allow you to create `package.json` file automatically <a href=
 Then, we will <a href="https://gulpjs.com/docs/en/getting-started/quick-start#install-the-gulp-package-in-your-devdependencies" target="_blank">install Gulp</a>.
 
 ```bash
+# Using NPM
 npm i -D gulp
 
-#or
-
+# Using yarn
 yarn add -D gulp
 ```
 
@@ -70,7 +70,7 @@ yarn add -D gulp
 
 ### Creating `gulpfile.js`
 
-<a href="https://gulpjs.com/docs/en/getting-started/javascript-and-gulpfiles#gulpfile-explained" target="_blank"><code>gulpfile.js</code></a> is pretty much Gulp's configuration file where we can define all tasks that we desire.
+<a href="https://gulpjs.com/docs/en/getting-started/javascript-and-gulpfiles#gulpfile-explained" target="_blank"><code>gulpfile.js</code></a> is a Gulp's configuration file where we can define all tasks that we desire.
 
 ```bash
 # For MAC/Linux users
@@ -80,6 +80,192 @@ touch gulpfile.js
 echo.> gulpfile.js
 ```
 
-#### Connecting with Babel
+#### Using with Babel (Optional)
 
-In order to use `gulpfile.js` with JavaScript ES6 version, we would need to use <a href="https://babeljs.io/" target="_blank">Babel</a>
+In order to use `gulpfile.js` with JavaScript ES6 version, we would need to use <a href="https://babeljs.io/" target="_blank">Babel</a>, which converts modern version JavaScript into an older version so that old browser could also understand the code.
+
+To do so, we will firstly rename `gulpfile.js` into `gulpfile.babel.js`.
+
+Next, we will install additional packages.
+
+```bash
+# Using NPM
+npm i -D @babel/core @babel/preset-env
+
+# Using yarn
+yarn add -D @babel/core @babel/preset-env
+```
+
+Then, we will create `babel.config.json` in the project root and include the following code.
+By doing this, we can set up the `@babel/preset-env` and use it for our project.
+
+```json babel.config.json
+{
+    "presets": ["@babel/preset-env"]
+}
+```
+
+So far, our folder structure will look as below:
+
+<br/>
+
+<center>![folder_structure](../../media/gulp-configuration/gulp_folder_structure.png)</center>
+
+<br/>
+
+### Including `scripts` command on `package.json`
+
+Inside of our `package.json` file, we will include two `scripts` commands:
+
+1. `dev`: This is for development
+2. `build`: This is for build
+
+```json package.json
+"scripts": {
+    "dev": "gulp dev",
+    "build": "gulp build"
+}
+```
+
+<br/>
+
+### Dividing folder structure
+
+We will put all files that are to be compiled within `src/` folder.
+
+```bash
+mkdir src/
+```
+
+<hr/>
+
+## Converting Pug into HTML
+
+<a href="https://pugjs.org/api/getting-started.html" target="_blank">Pug</a> is a template engine for NodeJS. We will be converting Pug into HTML files.
+
+### Installing package
+
+For converting Pug files into normal HTML files, we will be using <a href="https://github.com/gulp-community/gulp-pug#readme" target="_blank">gulp-pug</a> package.
+
+```bash
+# NPM
+npm i -D gulp-pug
+
+# yarn
+yarn add -D gulp-pug
+```
+
+<br/>
+
+<CH.Scrollycoding>
+
+### Importing
+
+Let's import some necessary items from packges.
+
+```js gulpfile.js focus=1:6
+const { src, dest } = require('gulp');
+const pug = require('gulp-pug');
+
+// If you are using Babel with Gulp
+// import { src, dest } from 'gulp';
+// import pug from 'gulp-pug';
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    }
+}
+
+function PugIntoHTML() {
+    return null;
+}
+```
+
+---
+
+### Routes
+
+I created object called `routes`, which specifies the routes for each files that are in development and files that will be sent to build folder.
+
+```js gulpfile.js focus=8:13
+const { src, dest } = require('gulp');
+const pug = require('gulp-pug');
+
+// If you are using Babel with Gulp
+// import { src, dest } from 'gulp';
+// import pug from 'gulp-pug';
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    }
+}
+
+function PugIntoHTML() {
+    return null;
+}
+```
+
+---
+
+### Defining task
+
+Let's create a task for converting Pug files into HTML files.
+I named it as `PugIntoHTML()`.
+
+> Beginning from Gulp version, it is recommended to make task as a function instead of using `gulp.task`.
+
+```js gulpfile.js focus=15:18
+const { src, dest } = require('gulp');
+const pug = require('gulp-pug');
+
+// If you are using Babel with Gulp
+// import { src, dest } from 'gulp';
+// import pug from 'gulp-pug';
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    }
+}
+
+function PugIntoHTML() {
+    return null;
+}
+```
+
+---
+
+#### Editing task
+
+1. First, I need to let `PugIntoHTML()` task look for the files that are to be converted in `src/` file with using <a href="https://gulpjs.com/docs/en/api/src" target="_blank"><code>src()</code></a> method.
+2. With using `pipe()`, I connected to the next task with `pug()` method from `gulp-pug` package.
+3. Lastly, I designated routes for build files with using <a href="https://gulpjs.com/docs/en/api/dest" target="_blank"><code>dest()</code></a>
+
+```js gulpfile.js focus=15:18
+const { src, dest } = require('gulp');
+const pug = require('gulp-pug');
+
+// If you are using Babel with Gulp
+// import { src, dest } from 'gulp';
+// import pug from 'gulp-pug';
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    }
+}
+
+function PugIntoHTML() {
+    return src(routes.pug.src)
+        .pipe(pug())
+        .pipe(dest(routes.pug.build));
+}
+```
+
+</CH.Scrollycoding>
