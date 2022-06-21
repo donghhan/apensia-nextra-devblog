@@ -7,7 +7,12 @@ const withNextra = require("nextra")({
   unstable_flexsearch: true,
   unstable_staticImage: true,
   mdxOptions: {
-    remarkPlugins: [[remarkCodeHike, { theme }]],
+    remarkPlugins: [
+      [
+        remarkCodeHike,
+        { theme, lineNumbers: false, showCopyButton: true, autoImport: true },
+      ],
+    ],
   },
 });
 
