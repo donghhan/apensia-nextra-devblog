@@ -162,6 +162,7 @@ yarn add -D gulp-pug
 ### Importing
 
 Let's import some necessary items from packges.
+If you are using Babel, you can use `import` keyword.
 
 ```js gulpfile.js focus=1:6
 const { src, dest } = require('gulp');
@@ -179,7 +180,7 @@ const routes = {
 }
 
 function PugIntoHTML() {
-    return null;
+    return;
 }
 ```
 
@@ -205,7 +206,7 @@ const routes = {
 }
 
 function PugIntoHTML() {
-    return null;
+    return;
 }
 ```
 
@@ -234,7 +235,7 @@ const routes = {
 }
 
 function PugIntoHTML() {
-    return null;
+    return;
 }
 ```
 
@@ -268,4 +269,231 @@ function PugIntoHTML() {
 }
 ```
 
+---
+
+#### Registering tasks.
+
+Lastly, I used <a href="https://gulpjs.com/docs/en/api/series" target="_blank"><code>series()</code></a> method for
+
+```js gulpfile.js focus=1,21
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+
+// If you are using Babel with Gulp
+// import { src, dest } from 'gulp';
+// import pug from 'gulp-pug';
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    }
+}
+
+function PugIntoHTML() {
+    return src(routes.pug.src)
+        .pipe(pug())
+        .pipe(dest(routes.pug.build));
+}
+
+export const dev = series([PugIntoHTML]);
+```
+
 </CH.Scrollycoding>
+
+### Result
+
+Now that we are done with configuraiton, let's make `index.pug` file within `src/` folder and hit `npm run dev` or `yarn dev`.
+
+```pug src/index.pug
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+        title Document
+    body
+```
+
+After running `npm run build` or `yarn build`, our `index.pug` file is converted into `index.html` with simplified code.
+
+<center>![html_converted](../../media/gulp-configuration/gulp_pug_html_compiling.png)</center>
+
+<br/>
+
+## Converting SCSS into CSS
+
+### Installing package
+
+For converting Pug files into normal HTML files, we will be using <a href="https://www.npmjs.com/package/gulp-sass" target="_blank">gulp-sass</a> package.
+
+```bash
+# npm
+npm i -D gulp-sass sass node-sass
+
+# yarn
+yarn add -D gulp-sass sass node-sass
+```
+
+<CH.Scrollycoding>
+
+### Routes
+
+In the `routes` object, I defined the routes for SCSS files and CSS files that will be placed to.
+
+```js gulpfile.js focus=3,10:13
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const sass = require('gulp-sass')(requrie('sass'));
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    }
+}
+
+function PugIntoHTML() {
+    return src(routes.pug.src)
+        .pipe(pug())
+        .pipe(dest(routes.pug.build));
+}
+
+function SCSStoCSS() {
+    return;
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS]);
+```
+
+---
+
+### Defining task
+
+I created task called `SCSStoCSS()` for converting SCSS files to CSS files.
+
+```js gulpfile.js focus=22:24
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const sass = require('gulp-sass')(requrie('sass'));
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    }
+}
+
+function PugIntoHTML() {
+    return src(routes.pug.src)
+        .pipe(pug())
+        .pipe(dest(routes.pug.build));
+}
+
+function SCSStoCSS() {
+    return;
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS]);
+```
+
+---
+
+#### Editing task
+
+I exactly followed what it showed on the <a href="https://github.com/dlmanning/gulp-sass#usage" target="_blank">documentation</a>.
+
+```js gulpfile.js focus=22:26
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const sass = require('gulp-sass')(requrie('sass'));
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    }
+}
+
+function PugIntoHTML() {
+    return src(routes.pug.src)
+        .pipe(pug())
+        .pipe(dest(routes.pug.build));
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(dest(routes.scss.build));
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS]);
+```
+
+---
+
+#### Registering tasks.
+
+And lastly registering its task into our `dev` command.
+
+```js gulpfile.js focus=28
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const sass = require('gulp-sass')(requrie('sass'));
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    }
+}
+
+function PugIntoHTML() {
+    return src(routes.pug.src)
+        .pipe(pug())
+        .pipe(dest(routes.pug.build));
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(dest(routes.scss.build));
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS]);
+```
+
+</CH.Scrollycoding>
+
+### Result
+
+Our build command will convert SCSS files into CSS in our designated routes.
+
+```scss src/scss/style.scss
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+```
+
+<center>![html_converted](../../media/gulp-configuration/scss_to_css.png)</center>
+
+<br/>
