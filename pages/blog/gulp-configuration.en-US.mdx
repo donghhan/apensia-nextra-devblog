@@ -304,11 +304,18 @@ For converting Pug files into normal HTML files, we will be using <a href="https
 
 ```bash
 # npm
-npm i -D gulp-sass sass node-sass
+npm i -D gulp-sass sass gulp-autoprefixer gulp-uglifycss
 
 # yarn
-yarn add -D gulp-sass sass node-sass
+yarn add -D gulp-sass sass gulp-autoprefixer gulp-uglifycss
 ```
+
+1. <a href="https://github.com/dlmanning/gulp-sass#readme" target="_blank">gulp-sass</a>: SASS plugin for Gulp. With this plugin, Gulp will convert SCSS/SASS into CSS with Dart package of <a href="https://github.com/sass/dart-sass" target="_blank">sass</a>.
+2. <a href="https://github.com/sindresorhus/gulp-autoprefixer#readme" target="_blank">gulp-autoprefixer</a>: Gulp will convert code our SCSS/SASS code into compatible CSS code that older browsers can understand.
+3. <a href="https://github.com/ubirak/gulp-uglifycss" target="_blank">gulp-uglifycss</a>: Make transfiled CSS files shortened to increase performance.
+
+<br/>
+<br/>
 
 <CH.Scrollycoding>
 
