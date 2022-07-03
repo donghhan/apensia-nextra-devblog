@@ -1,5 +1,5 @@
 ---
-title: Gulp configuration for making static websites
+title: Gulp configuration for Pug, SCSS and TypeScript
 image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
 description: 'In this post, we are going to go over how to use Gulp for making static websites.'
 date: June 21st, 2022
@@ -113,8 +113,6 @@ So far, our folder structure will look as below:
 
 <br/>
 
-### Including `scripts` command on `package.json`
-
 Inside of our `package.json` file, we will include two `scripts` commands:
 
 1. `dev`: This is for development
@@ -140,8 +138,6 @@ mkdir src/
 ## Converting Pug into HTML
 
 <a href="https://pugjs.org/api/getting-started.html" target="_blank">Pug</a> is a template engine for NodeJS. We will be converting Pug into HTML files.
-
-### Installing package
 
 For converting Pug files into normal HTML files, we will be using <a href="https://github.com/gulp-community/gulp-pug#readme" target="_blank">gulp-pug</a> package.
 
@@ -298,9 +294,7 @@ After running `npm run build` or `yarn build`, our `index.pug` file is converted
 
 ## Converting SCSS into CSS
 
-### Installing package
-
-For converting Pug files into normal HTML files, we will be using <a href="https://www.npmjs.com/package/gulp-sass" target="_blank">gulp-sass</a> package.
+Let's install below packages.
 
 ```bash
 # npm
@@ -319,14 +313,16 @@ yarn add -D gulp-sass sass gulp-autoprefixer gulp-uglifycss
 
 <CH.Scrollycoding>
 
-### Routes
+### Setting routes
 
-In the `routes` object, I defined the routes for SCSS files and CSS files that will be placed to.
+After importing packages, I defined the routes for SCSS files and CSS files that will be placed to in the `routes` object,
 
-```js gulpfile.js focus=3,10:13
+```js gulpfile.js focus=3:5,10:13
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
 const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
 
 const routes = {
     pug: {
@@ -342,6 +338,7 @@ const routes = {
 function PugIntoHTML() {
     return src(routes.pug.src)
         .pipe(pug())
+        .pipe(autoPrefixer())
         .pipe(dest(routes.pug.build));
 }
 
@@ -358,10 +355,12 @@ export const dev = series([PugIntoHTML, SCSStoCSS]);
 
 I created task called `SCSStoCSS()` for converting SCSS files to CSS files.
 
-```js gulpfile.js focus=22:24
+```js gulpfile.js focus=24:26
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
 const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
 
 const routes = {
     pug: {
@@ -389,14 +388,17 @@ export const dev = series([PugIntoHTML, SCSStoCSS]);
 
 ---
 
-#### Editing task
+#### Converting SCSS into CSS
 
+We will convert SCSS files located inside of `src/` folder.
 I exactly followed what it showed on the <a href="https://github.com/dlmanning/gulp-sass#render-your-css" target="_blank">documentation</a>.
 
-```js gulpfile.js focus=22:26
+```js gulpfile.js focus=26
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
 const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
 
 const routes = {
     pug: {
@@ -418,6 +420,13 @@ function PugIntoHTML() {
 function SCSStoCSS() {
     return src(routes.scss.src)
         .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
         .pipe(dest(routes.scss.build));
 }
 
@@ -426,11 +435,58 @@ export const dev = series([PugIntoHTML, SCSStoCSS]);
 
 ---
 
-#### Registering tasks.
+#### Connecting auto prefixer
 
-And lastly registering its task into our `dev` command.
+Next, I connected the <a href="https://github.com/sindresorhus/gulp-autoprefixer#readme" target="_blank">gulp-autoprefixer</a> shown on the <a href="https://github.com/sindresorhus/gulp-autoprefixer#usage" target="_blank">documentation</a>.
+If you want, you are more than welcomed to include options <a href="https://github.com/postcss/autoprefixer#options" target="_blank">available here</a>.
 
-```js gulpfile.js focus=28
+```js gulpfile.js focus=27
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    }
+}
+
+function PugIntoHTML() {
+    return src(routes.pug.src)
+        .pipe(pug())
+        .pipe(dest(routes.pug.build));
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS]);
+```
+
+---
+
+#### Uglifying CSS files
+
+Finally, I configured the uglifying CSS based on <a href="https://github.com/ubirak/gulp-uglifycss#usage" target="_blank">documentation</a>.
+
+```js gulpfile.js focus=26:31
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
 const sass = require('gulp-sass')(requrie('sass'));
@@ -455,6 +511,57 @@ function PugIntoHTML() {
 function SCSStoCSS() {
     return src(routes.scss.src)
         .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS]);
+```
+
+---
+
+#### Connecting tasks
+
+Finally, I connected tasks with `dev` script command.
+
+```js gulpfile.js focus=35
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const sass = require('gulp-sass')(requrie('sass'));
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    }
+}
+
+function PugIntoHTML() {
+    return src(routes.pug.src)
+        .pipe(pug())
+        .pipe(dest(routes.pug.build));
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
         .pipe(dest(routes.scss.build));
 }
 
