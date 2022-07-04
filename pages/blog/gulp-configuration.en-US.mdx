@@ -76,8 +76,11 @@ yarn add -D gulp
 # For MAC/Linux users
 touch gulpfile.js
 
-# For Windows users
+# For Windows command prompt users
 echo.> gulpfile.js
+
+# For Windows powershell users
+ni gulpfile.js
 ```
 
 #### Using with Babel (Optional)
@@ -89,7 +92,7 @@ To do so, we will firstly rename `gulpfile.js` into `gulpfile.babel.js`.
 Next, we will install additional packages.
 
 ```bash
-# Using NPM
+# Using npm
 npm i -D @babel/core @babel/preset-env
 
 # Using yarn
@@ -142,11 +145,11 @@ mkdir src/
 For converting Pug files into normal HTML files, we will be using <a href="https://github.com/gulp-community/gulp-pug#readme" target="_blank">gulp-pug</a> package.
 
 ```bash
-# NPM
-npm i -D gulp-pug
+# npm
+npm i -D gulp-pug gulp-htmlmin
 
 # yarn
-yarn add -D gulp-pug
+yarn add -D gulp-pug gulp-htmlmin
 ```
 
 <br/>
@@ -161,7 +164,7 @@ If you are using Babel, you can use `import` keyword.
 ```js gulpfile.js focus=1:6
 const { src, dest } = require('gulp');
 const pug = require('gulp-pug');
-
+const htmlmin = require("gulp-htmlmin");
 // If you are using Babel with Gulp
 // import { src, dest } from 'gulp';
 // import pug from 'gulp-pug';
@@ -176,6 +179,8 @@ const routes = {
 function PugIntoHTML() {
     return;
 }
+
+export const dev = series([PugIntoHTML]);
 ```
 
 ---
@@ -187,7 +192,7 @@ I created object called `routes`, which specifies the routes for each files that
 ```js gulpfile.js focus=8:13
 const { src, dest } = require('gulp');
 const pug = require('gulp-pug');
-
+const htmlmin = require("gulp-htmlmin");
 // If you are using Babel with Gulp
 // import { src, dest } from 'gulp';
 // import pug from 'gulp-pug';
@@ -202,6 +207,8 @@ const routes = {
 function PugIntoHTML() {
     return;
 }
+
+export const dev = series([PugIntoHTML]);
 ```
 
 ---
@@ -215,12 +222,13 @@ I named it as `PugIntoHTML()`.
 
 1. First, I need to let `PugIntoHTML()` task look for the files that are to be converted in `src/` file with using <a href="https://gulpjs.com/docs/en/api/src" target="_blank"><code>src()</code></a> method.
 2. With using `pipe()`, I connected to the next task with `pug()` method from `gulp-pug` package.
-3. Lastly, I designated routes for build files with using <a href="https://gulpjs.com/docs/en/api/dest" target="_blank"><code>dest()</code></a>.
+3. To make
+4. Lastly, I designated routes for build files with using <a href="https://gulpjs.com/docs/en/api/dest" target="_blank"><code>dest()</code></a>.
 
-```js gulpfile.js focus=15:18
+```js gulpfile.js focus=15:20
 const { src, dest } = require('gulp');
 const pug = require('gulp-pug');
-
+const htmlmin = require("gulp-htmlmin");
 // If you are using Babel with Gulp
 // import { src, dest } from 'gulp';
 // import pug from 'gulp-pug';
@@ -235,20 +243,23 @@ const routes = {
 function PugIntoHTML() {
     return src(routes.pug.src)
         .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
         .pipe(dest(routes.pug.build));
 }
+
+export const dev = series([PugIntoHTML]);
 ```
 
 ---
 
-### Registering tasks.
+#### Registering task
 
 Lastly, I used <a href="https://gulpjs.com/docs/en/api/series" target="_blank"><code>series()</code></a> method for connecting our task into our script command.
 
 ```js gulpfile.js focus=1,21
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
-
+const htmlmin = require("gulp-htmlmin");
 // If you are using Babel with Gulp
 // import { src, dest } from 'gulp';
 // import pug from 'gulp-pug';
@@ -263,6 +274,7 @@ const routes = {
 function PugIntoHTML() {
     return src(routes.pug.src)
         .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
         .pipe(dest(routes.pug.build));
 }
 
@@ -315,11 +327,12 @@ yarn add -D gulp-sass sass gulp-autoprefixer gulp-uglifycss
 
 ### Setting routes
 
-After importing packages, I defined the routes for SCSS files and CSS files that will be placed to in the `routes` object,
+After importing packages, I defined the routes for SCSS files and CSS files that will be placed to in the `routes` object.
 
-```js gulpfile.js focus=3:5,10:13
+```js gulpfile.js focus=4:6,13:16
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
 const sass = require('gulp-sass')(requrie('sass'));
 const autoPrefixer = require("gulp-autoprefixer");
 const uglify = require("gulp-uglify");
@@ -338,7 +351,7 @@ const routes = {
 function PugIntoHTML() {
     return src(routes.pug.src)
         .pipe(pug())
-        .pipe(autoPrefixer())
+        .pipe(htmlmin({ collapseWhitespace: true }))
         .pipe(dest(routes.pug.build));
 }
 
@@ -355,9 +368,10 @@ export const dev = series([PugIntoHTML, SCSStoCSS]);
 
 I created task called `SCSStoCSS()` for converting SCSS files to CSS files.
 
-```js gulpfile.js focus=24:26
+```js gulpfile.js focus=26:28
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
 const sass = require('gulp-sass')(requrie('sass'));
 const autoPrefixer = require("gulp-autoprefixer");
 const uglify = require("gulp-uglify");
@@ -376,6 +390,7 @@ const routes = {
 function PugIntoHTML() {
     return src(routes.pug.src)
         .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
         .pipe(dest(routes.pug.build));
 }
 
@@ -392,10 +407,12 @@ export const dev = series([PugIntoHTML, SCSStoCSS]);
 
 We will convert SCSS files located inside of `src/` folder.
 I exactly followed what it showed on the <a href="https://github.com/dlmanning/gulp-sass#render-your-css" target="_blank">documentation</a>.
+Compiled files will go into `build/` folder.
 
-```js gulpfile.js focus=26
+```js gulpfile.js focus=27:28,36
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
 const sass = require('gulp-sass')(requrie('sass'));
 const autoPrefixer = require("gulp-autoprefixer");
 const uglify = require("gulp-uglify");
@@ -414,6 +431,7 @@ const routes = {
 function PugIntoHTML() {
     return src(routes.pug.src)
         .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
         .pipe(dest(routes.pug.build));
 }
 
@@ -440,9 +458,10 @@ export const dev = series([PugIntoHTML, SCSStoCSS]);
 Next, I connected the <a href="https://github.com/sindresorhus/gulp-autoprefixer#readme" target="_blank">gulp-autoprefixer</a> shown on the <a href="https://github.com/sindresorhus/gulp-autoprefixer#usage" target="_blank">documentation</a>.
 If you want, you are more than welcomed to include options <a href="https://github.com/postcss/autoprefixer#options" target="_blank">available here</a>.
 
-```js gulpfile.js focus=27
+```js gulpfile.js focus=29
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
 const sass = require('gulp-sass')(requrie('sass'));
 const autoPrefixer = require("gulp-autoprefixer");
 const uglify = require("gulp-uglify");
@@ -461,6 +480,7 @@ const routes = {
 function PugIntoHTML() {
     return src(routes.pug.src)
         .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
         .pipe(dest(routes.pug.build));
 }
 
@@ -486,10 +506,13 @@ export const dev = series([PugIntoHTML, SCSStoCSS]);
 
 Finally, I configured the uglifying CSS based on <a href="https://github.com/ubirak/gulp-uglifycss#usage" target="_blank">documentation</a>.
 
-```js gulpfile.js focus=26:31
+```js gulpfile.js focus=30:35
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
 const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
 
 const routes = {
     pug: {
@@ -505,6 +528,7 @@ const routes = {
 function PugIntoHTML() {
     return src(routes.pug.src)
         .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
         .pipe(dest(routes.pug.build));
 }
 
@@ -530,10 +554,13 @@ export const dev = series([PugIntoHTML, SCSStoCSS]);
 
 Finally, I connected tasks with `dev` script command.
 
-```js gulpfile.js focus=35
+```js gulpfile.js focus=38
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
 const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
 
 const routes = {
     pug: {
@@ -549,6 +576,7 @@ const routes = {
 function PugIntoHTML() {
     return src(routes.pug.src)
         .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
         .pipe(dest(routes.pug.build));
 }
 
@@ -574,8 +602,6 @@ export const dev = series([PugIntoHTML, SCSStoCSS]);
 
 Our build command will convert SCSS files into CSS in our designated routes.
 
-<CH.Code>
-
 ```scss src/scss/style.scss
 body {
     margin: 0;
@@ -584,34 +610,57 @@ body {
 }
 ```
 
-```scss src/scss/_variable.scss
-$yellow: #e8bf5d;
-```
-
-</CH.Code>
-
 <center>![html_converted](../../media/gulp-configuration/scss_to_css.png)</center>
 
 <br/>
 
-## Watching
+## Converting TypeScript into JavaScript
 
-It is quite annoying if I need to manually hitting refresh button every time changes happen.
-For this, I would be using the <a href="https://browsersync.io/#install" target="_blank">browser-sync</a>.
+Firstly, let's install necessary packages.[^2] There are quite lots of packages to install.
+
+[^2]: Referred to the whole tutorial for <a href="https://www.typescriptlang.org/docs/handbook/gulp.html" target="_blank">TypeScript: Gulp</a>
+
+```bash
+# NPM
+npm i -D typescript gulp-typescript browserify tsify vinyl-source-stream gulp-sourcemaps vinly-buffer
+
+# yarn
+yarn add -D typescript gulp-typescript browserify tsify vinyl-source-stream gulp-sourcemaps vinly-buffer
+```
+
+1. <a href="https://github.com/ivogabe/gulp-typescript" target="_blank">gulp-typescript</a>: Helps Gulp to compile TypeScript into JavaScript.
+2. For Browserify
+   - <a href="https://github.com/browserify/browserify#readme" target="_blank">browserify</a>: Allowing NodeJS modules to be usable directly in the browser.
+   - <a href="https://github.com/TypeStrong/tsify" target="_blank">tsify</a>: Allows Browserify to access to TypeScript compiler.
+   - <a href="https://github.com/hughsk/vinyl-source-stream" target="_blank">vinyl-source-stream</a>: Adapt the file output of Browserify back into a <a href="https://github.com/gulpjs/vinyl#what-is-vinyl" target="_blank">vinyl</a>.
+3. For Terser
+   - <a href="https://github.com/duan602728596/gulp-terser#readme" target="_blank">gulp-terser</a>: Gulp's plugin for compressing ES6 code.
+   - <a href="https://github.com/hughsk/vinyl-buffer" target="_blank">vinyl-buffer</a>: Converting streaming vinyl files to use buffers.
+   - <a href="https://github.com/gulp-sourcemaps/gulp-sourcemaps" target="_blank">gulp-sourcemaps</a>: Create the inline source maps being embedded in the source file.
 
 <br/>
 
 <CH.Scrollycoding>
 
-### Defining task
+### Setting routes
 
-I created task called `Watch()` and let `browserSync` begin a server with <a href="https://browsersync.io/docs/api#api-init" target="_blank"><code>.init()</code></a>, pointing out `build` folder.
+I imported all necessary packages for transfiling TypeScript into JavaScript.
+Then, I defined the routes for TypeScript files and JavaScript files that will be placed to in the `routes` object.
 
-```js gulpfile.js focus=4,28:35
+```js gulpfile.js focus=6:13,24:27
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
 const sass = require('gulp-sass')(requrie('sass'));
-const browserSync = require("browser-sync").create();
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
 
 const routes = {
     pug: {
@@ -621,43 +670,60 @@ const routes = {
     sass: {
         src: "src/scss/style.scss",
         build: "build/css/style.css"
-    }
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
 }
 
 function PugIntoHTML() {
     return src(routes.pug.src)
         .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
         .pipe(dest(routes.pug.build));
 }
 
 function SCSStoCSS() {
     return src(routes.scss.src)
         .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
         .pipe(dest(routes.scss.build));
 }
 
-function Watch() {
-  browserSync.init({
-    server: {
-      baseDir: "./build",
-    },
-  });
+function TStoJS() {
+    return;
 }
 
-export const dev = series([PugIntoHTML, SCSStoCSS]);
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS]);
 ```
 
 ---
 
-### Making Gulp watch
+### Defining task
 
-With using <a href="https://gulpjs.com/docs/en/api/watch" target="_blank"><code>watch()</code></a>
+I created task called `TStoJS()` for compiling TypeScript into JavaScript.
 
-```js gulpfile.js focus=1,35:37
-const { src, dest, series, watch } = require('gulp');
+```js gulpfile.js focus=50:52
+const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
 const sass = require('gulp-sass')(requrie('sass'));
-const browserSync = require("browser-sync").create();
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
 
 const routes = {
     pug: {
@@ -667,32 +733,286 @@ const routes = {
     sass: {
         src: "src/scss/style.scss",
         build: "build/css/style.css"
-    }
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
 }
 
 function PugIntoHTML() {
     return src(routes.pug.src)
         .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
         .pipe(dest(routes.pug.build));
 }
 
 function SCSStoCSS() {
     return src(routes.scss.src)
         .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
         .pipe(dest(routes.scss.build));
 }
 
-function Watch() {
-  browserSync.init({
-    server: {
-      baseDir: "./build",
-    },
-  });
-  watch(routes.scss.src, SCSStoCSS);
-  watch(routes.html.src, MinifyHTML);
+function TStoJS() {
+    return;
 }
 
-export const dev = series([PugIntoHTML, SCSStoCSS]);
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS]);
+```
+
+---
+
+#### Browserifying tasks
+
+1. As I will manage one TypeScript file, I decided to use one single path for entry point.
+2. For configuration of tsify, I referred to <a href="https://github.com/TypeStrong/tsify#browserify-api" target="_blank">this section</a>.
+
+```js focus=51:60
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+}
+
+function PugIntoHTML() {
+    return src(routes.pug.src)
+        .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
+        .pipe(dest(routes.pug.build));
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS]);
+```
+
+---
+
+#### Terser configuration
+
+For configuration of terser, I referred to <a href="https://www.typescriptlang.org/docs/handbook/gulp.html#terser" target="_blank">this section</a>.
+
+```js focus=61:65
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+}
+
+function PugIntoHTML() {
+    return src(routes.pug.src)
+        .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
+        .pipe(dest(routes.pug.build));
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS]);
+```
+
+---
+
+#### Registering task
+
+Lastly, I included task in `dev` script command.
+
+```js focus=68
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+}
+
+function PugIntoHTML() {
+    return src(routes.pug.src)
+        .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
+        .pipe(dest(routes.pug.build));
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS]);
 ```
 
 </CH.Scrollycoding>
+
+### Result
+
+After running `npm run build` or `yarn build`, our `index.pug` file is converted into `index.html` with simplified code.
+
+<center>![result_ts_folder](../../media/gulp-configuration/result_ts_folder.png)</center>
+
+<br/>
+<br/>
+
+<center>![result_ts](../../media/gulp-configuration/result_ts.png)</center>
+
+<br/>
+<br/>
+
+On the next section, we will go over how to utilize Gulp task management.
