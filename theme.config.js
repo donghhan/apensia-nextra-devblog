@@ -114,22 +114,12 @@ export default {
         <meta name="twitter:image" content={ogImage} />
         <meta
           name="og:title"
-          content={
-            title ? title + " – SWR" : "SWR: React Hooks for Data Fetching"
-          }
+          content={title ? title + " – SWR" : "Apensia's Devblog"}
         />
         <meta name="og:image" content={ogImage} />
         <meta name="apple-mobile-web-app-title" content="SWR" />
       </>
     );
-  },
-  footerEditLink: ({ locale }) => {
-    switch (locale) {
-      case "ko":
-        return "Github에서 이 페이지 편집하기 →";
-      default:
-        return "Edit this page on GitHub →";
-    }
   },
   footerText: ({ locale }) => {
     switch (locale) {
