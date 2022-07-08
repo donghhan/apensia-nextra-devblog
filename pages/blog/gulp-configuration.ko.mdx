@@ -301,9 +301,9 @@ html(lang="en")
 
 <br/>
 
-## Converting SCSS into CSS
+## SCSS를 CSS로 바꾸기
 
-Let's install below packages.
+다음 패키지들을 설치해보자.
 
 ```bash
 # npm
@@ -313,18 +313,18 @@ npm i -D gulp-sass sass gulp-autoprefixer gulp-uglifycss
 yarn add -D gulp-sass sass gulp-autoprefixer gulp-uglifycss
 ```
 
-1. <a href="https://github.com/dlmanning/gulp-sass#readme" target="_blank">gulp-sass</a>: SASS plugin for Gulp. With this plugin, Gulp will convert SCSS/SASS into CSS with Dart package of <a href="https://github.com/sass/dart-sass" target="_blank">sass</a>.
-2. <a href="https://github.com/sindresorhus/gulp-autoprefixer#readme" target="_blank">gulp-autoprefixer</a>: Gulp will convert code our SCSS/SASS code into compatible CSS code that older browsers can understand.
-3. <a href="https://github.com/ubirak/gulp-uglifycss" target="_blank">gulp-uglifycss</a>: Make transfiled CSS files shortened to increase performance.
+1. <a href="https://github.com/dlmanning/gulp-sass#readme" target="_blank">gulp-sass</a>: Gulp의 SASS 플러그인이다. Gulp는 이 플러그인으로 Dart 패키지 버전의 <a href="https://github.com/sass/dart-sass" target="_blank">sass</a>로 SCSS/SASS 파일을 CSS로 바꿔준다.
+2. <a href="https://github.com/sindresorhus/gulp-autoprefixer#readme" target="_blank">gulp-autoprefixer</a>: 오래된 브라우저도 호환되는 CSS 코드로 바꿔준다.
+3. <a href="https://github.com/ubirak/gulp-uglifycss" target="_blank">gulp-uglifycss</a>: 성능 최적화를 위해 컴파일된 CSS를 압축시켜준다
 
 <br/>
 <br/>
 
 <CH.Scrollycoding>
 
-### Setting routes
+### 경로
 
-After importing packages, I defined the routes for SCSS files and CSS files that will be placed to in the `routes` object.
+SCSS 파일들이 위치할 장소를 `routes` 객체 내부에 추가해주었다.
 
 ```js gulpfile.js focus=4:6,13:16
 const { src, dest, series } = require('gulp');
@@ -361,9 +361,9 @@ export const dev = series([PugIntoHTML, SCSStoCSS]);
 
 ---
 
-### Defining task
+### 태스크 설정
 
-I created task called `SCSStoCSS()` for converting SCSS files to CSS files.
+`SCSStoCSS()`라는 이름의 태스크를 만들었다.
 
 ```js gulpfile.js focus=26:28
 const { src, dest, series } = require('gulp');
@@ -400,11 +400,10 @@ export const dev = series([PugIntoHTML, SCSStoCSS]);
 
 ---
 
-#### Converting SCSS into CSS
+#### SCSS를 CSS로 변환하기
 
-We will convert SCSS files located inside of `src/` folder.
-I exactly followed what it showed on the <a href="https://github.com/dlmanning/gulp-sass#render-your-css" target="_blank">documentation</a>.
-Compiled files will go into `build/` folder.
+`src/` 폴더 안에 있는 SCSS 파일들을 변환시켜 볼 것이다.
+필자는 <a href="https://github.com/dlmanning/gulp-sass#render-your-css" target="_blank">공식 문서</a> 상의 내용을 그대로 따라해보았다.
 
 ```js gulpfile.js focus=27:28,36
 const { src, dest, series } = require('gulp');
@@ -450,10 +449,10 @@ export const dev = series([PugIntoHTML, SCSStoCSS]);
 
 ---
 
-#### Connecting auto prefixer
+#### Autoprefixer와 연동하기
 
-Next, I connected the <a href="https://github.com/sindresorhus/gulp-autoprefixer#readme" target="_blank">gulp-autoprefixer</a> shown on the <a href="https://github.com/sindresorhus/gulp-autoprefixer#usage" target="_blank">documentation</a>.
-If you want, you are more than welcomed to include options <a href="https://github.com/postcss/autoprefixer#options" target="_blank">available here</a>.
+다음으로, <a href="https://github.com/sindresorhus/gulp-autoprefixer#readme" target="_blank">gulp-autoprefixer</a>를 <a href="https://github.com/sindresorhus/gulp-autoprefixer#usage" target="_blank">공식 문서</a> 상의 내용대로 연결시켜 주었다.
+원한다면 얼마든지 <a href="https://github.com/postcss/autoprefixer#options" target="_blank">여기</a>에서 확인할 수 있는 추가 옵션들을 넣어볼 수 있다.
 
 ```js gulpfile.js focus=29
 const { src, dest, series } = require('gulp');
@@ -499,9 +498,9 @@ export const dev = series([PugIntoHTML, SCSStoCSS]);
 
 ---
 
-#### Uglifying CSS files
+#### CSS 파일 Uglify하기
 
-Finally, I configured the uglifying CSS based on <a href="https://github.com/ubirak/gulp-uglifycss#usage" target="_blank">documentation</a>.
+마지막으로, <a href="https://github.com/ubirak/gulp-uglifycss#usage" target="_blank">공식 문서</a> 상의 내용을 토대로 CSS를 uglify해보았다.
 
 ```js gulpfile.js focus=30:35
 const { src, dest, series } = require('gulp');
@@ -547,9 +546,9 @@ export const dev = series([PugIntoHTML, SCSStoCSS]);
 
 ---
 
-#### Connecting tasks
+#### 태스크 등록하기
 
-Finally, I connected tasks with `dev` script command.
+만든 태스크를 `dev` 스크립트 명령어에 연결시켜 주었다.
 
 ```js gulpfile.js focus=38
 const { src, dest, series } = require('gulp');
@@ -595,9 +594,9 @@ export const dev = series([PugIntoHTML, SCSStoCSS]);
 
 </CH.Scrollycoding>
 
-### Result
+### 결과
 
-Our build command will convert SCSS files into CSS in our designated routes.
+아래와 같이 폴더를 생성한 후 SCSS 파일을 생성하여 명령어를 실행시키면 잘 변환되는 것을 볼 수 있다.
 
 ```scss src/scss/style.scss
 body {
@@ -611,11 +610,11 @@ body {
 
 <br/>
 
-## Converting TypeScript into JavaScript
+## 타입스크립트를 자바스크립트로 바꾸기
 
-Firstly, let's install necessary packages.[^2] There are quite lots of packages to install.
+다음 패키지들을 설치해보자[^2]. 설치해야 할 패키지들이 이번에는 꽤나 많이 있다.
 
-[^2]: Referred to the whole tutorial for <a href="https://www.typescriptlang.org/docs/handbook/gulp.html" target="_blank">TypeScript: Gulp</a>
+[^2]: 참조: <a href="https://www.typescriptlang.org/docs/handbook/gulp.html" target="_blank">TypeScript: Gulp</a>
 
 ```bash
 # NPM
@@ -625,24 +624,24 @@ npm i -D typescript gulp-typescript browserify tsify vinyl-source-stream gulp-so
 yarn add -D typescript gulp-typescript browserify tsify vinyl-source-stream gulp-sourcemaps vinly-buffer
 ```
 
-1. <a href="https://github.com/ivogabe/gulp-typescript" target="_blank">gulp-typescript</a>: Helps Gulp to compile TypeScript into JavaScript.
-2. For Browserify
-   - <a href="https://github.com/browserify/browserify#readme" target="_blank">browserify</a>: Allowing NodeJS modules to be usable directly in the browser.
-   - <a href="https://github.com/TypeStrong/tsify" target="_blank">tsify</a>: Allows Browserify to access to TypeScript compiler.
-   - <a href="https://github.com/hughsk/vinyl-source-stream" target="_blank">vinyl-source-stream</a>: Adapt the file output of Browserify back into a <a href="https://github.com/gulpjs/vinyl#what-is-vinyl" target="_blank">vinyl</a>.
-3. For Terser
-   - <a href="https://github.com/duan602728596/gulp-terser#readme" target="_blank">gulp-terser</a>: Gulp's plugin for compressing ES6 code.
-   - <a href="https://github.com/hughsk/vinyl-buffer" target="_blank">vinyl-buffer</a>: Converting streaming vinyl files to use buffers.
-   - <a href="https://github.com/gulp-sourcemaps/gulp-sourcemaps" target="_blank">gulp-sourcemaps</a>: Create the inline source maps being embedded in the source file.
+1. <a href="https://github.com/ivogabe/gulp-typescript" target="_blank">gulp-typescript</a>: 타입스크립트에서 자바스크립트로 변환시켜주는 Gulp의 패키지이다.
+2. Browserify용
+   - <a href="https://github.com/browserify/browserify#readme" target="_blank">browserify</a>: NodeJS 모듈을 브라우저에서 직접 사용할 수 있게 해준다.
+   - <a href="https://github.com/TypeStrong/tsify" target="_blank">tsify</a>: Browserify가 타입스크립트 컴파일러에 접근할 수 있도록 해준다.
+   - <a href="https://github.com/hughsk/vinyl-source-stream" target="_blank">vinyl-source-stream</a>: Browserify의 파일 결과물을 <a href="https://github.com/gulpjs/vinyl#what-is-vinyl" target="_blank">vinyl</a> 형태로 다시 조정해준다.
+3. Terser용
+   - <a href="https://github.com/duan602728596/gulp-terser#readme" target="_blank">gulp-terser</a>: ES6 코드로 압축시켜 주는 Gulp 플러그인이다.
+   - <a href="https://github.com/hughsk/vinyl-buffer" target="_blank">vinyl-buffer</a>: buffer를 사용하기 위해 스트리밍 vinyl 파일로 변환시켜 준다.
+   - <a href="https://github.com/gulp-sourcemaps/gulp-sourcemaps" target="_blank">gulp-sourcemaps</a>: 소스 파일에 삽입되는 소스맵 파일을 생성해준다.
 
 <br/>
 
 <CH.Scrollycoding>
 
-### Setting routes
+### 경로
 
-I imported all necessary packages for transfiling TypeScript into JavaScript.
-Then, I defined the routes for TypeScript files and JavaScript files that will be placed to in the `routes` object.
+타입스크립트에서 자바스크립트로 컴파일하기 위해 필요한 모든 패키지들을 import하였다.
+그리고, 변환시킬 타입스크립트와 변환된 자바스크립트가 놓여질 장소를 `routes` 객체 내에 지정해주었다.
 
 ```js gulpfile.js focus=6:13,24:27
 const { src, dest, series } = require('gulp');
@@ -703,9 +702,9 @@ export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS]);
 
 ---
 
-### Defining task
+### 태스크 설정
 
-I created task called `TStoJS()` for compiling TypeScript into JavaScript.
+`TStoJS()` 이름의 태스크를 만들어 보았다.
 
 ```js gulpfile.js focus=50:52
 const { src, dest, series } = require('gulp');
@@ -766,10 +765,10 @@ export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS]);
 
 ---
 
-#### Browserifying tasks
+#### 태스크 Browserify하기
 
-1. As I will manage one TypeScript file, I decided to use one single path for entry point.
-2. For configuration of tsify, I referred to <a href="https://github.com/TypeStrong/tsify#browserify-api" target="_blank">this section</a>.
+1. 이 프로젝트에선 하나의 타입스크립트 파일만을 다룰 것이기에 하나의 경로를 entry point로 설정해주었다.
+2. tsify의 설정은 <a href="https://github.com/TypeStrong/tsify#browserify-api" target="_blank">이 부분</a>을 참조하였다.
 
 ```js focus=51:60
 const { src, dest, series } = require('gulp');
@@ -844,9 +843,9 @@ export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS]);
 
 ---
 
-#### Terser configuration
+#### Terser 설정
 
-For configuration of terser, I referred to <a href="https://www.typescriptlang.org/docs/handbook/gulp.html#terser" target="_blank">this section</a>.
+Terser 설정은 <a href="https://www.typescriptlang.org/docs/handbook/gulp.html#terser" target="_blank">이 부분을 참조하였다</a>.
 
 ```js focus=61:65
 const { src, dest, series } = require('gulp');
@@ -921,9 +920,9 @@ export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS]);
 
 ---
 
-#### Registering task
+#### 태스크 등록하기
 
-Lastly, I included task in `dev` script command.
+`dev` 스크립트 명령어에 우리가 만든 태스크를 추가해주자.
 
 ```js focus=68
 const { src, dest, series } = require('gulp');
@@ -998,9 +997,9 @@ export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS]);
 
 </CH.Scrollycoding>
 
-### Result
+### 결과
 
-After running `npm run build` or `yarn build`, our `index.pug` file is converted into `index.html` with simplified code.
+`npm run build` 혹은 `yarn build` 명령어를 실행하면 `main.ts` 파일이 압축된 자바스크립트 코드로 변환된 것을 확인할 수 있다.
 
 <center>![result_ts_folder](../../media/gulp-configuration/result_ts_folder.png)</center>
 
@@ -1012,4 +1011,4 @@ After running `npm run build` or `yarn build`, our `index.pug` file is converted
 <br/>
 <br/>
 
-On the next section, we will go over how to utilize Gulp task management.
+다음 섹션에서 Gulp 태스크를 좀 더 수월하게 관리하는 방법에 대해서 알아보도록 하겠다.
