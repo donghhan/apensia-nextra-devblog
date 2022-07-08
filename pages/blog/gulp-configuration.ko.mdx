@@ -1,44 +1,44 @@
 ---
-title: Gulp configuration for Pug, SCSS and TypeScript
+title: Pug, SCSS 및 TypeScript를 위한 Gulp 설정 
 image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
-description: 'In this post, we are going to go over how to use Gulp for making static websites.'
-date: June 21st, 2022
+description: 'Pug, SCSS 및 TypeScript를 각각 HTML, CSS 및 JavScript로 변환시켜주는 Gulp 자동화 툴을 만들어보자.'
+date: June 4th, 2022
 ---
 
 import Callout from 'nextra-theme-docs/callout'
 import Bleed from 'nextra-theme-docs/bleed'
 
-# Playing with Gulp
+# Gulp와 친해지기
 
-## What is Gulp?
+## Gulp란?
 
-<a href="https://gulpjs.com/" target="_blank">Gulp</a> is an automated task runner based on NodeJS and NPM.
-In this context, what do we mean by "tasks" indicate a series of JavaScript functions that are executed by the time they are called such as compiling SASS/SCSS into CSS, compiling TypeScript into JavaScript and so on.
+<a href="https://gulpjs.com/" target="_blank">Gulp</a>는 NodeJS와 NPM 기반의 자동화 태스트 러너이다.
+여기서 말하는 "태스크"란 타입스크립트에서 자바스크립트로 컴파일링, SCSS/SASS에서 CSS로 컴파일링 등 함수 기반으로 작성된 이러한 일련의 작업들을 의미한다.
 
-### Difference between Webpack and Gulp
+### Webpack과 Gulp의 차이점
 
-This will lead us to the question: Then what is the difference between Webpack and Gulp?
+그렇다면 과연 Webpack과 Gulp의 차이점은 무엇일까?
 
-I created the table that shows the difference between Webpack and Gulp.[^1]
+이 둘의 차이점을 비교하기 위한 표를 다음과 같이 정리해보았다.[^1]
 
-|                          |                                 Webpack                                 |                                        Gulp                                         |
-| :----------------------: | :---------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
-|        Definition        | Module Bundler that combines different files into one consolidated file | Automated task runner that carries out the different types of tasks simultaneously. |
-| Configuration Difficulty |                                  Hard                                   |                                        Easy                                         |
-|      Code required       |                                  More                                   |                                        Less                                         |
-|     Appropriate for      |               Application with multiple complex processes               |               Simple application that does not take too much memories               |
+|             |                         Webpack                          |                               Gulp                               |
+| :---------: | :------------------------------------------------------: | :--------------------------------------------------------------: |
+|    정의     |  다른 모든 파일들을 하나의 파일로 합쳐주는 모듈 번들러   | 동시다발적으로 일어나는 태스크를 실행시켜주는 자동화 태스크 러너 |
+| 설정 난이도 |                           높음                           |                               낮음                               |
+|   코드량    |                           많음                           |                               적음                               |
+|  사용 용도  | 여러 복잡한 프로세스들을 가지고 있는 어플리케이션에 유리 |       메모리를 너무 많이 잡아먹지 않는 단순한 어플리케이션       |
 
-[^1]: Source: <a href="https://www.educba.com/gulp-vs-webpack/" target="_blank">Difference between Webpack and Gulp</a>
+[^1]: 출처: <a href="https://www.educba.com/gulp-vs-webpack/" target="_blank">Difference between Webpack and Gulp</a>
 
 <hr/>
 
-## Setup for Gulp
+## 설정
 
-Let's go over each section one by one.
+각 세션 별로 하나씩 파헤쳐보자.
 
-### Installing Gulp
+### Gulp 설치하기
 
-We will installing the <a href="https://gulpjs.com/docs/en/getting-started/quick-start#install-the-gulp-command-line-utility" target="_blank">gulp-cli</a> first.
+먼저 <a href="https://gulpjs.com/docs/en/getting-started/quick-start#install-the-gulp-command-line-utility" target="_blank">gulp-cli</a>를 설치해보자.
 
 ```bash
 npm i -g gulp-cli
@@ -46,17 +46,17 @@ npm i -g gulp-cli
 
 <br/>
 
-Next, inside the project folder, we will create `package.json` file with the following command:
+다음으로, 프로젝트 폴더 내에 다음 명령어를 통해 `package.json` 파일을 생성한다.
 
 ```bash
 npm init -y
 ```
 
-This command will allow you to create `package.json` file automatically <a href="https://docs.npmjs.com/cli/v8/commands/npm-init#yes" target="_blank">with answering all questions "yes"</a>.
+이렇게 함으로서 <a href="https://docs.npmjs.com/cli/v8/commands/npm-init#yes" target="_blank">모든 질문에 대하여 "예"와 함께</a> `package.json`을 자동으로 생성해준다.
 
 <br/>
 
-Then, we will <a href="https://gulpjs.com/docs/en/getting-started/quick-start#install-the-gulp-package-in-your-devdependencies" target="_blank">install Gulp</a>.
+그리고 <a href="https://gulpjs.com/docs/en/getting-started/quick-start#install-the-gulp-package-in-your-devdependencies" target="_blank">Gulp를 설치한다</a>.
 
 ```bash
 # Using NPM
@@ -68,39 +68,39 @@ yarn add -D gulp
 
 <br/>
 
-### Creating `gulpfile.js`
+### `gulpfile.js` 파일 만들기
 
-<a href="https://gulpjs.com/docs/en/getting-started/javascript-and-gulpfiles#gulpfile-explained" target="_blank"><code>gulpfile.js</code></a> is a Gulp's configuration file where we can define all tasks that we desire.
+<a href="https://gulpjs.com/docs/en/getting-started/javascript-and-gulpfiles#gulpfile-explained" target="_blank"><code>gulpfile.js</code></a>는 Gulp의 설정 파일로써 여기에 모든 태스크들을 넣을 수 있다.
 
 ```bash
-# For MAC/Linux users
+# 맥/리눅스일 경우
 touch gulpfile.js
 
-# For Windows command prompt users
+# 윈도우 명령 프롬프트를 사용할 경우
 echo.> gulpfile.js
 
-# For Windows powershell users
+# 윈도우 powershell을 사용할 경우
 ni gulpfile.js
 ```
 
-#### Using with Babel (Optional)
+#### Babel 사용하기 (선택 사항)
 
-In order to use `gulpfile.js` with JavaScript ES6 version, we would need to use <a href="https://babeljs.io/" target="_blank">Babel</a>, which converts modern version JavaScript into an older version so that old browser could also understand the code.
+`gulpfile.js` 파일을 자바스크립트 ES6 버전으로 사용하기 위해선, 오래된 브라우저도 인식 가능한 코드로 변환시켜주는 <a href="https://babeljs.io/" target="_blank">Babel</a>을 사용해야만 한다.
 
-To do so, we will firstly rename `gulpfile.js` into `gulpfile.babel.js`.
+이를 위해, `gulpfile.js`의 이름을 `gulpfile.babel.js`로 명명한다.
 
-Next, we will install additional packages.
+그리고 다음 패키지들을 추가로 설치해준다.
 
 ```bash
-# Using npm
+# npm
 npm i -D @babel/core @babel/preset-env
 
-# Using yarn
+# yarn
 yarn add -D @babel/core @babel/preset-env
 ```
 
-Then, we will create `babel.config.json` in the project root and include the following code.
-By doing this, we can set up the `@babel/preset-env` and use it for our project.
+이후 `babel.config.json` 파일을 프로젝트 루트 경로에 생성한 후 다음 코드를 삽입한다.
+이렇게 함으로서 `@babel/preset-env`를 우리 프로젝트에 반영할 수 있다.
 
 ```json babel.config.json
 {
@@ -108,7 +108,7 @@ By doing this, we can set up the `@babel/preset-env` and use it for our project.
 }
 ```
 
-So far, our folder structure will look as below:
+지금까지의 폴더 구조를 살펴보면 다음과 같다:
 
 <br/>
 
@@ -116,8 +116,8 @@ So far, our folder structure will look as below:
 
 <br/>
 
-Inside of `package.json` file, let's add `dev` command at "`scripts`".
-This command will only be used during development stage.
+`package.json` 파일 내부의 "`scripts`" 부분에 `dev`라는 명령어를 추가한다.
+이 명령어는 앞으로 개발 단계에서만 사용될 것ㅣㅏ.
 
 ```json package.json
 "scripts": {
@@ -127,7 +127,7 @@ This command will only be used during development stage.
 
 <br/>
 
-We will put all files that are to be compiled within `src/` folder.
+컴파일 시킬 모든 파일들을 `src/` 폴더에 두고 관리하자.
 
 ```bash
 mkdir src/
@@ -135,11 +135,11 @@ mkdir src/
 
 <hr/>
 
-## Converting Pug into HTML
+## Pug를 HTML로 바꾸기
 
-<a href="https://pugjs.org/api/getting-started.html" target="_blank">Pug</a> is a template engine for NodeJS. We will be converting Pug into HTML files.
+<a href="https://pugjs.org/api/getting-started.html" target="_blank">Pug</a>는 NodeJS의 템플릿 엔진이다. 이 Pug를 HTML 파일로 변환시켜보자.
 
-For converting Pug files into normal HTML files, we will be using <a href="https://github.com/gulp-community/gulp-pug#readme" target="_blank">gulp-pug</a> package.
+Pug 파일을 HTML 파일로 변환하기 위해서 <a href="https://github.com/gulp-community/gulp-pug#readme" target="_blank">gulp-pug</a> 패키지를 사용할 것이다.
 
 ```bash
 # npm
@@ -155,8 +155,8 @@ yarn add -D gulp-pug gulp-htmlmin
 
 ### Importing
 
-Let's import some necessary items from packges.
-If you are using Babel, you can use `import` keyword.
+이제 필요한 몇 가지 패키지들을 import 해보도록 하자.
+Babel을 사용한다면, `import` 키워드를 사용할 수 있다.
 
 ```js gulpfile.js focus=1:6
 const { src, dest } = require('gulp');
@@ -182,9 +182,9 @@ export const dev = series([PugIntoHTML]);
 
 ---
 
-### Routes
+### 경로
 
-I created object called `routes`, which specifies the routes for each files that are in development and files that will be sent to build folder.
+`routes`라는 객체를 만들어 컴파일될 파일과 컴파일된 파일을 위치할 각각의 경로를 설정해주었다.
 
 ```js gulpfile.js focus=8:13
 const { src, dest } = require('gulp');
@@ -210,17 +210,17 @@ export const dev = series([PugIntoHTML]);
 
 ---
 
-### Defining task
+### 태스크 설정
 
-Let's create a task for converting Pug files into HTML files.
-I named it as `PugIntoHTML()`.
+Pug 파일을 HTML 파일로 변환시키기 위한 태스크를 만들어보자.
+필자는 `PugIntoHTML()`로 이름을 지어보았다.
 
-> Beginning from Gulp version, it is recommended to make task as a function instead of using `gulp.task`.
+> 공식 문서에서도 알 수 있듯이 태스크를 생성할 때 `gulp.task` 대신 함수형으로 작성하는 것을 추천하고 있다.
 
-1. First, I need to let `PugIntoHTML()` task look for the files that are to be converted in `src/` file with using <a href="https://gulpjs.com/docs/en/api/src" target="_blank"><code>src()</code></a> method.
-2. With using `pipe()`, I connected to the next task with `pug()` method from `gulp-pug` package.
-3. To make
-4. Lastly, I designated routes for build files with using <a href="https://gulpjs.com/docs/en/api/dest" target="_blank"><code>dest()</code></a>.
+1. 먼저, `PugIntoHTML()` 태스크가 변환시킬 파일들이 담겨 있는 `src/` 폴더를 바라볼 수 있게끔 <a href="https://gulpjs.com/docs/en/api/src" target="_blank"><code>src()</code></a> 메소드를 이용하여 지정해준다.
+2. 이후 `pipe()`를 통해 `gulp-pug` 패키지의 `pug()` 메소드 동작이 일어나게끔 연결시켜 준다.
+3. 퍼포먼스 최적화를 위해 gulp-htmlmin 패키지를 사용하여 minify 해준다.
+4. 마지막으로 <a href="https://gulpjs.com/docs/en/api/dest" target="_blank"><code>dest()</code></a> 메소드를 통해 빌드된 파일을 담을 경로와 연결해주었다.
 
 ```js gulpfile.js focus=15:20
 const { src, dest } = require('gulp');
@@ -249,9 +249,9 @@ export const dev = series([PugIntoHTML]);
 
 ---
 
-#### Registering task
+#### 태스크 등록하기
 
-Lastly, I used <a href="https://gulpjs.com/docs/en/api/series" target="_blank"><code>series()</code></a> method for connecting our task into our script command.
+<a href="https://gulpjs.com/docs/en/api/series" target="_blank"><code>series()</code></a> 메소드를 이용하여 아까 만들었던 `"scripts"`의 `dev` 명령어와 연결시켜주자.
 
 ```js gulpfile.js focus=1,21
 const { src, dest, series } = require('gulp');
@@ -280,9 +280,9 @@ export const dev = series([PugIntoHTML]);
 
 </CH.Scrollycoding>
 
-### Result
+### 결과
 
-Now that we are done with configuraiton, let's make `index.pug` file within `src/` folder and hit `npm run dev` or `yarn dev`.
+태스크 설정이 완료되었으니 `index.pug` 파일을 `src/` 폴더 내부에 만들고 `npm run dev` 혹은 `yarn dev` 명령어를 실행시켜보자.
 
 ```pug src/index.pug
 doctype html
@@ -295,7 +295,7 @@ html(lang="en")
     body
 ```
 
-After running `npm run build` or `yarn build`, our `index.pug` file is converted into `index.html` with simplified code.
+그러면 `index.pug` 파일이 아래와 같이 최적화된 코드로 이루어진 `index.html` 파일을 생성해내는 걸 볼 수 있다.
 
 <center>![html_converted](../../media/gulp-configuration/gulp_pug_html_compiling.png)</center>
 
