@@ -1,3 +1,5 @@
 {
-  "custom-django-validator": "Django에서 커스터마이징된 비밀번호 유효성 검사기 만들기"
+  "custom-django-validator": "Django에서 커스터마이징된 비밀번호 유효성 검사기 만들기",
+  "gulp-configuration-1": "Pug, SCSS 및 TypeScript를 위한 Gulp 설정 (1)",
+  "gulp-configuration-2": "Pug, SCSS 및 TypeScript를 위한 Gulp 설정 (2)"
 }

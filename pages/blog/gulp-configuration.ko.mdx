@@ -1,5 +1,5 @@
 ---
-title: Pug, SCSS 및 TypeScript를 위한 Gulp 설정 
+title: Pug, SCSS 및 TypeScript를 위한 Gulp 설정 (1)
 image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
 description: 'Pug, SCSS 및 TypeScript를 각각 HTML, CSS 및 JavScript로 변환시켜주는 Gulp 자동화 툴을 만들어보자.'
 date: June 4th, 2022
@@ -1007,6 +1007,381 @@ export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS]);
 <br/>
 
 <center>![result_ts](../../media/gulp-configuration/result_ts.png)</center>
+
+<br/>
+
+## 이미지 최적화
+
+이미지 최적화를 위한 작업을 마지막으로 해볼 것이다. 다음 패키지를 설치해주도록 하자.
+
+```bash
+# NPM
+npm i -D gulp-image
+
+# yarn
+yarn add -D gulp-image
+```
+
+1. <a href="https://github.com/1000ch/gulp-image#readme" target="_blank">gulp-image</a>: 이미지의 용량을 최적화해주는 Gulp의 플러그인 중 하나이다.
+
+<CH.Scrollycoding>
+
+### 경로
+
+최적화시킬 이미지들은 `src/image/` 폴더에 전부 집어넣었고, 최적화가 끝난 이미지는 `build/image/` 폴더에 전부 집어넣는 것으로 하였다.
+
+```js gulpfile.js focus=14,29:32
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const image = require("gulp-image");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+    image: {
+        src: "src/image/*",
+        build: "build/image",
+    },
+}
+
+function PugIntoHTML() {
+    return src(routes.pug.src)
+        .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
+        .pipe(dest(routes.pug.build));
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+    return;
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image]);
+```
+
+---
+
+### 태스크 설정
+
+`Image()`라는 이름의 태스크를 만들어보자.
+
+```js gulpfile.js focus=73:75
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const image = require("gulp-image");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+    image: {
+        src: "src/image/*",
+        build: "build/image",
+    },
+}
+
+function PugIntoHTML() {
+    return src(routes.pug.src)
+        .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
+        .pipe(dest(routes.pug.build));
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+    return;
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image]);
+```
+
+---
+
+#### 이미지 최적화
+
+다음 코드를 삽입하여 이미지를 최적화 작업을 진행해준다.[^3]
+
+[^3]:
+    <a href="https://github.com/1000ch/gulp-image#usage" target="_blank">참조: gulp-image 패키지 옵션들</a>
+
+```js focus=74:77
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const image = require("gulp-image");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+    image: {
+        src: "src/image/*",
+        build: "build/image",
+    },
+}
+
+function PugIntoHTML() {
+    return src(routes.pug.src)
+        .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
+        .pipe(dest(routes.pug.build));
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image]);
+```
+
+---
+
+#### 태스크 등록하기
+
+`dev` 스크립트 명령어에 우리가 만든 태스크를 추가해주자.
+
+```js focus=79
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const image = require("gulp-image");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+    image: {
+        src: "src/image/*",
+        build: "build/image",
+    },
+}
+
+function PugIntoHTML() {
+    return src(routes.pug.src)
+        .pipe(pug())
+        .pipe(htmlmin({ collapseWhitespace: true }))
+        .pipe(dest(routes.pug.build));
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image]);
+```
+
+</CH.Scrollycoding>
+
+### 결과
+
+`dev` 명령어를 싫행시키면 아래 그림처럼 Gulp가 자동적으로 이미지 최적화를 진행시켜준다.
+
+<center>![result_image_optimization](../../media/gulp-configuration/result_image_optimization.png)</center>
 
 <br/>
 <br/>
