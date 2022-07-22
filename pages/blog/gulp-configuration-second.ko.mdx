@@ -63,10 +63,11 @@ const routes = {
 }
 
 function PugIntoHTML() {
-    return src(routes.pug.src)
-        .pipe(pug())
-        .pipe(htmlmin({ collapseWhitespace: true }))
-        .pipe(dest(routes.pug.build));
+  return gulp
+    .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.docs))
+    .pipe(browserSync.stream());
 }
 
 function SCSStoCSS() {
@@ -100,11 +101,17 @@ function TStoJS() {
     .pipe(gulp.dest("build"))
 }
 
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
 function Watch() {
   return;
 }
 
-export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Watch]);
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image, Watch]);
 ```
 
 ---
@@ -113,188 +120,6 @@ export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Watch]);
 
 `Watch()`라는 함수를 생성하였다.
 이 함수는 글자 그대로 변동이 되는 모든 파일들을 Gulp로 하여금 지켜보게 만드는 태스크이다.
-
-```js focus=69:71
-const { src, dest, series } = require('gulp');
-const pug = require('gulp-pug');
-const htmlmin = require("gulp-htmlmin");
-const sass = require('gulp-sass')(requrie('sass'));
-const autoPrefixer = require("gulp-autoprefixer");
-const uglify = require("gulp-uglify");
-const browserify = require("browserify");
-const tsify = require("tsify");
-const buffer = require("vinyl-buffer");
-const source = require("vinyl-source-stream");
-const sourcemaps = require("gulp-sourcemaps");
-const ts = require("gulp-typescript");
-const tsProject = ts.createProject("tsconfig.json");
-const browserSync = require("browser-sync").create();
-
-const routes = {
-    pug: {
-        src: "src/**/*.pug",
-        build: "build"
-    },
-    sass: {
-        src: "src/scss/style.scss",
-        build: "build/css/style.css"
-    },
-    ts: {
-        src: "src/ts/**/*.ts",
-        build: "build/js/",
-    },
-}
-
-function PugIntoHTML() {
-    return src(routes.pug.src)
-        .pipe(pug())
-        .pipe(htmlmin({ collapseWhitespace: true }))
-        .pipe(dest(routes.pug.build));
-}
-
-function SCSStoCSS() {
-    return src(routes.scss.src)
-        .pipe(sass().on("error", sass.logError))
-        .pipe(autoPrefixer())
-        .pipe(
-            uglifycss({
-                maxLineLen: 80,
-                uglyComments: true,
-            })
-        )
-        .pipe(dest(routes.scss.build));
-}
-
-function TStoJS() {
-  return browserify({
-    basedir: ".",
-    debug: true,
-    entries: ["src/ts/main.ts"],
-    cache: {},
-    packageCache: {},
-  })
-    .plugin(tsify)
-    .bundle()
-    .pipe(source("js/bundle.js"))
-    .pipe(buffer())
-    .pipe(sourcemaps.init({ loadMaps: true }))
-    .pipe(uglify())
-    .pipe(sourcemaps.write("./"))
-    .pipe(gulp.dest("build"))
-}
-
-function Watch() {
-  return;
-}
-
-export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Watch]);
-```
-
----
-
-#### browser-sync 연동하기
-
-`Watch()`라는 함수를 생성하였다.
-이 함수는 글자 그대로 변동이 되는 모든 파일들을 Gulp로 하여금 지켜보게 만드는 태스크이다.
-
-공식 문서에 나와 있듯이[^1] browser-sync를 `init()`하여 초기화한 후, `server`를 시작하는 지점(`baseDir`)을 현재 루트로 지정한다.
-
-[^1]:
-    <a href="https://browsersync.io/docs/gulp#gulp-install" target="_blank">Browsersync + Gulp.js</a>
-
-```js focus=70:74
-const { src, dest, series } = require('gulp');
-const pug = require('gulp-pug');
-const htmlmin = require("gulp-htmlmin");
-const sass = require('gulp-sass')(requrie('sass'));
-const autoPrefixer = require("gulp-autoprefixer");
-const uglify = require("gulp-uglify");
-const browserify = require("browserify");
-const tsify = require("tsify");
-const buffer = require("vinyl-buffer");
-const source = require("vinyl-source-stream");
-const sourcemaps = require("gulp-sourcemaps");
-const ts = require("gulp-typescript");
-const tsProject = ts.createProject("tsconfig.json");
-const browserSync = require("browser-sync").create();
-
-const routes = {
-    pug: {
-        src: "src/**/*.pug",
-        build: "build"
-    },
-    sass: {
-        src: "src/scss/style.scss",
-        build: "build/css/style.css"
-    },
-    ts: {
-        src: "src/ts/**/*.ts",
-        build: "build/js/",
-    },
-}
-
-function PugIntoHTML() {
-    return src(routes.pug.src)
-        .pipe(pug())
-        .pipe(htmlmin({ collapseWhitespace: true }))
-        .pipe(dest(routes.pug.build));
-}
-
-function SCSStoCSS() {
-    return src(routes.scss.src)
-        .pipe(sass().on("error", sass.logError))
-        .pipe(autoPrefixer())
-        .pipe(
-            uglifycss({
-                maxLineLen: 80,
-                uglyComments: true,
-            })
-        )
-        .pipe(dest(routes.scss.build));
-}
-
-function TStoJS() {
-  return browserify({
-    basedir: ".",
-    debug: true,
-    entries: ["src/ts/main.ts"],
-    cache: {},
-    packageCache: {},
-  })
-    .plugin(tsify)
-    .bundle()
-    .pipe(source("js/bundle.js"))
-    .pipe(buffer())
-    .pipe(sourcemaps.init({ loadMaps: true }))
-    .pipe(uglify())
-    .pipe(sourcemaps.write("./"))
-    .pipe(gulp.dest("build"))
-}
-
-function Watch() {
-  browserSync.init({
-    server: {
-      baseDir: "./build",
-    },
-  });
-  gulp.watch(routes.scss.src, SCSStoCSS);
-  gulp.watch(routes.html.src, MinifyHTML);
-  gulp.watch(routes.ts.src, TStoJS);
-}
-
-export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Watch]);
-```
-
----
-
-#### `watch()` 메소드
-
-<a href="https://gulpjs.com/docs/en/api/watch" target="_blank"><code>watch()</code></a> 메소드를 이용하여 변화가 일어나는 곳을 Gulp로 하여금 보게끔 한다.
-
-<a href="https://gulpjs.com/docs/en/api/watch#parameters" target="_blank">파라미터</a> 중 첫번째로 반드시 들어가야 하는 <a href="https://gulpjs.com/docs/en/api/concepts#globs" target="_blank">globs</a> 부분에는 변화가 일어나는 파일들이다. 
-앞서 우리는 이미 `routes`라는 객체 안에 `src/` 폴더 안에 있는 모든 파일들이 바뀔 때 자동 새로고침이 되어야 하므로, Pug, SCSS 그리고 타입스크립트가 들어있는 경로를 집어넣어준다.
-
-다음 파라미터에는 변화가 일어났을 때 실행시킬 태스크를 적으면 된다. 이 경우, 우리는 HTML, SCSS 그리고 타입스크리트를 모두 봐야 하기 때문에 앞서 만든 `PugIntoHTML()`, `SCSStoCSS()` 그리고 `TStoJS()` 태스크를 붙여준다.
 
 ```js focus=75:77
 const { src, dest, series } = require('gulp');
@@ -328,10 +153,11 @@ const routes = {
 }
 
 function PugIntoHTML() {
-    return src(routes.pug.src)
-        .pipe(pug())
-        .pipe(htmlmin({ collapseWhitespace: true }))
-        .pipe(dest(routes.pug.build));
+  return gulp
+    .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.docs))
+    .pipe(browserSync.stream());
 }
 
 function SCSStoCSS() {
@@ -365,6 +191,107 @@ function TStoJS() {
     .pipe(gulp.dest("build"))
 }
 
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
+function Watch() {
+  return;
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image, Watch]);
+```
+
+---
+
+#### browser-sync 연동하기
+
+`Watch()`라는 함수를 생성하였다.
+이 함수는 글자 그대로 변동이 되는 모든 파일들을 Gulp로 하여금 지켜보게 만드는 태스크이다.
+
+공식 문서에 나와 있듯이[^1] browser-sync를 `init()`하여 초기화한 후, `server`를 시작하는 지점(`baseDir`)을 현재 루트로 지정한다.
+
+[^1]:
+    <a href="https://browsersync.io/docs/gulp#gulp-install" target="_blank">Browsersync + Gulp.js</a>
+
+```js focus=76:80
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const browserSync = require("browser-sync").create();
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+}
+
+function PugIntoHTML() {
+  return gulp
+    .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.docs))
+    .pipe(browserSync.stream());
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
 function Watch() {
   browserSync.init({
     server: {
@@ -376,7 +303,108 @@ function Watch() {
   gulp.watch(routes.ts.src, TStoJS);
 }
 
-export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Watch]);
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image, Watch]);
+```
+
+---
+
+#### `watch()` 메소드
+
+<a href="https://gulpjs.com/docs/en/api/watch" target="_blank"><code>watch()</code></a> 메소드를 이용하여 변화가 일어나는 곳을 Gulp로 하여금 보게끔 한다.
+
+<a href="https://gulpjs.com/docs/en/api/watch#parameters" target="_blank">파라미터</a> 중 첫번째로 반드시 들어가야 하는 <a href="https://gulpjs.com/docs/en/api/concepts#globs" target="_blank">globs</a> 부분에는 변화가 일어나는 파일들이다. 
+앞서 우리는 이미 `routes`라는 객체 안에 `src/` 폴더 안에 있는 모든 파일들이 바뀔 때 자동 새로고침이 되어야 하므로, Pug, SCSS 그리고 타입스크립트가 들어있는 경로를 집어넣어준다.
+
+다음 파라미터에는 변화가 일어났을 때 실행시킬 태스크를 적으면 된다. 이 경우, 우리는 HTML, SCSS 그리고 타입스크리트를 모두 봐야 하기 때문에 앞서 만든 `PugIntoHTML()`, `SCSStoCSS()` 그리고 `TStoJS()` 태스크를 붙여준다.
+
+```js focus=81:83
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const browserSync = require("browser-sync").create();
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+}
+
+function PugIntoHTML() {
+  return gulp
+    .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.docs))
+    .pipe(browserSync.stream());
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
+function Watch() {
+  browserSync.init({
+    server: {
+      baseDir: "./build",
+    },
+  });
+  gulp.watch(routes.scss.src, SCSStoCSS);
+  gulp.watch(routes.html.src, MinifyHTML);
+  gulp.watch(routes.ts.src, TStoJS);
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image, Watch]);
 ```
 
 ---
@@ -424,16 +452,18 @@ function PugIntoHTML() {
 }
 
 function SCSStoCSS() {
-    return src(routes.scss.src)
-        .pipe(sass().on("error", sass.logError))
-        .pipe(autoPrefixer())
-        .pipe(
-            uglifycss({
-                maxLineLen: 80,
-                uglyComments: true,
-            })
-        )
-        .pipe(dest(routes.scss.build));
+  return gulp
+    .src(routes.scss.src)
+    .pipe(sass())
+    .pipe(autoPrefixer())
+    .pipe(
+      csso({
+        sourceMap: false,
+        debug: true,
+      })
+    )
+    .pipe(gulp.dest(routes.scss.docs))
+    .pipe(browserSync.stream());
 }
 
 function TStoJS() {
@@ -475,3 +505,7 @@ export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Watch]);
 `dev` 스크립트 명령어를 실행하면 아래와 같이 자동 새로고침이 되는 것을 볼 수 있다.
 
 <center><img src="https://media.giphy.com/media/6ZI61Ttt17rjoGK3Bb/giphy.gif" alt="result_browser_sync" style={{width: 1000 + 'px'}}/></center>
+
+<br/>
+
+## 이전 파일 삭제하기

@@ -117,7 +117,7 @@ yarn add -D @babel/core @babel/preset-env
 <br/>
 
 `package.json` 파일 내부의 "`scripts`" 부분에 `dev`라는 명령어를 추가한다.
-이 명령어는 앞으로 개발 단계에서만 사용될 것ㅣㅏ.
+이 명령어는 앞으로 개발 단계에서만 사용될 것이다.
 
 ```json package.json
 "scripts": {
@@ -137,9 +137,8 @@ mkdir src/
 
 ## Pug를 HTML로 바꾸기
 
-<a href="https://pugjs.org/api/getting-started.html" target="_blank">Pug</a>는 NodeJS의 템플릿 엔진이다. 이 Pug를 HTML 파일로 변환시켜보자.
-
-Pug 파일을 HTML 파일로 변환하기 위해서 <a href="https://github.com/gulp-community/gulp-pug#readme" target="_blank">gulp-pug</a> 패키지를 사용할 것이다.
+<a href="https://pugjs.org/api/getting-started.html" target="_blank">Pug</a>는 NodeJS의 템플릿 엔진이다. 
+이 Pug를 HTML 파일로 변환시켜보자.
 
 ```bash
 # npm
@@ -148,6 +147,9 @@ npm i -D gulp-pug gulp-htmlmin
 # yarn
 yarn add -D gulp-pug gulp-htmlmin
 ```
+
+1. <a href="https://github.com/gulp-community/gulp-pug#readme" target="_blank">gulp-pug</a>: Pug 파일을 일반 HTML 파일로 변환시켜주는 Gulp의 플러그인이다.
+2. <a href="https://github.com/jonschlinkert/gulp-htmlmin" target="_blank">gulp-htmlmin</a>: 성능 향상을 위해 변환된 HTML을 압축해준다.
 
 <br/>
 
@@ -1202,8 +1204,7 @@ export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image]);
 
 다음 코드를 삽입하여 이미지를 최적화 작업을 진행해준다.[^3]
 
-[^3]:
-    <a href="https://github.com/1000ch/gulp-image#usage" target="_blank">참조: gulp-image 패키지 옵션들</a>
+[^3]: 참조: <a href="https://github.com/1000ch/gulp-image#usage" target="_blank">gulp-image 패키지 옵션들</a>
 
 ```js focus=74:77
 const { src, dest, series } = require('gulp');
@@ -1379,7 +1380,7 @@ export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image]);
 
 ### 결과
 
-`dev` 명령어를 싫행시키면 아래 그림처럼 Gulp가 자동적으로 이미지 최적화를 진행시켜준다.
+`dev` 명령어를 실행시키면 아래 그림처럼 Gulp가 자동적으로 이미지 최적화를 진행시켜준다.
 
 <center>![result_image_optimization](../../media/gulp-configuration/result_image_optimization.png)</center>
 
