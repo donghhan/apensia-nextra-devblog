@@ -1186,3 +1186,493 @@ exports.build = gulp.series([Clean, progress]);
 <br/>
 
 ## Github Page 배포
+
+Github에서 제공하고 있는 Github Page에 자동으로 배포하는 태스크를 붙여보겠다.
+
+```bash
+# npm
+npm i -D gulp-gh-pages
+
+# yarn
+yarn add -D gulp-gh-pages
+```
+
+<a href="https://github.com/shinnn/gulp-gh-pages#readme" target="_blank">gulp-gh-pages</a>: Github page에 자동으로 배포까지 해주는 편리한 플러그인이다.
+
+<CH.Scrollycoding>
+
+### Importing
+
+필요한 package를 `import` 해준다.
+
+```js focus=16
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const browserSync = require("browser-sync").create();
+const del = require("del");
+const ghPages = require("gulp-gh-pages");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+}
+
+function PugIntoHTML() {
+  return gulp
+    .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.docs))
+    .pipe(browserSync.stream());
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
+function Watch() {
+  browserSync.init({
+    server: {
+      baseDir: "./build",
+    },
+  });
+  gulp.watch(routes.scss.src, SCSStoCSS);
+  gulp.watch(routes.html.src, MinifyHTML);
+  gulp.watch(routes.ts.src, TStoJS);
+}
+
+function Clean() {
+  return del(["build/"]);
+}
+
+const progress = gulp.series([PugIntoHTML, SCSStoCSS, TStoJS]);
+
+exports.dev = gulp.series([Clean, progress, Watch]);
+exports.build = gulp.series([Clean, progress]);
+```
+
+---
+
+### 태스크 설정
+
+`GhPages()`라는 이름으로 태스크를 만들어 주었다.
+
+```js focus=93:95
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const browserSync = require("browser-sync").create();
+const del = require("del");
+const ghPages = require("gulp-gh-pages");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+}
+
+function PugIntoHTML() {
+  return gulp
+    .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.docs))
+    .pipe(browserSync.stream());
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
+function Watch() {
+  browserSync.init({
+    server: {
+      baseDir: "./build",
+    },
+  });
+  gulp.watch(routes.scss.src, SCSStoCSS);
+  gulp.watch(routes.html.src, MinifyHTML);
+  gulp.watch(routes.ts.src, TStoJS);
+}
+
+function Clean() {
+  return del(["build/"]);
+}
+
+function GhPages() {
+  return;
+}
+
+const progress = gulp.series([PugIntoHTML, SCSStoCSS, TStoJS]);
+
+exports.dev = gulp.series([Clean, progress, Watch]);
+exports.build = gulp.series([Clean, progress]);
+```
+
+---
+
+#### `ghPages()` 등록하기
+
+태스크를 `.pipe()`로 연결해준다.
+
+이 때, 우리가 최종적으로 Github Pages에 업로드할 파일들은 이미 빌드가 끝마친 파일들이므로 `.dest()`를 `build/` 폴더를 바라보게끔 해준다.[^3]
+
+[^3]: 참조: <a href="https://github.com/shinnn/gulp-gh-pages#usage" target="_blank">gulp-gh-pages Usage</a>
+
+```js focus=93:95
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const browserSync = require("browser-sync").create();
+const del = require("del");
+const ghPages = require("gulp-gh-pages");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+}
+
+function PugIntoHTML() {
+  return gulp
+    .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.docs))
+    .pipe(browserSync.stream());
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
+function Watch() {
+  browserSync.init({
+    server: {
+      baseDir: "./build",
+    },
+  });
+  gulp.watch(routes.scss.src, SCSStoCSS);
+  gulp.watch(routes.html.src, MinifyHTML);
+  gulp.watch(routes.ts.src, TStoJS);
+}
+
+function Clean() {
+  return del(["build/"]);
+}
+
+function GhPages() {
+  return gulp.src("build/**/*").pipe(ghPages());
+}
+
+const progress = gulp.series([PugIntoHTML, SCSStoCSS, TStoJS]);
+
+exports.dev = gulp.series([Clean, progress, Watch]);
+exports.build = gulp.series([Clean, progress]);
+```
+
+---
+
+### 태스크 등록하기
+
+따로 `deploy`라는 스크립트 명령어를 추가해줬다.
+이 명령어는 앞서 정의한 `progress` 명령어를 실행한 후, `GhPages()` 태스크를 수행하여 Github Pages에 배포하는 작업을 시행한다.
+
+여기서 `Clean()` 태스크를 따로 정의해준 이유는 `GhPages()` 태스크가 Github Pages에 배포하면서 만들어내는 더미 파일들을 없애기 위함이다.
+
+```js focus=101
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const browserSync = require("browser-sync").create();
+const del = require("del");
+const ghPages = require("gulp-gh-pages");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+}
+
+function PugIntoHTML() {
+  return gulp
+    .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.docs))
+    .pipe(browserSync.stream());
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
+function Watch() {
+  browserSync.init({
+    server: {
+      baseDir: "./build",
+    },
+  });
+  gulp.watch(routes.scss.src, SCSStoCSS);
+  gulp.watch(routes.html.src, MinifyHTML);
+  gulp.watch(routes.ts.src, TStoJS);
+}
+
+function Clean() {
+  return del(["build/"]);
+}
+
+function GhPages() {
+  return gulp.src("build/**/*").pipe(ghPages());
+}
+
+const progress = gulp.series([PugIntoHTML, SCSStoCSS, TStoJS]);
+
+exports.dev = gulp.series([Clean, progress, Watch]);
+exports.build = gulp.series([Clean, progress]);
+exports.deploy = gulp.series([progress, GhPages, Clean]);
+```
+
+---
+
+#### 스크립트 명령어 수정
+
+마지막으로 만든 `deploy` 명령어를 `package.json` 파일에 업데이트 시켜준다.
+
+```json package.json
+{
+  "scripts": {
+    "dev": gulp dev,
+    "build": gulp build,
+    "deploy": gulp deploy
+  }
+}
+```
+
+</CH.Scrollycoding>
+
+### Github page 연결해주기
+
+`npm run deploy` 혹은 `yarn deploy` 명령어를 실행시키면 Gulp가 자동적으로 `gh-pages`라는 브랜치를 생성해준다.
+이 브랜치는 Github Pages에 배포할 시 자동으로 생성되는 브랜치이며, Github Page가 해당 브랜치를 바라볼 수 있도록 설정해주어야 한다.
+
+<center>![deploy_result](../../media/gulp-configuration-2/deploy_result.png)</center>
+
+<br/>
+
+레포지토리의 Settings에서 좌측의 Code and automation의 Pages 탭으로 들어간다.
+이후, Source의 Branch를 gh-pages로 설정한 후, /(root)를 바라보게 한 다음 Save 버튼을 누른다.
+
+<center>![pages_tab](../../media/gulp-configuration-2/pages_tab.png)</center>
+
+<br/>
+
+### 결과
+
+5분 정도 기다린 후 기다리면 자동으로 배포된 모습을 볼 수 있다.
