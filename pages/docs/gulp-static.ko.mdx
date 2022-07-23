@@ -1,19 +1,47 @@
 import Callout from 'nextra-theme-docs/callout'
 import Link from 'next/link'
 import { SiGulp, SiHtml5, SiTypescript, SiGithub, SiCss3, SiJavascript } from 'react-icons/si'
+// import { FiUser } from 'react-icons/fi'
 import { DiSass } from 'react-icons/di'
 
 # gulp-static
 
 ## 개요
 
-Gulp를 이용한
+Gulp를 이용하여 만든 정적 웹사이트 빌더이다.[^1]
+
+[^1]: 디자인 출처: <a href="https://symu.co/freebies/templates-4/advocatus-psd-template/" target="_blank">symu.co - ADVOCATUS 템플릿</a>
 
 <br/>
 
-## Preview
+<a href="https://github.com/donghhan/gulp-static.git" target="_blank">레포지토리 바로가기</a>
 
 <br/>
+
+## 미리보기
+
+<br/>
+<br/>
+
+<center>![preview](https://media.giphy.com/media/LfkdP2JCooOmUujqGE/giphy.gif)</center>
+
+<br/>
+
+### 반응형 구현
+
+Desktop, Tablet 그리고 Mobile 기준으로 반응형을 구현
+
+<br/>
+
+<center>![responsive](https://media.giphy.com/media/0PuAFuCD7ql7nAOoAA/giphy.gif)</center>
+
+<br/>
+
+### Gulp 자동화
+
+Gulp를 이용한 여러 태스크 자동화 구현
+
+<center>![gulp_automation](https://media.giphy.com/media/jrEzPvejbmyFEK4sEo/giphy.gif)</center>
 
 ## Built with...
 
@@ -39,4 +67,47 @@ Gulp를 이용한
 
 <br/>
 
-## What made me do this project?
+## 회고록
+
+이번 첫 개인 프론트엔드 결과물을 만드면서 얻고자 했던 것은 다음 두 가지이다.
+
+1. Gulp를 이용한 태스크 자동화 설정
+2. 반응형에 대한 연습
+
+<br/>
+
+### 해결하고자 했던 문제점
+
+정적인 웹사이트를 빌드하는 것 자체는 솔직히 HTML, CSS 그리고 자바스크립트만으로도 충분히 구현해낼 수 있고, 때에 따라서는 <a href="https://jquery.com/" target="_blank">jQuery</a> 라이브러리를 사용할 수도 있다.
+하지만 개인적으로 스타일링 시엔 CSS보다는 <a href="https://sass-lang.com/" target="_blank">SASS</a>가 훨씬 편하기도 하였고 끔찍한 애증(?)의 관계에 있는 타입스크립트로 빌드해보고 싶었다 (어차피 사용되는 기능이라봐야 자바스크립트와 별반 다를 게 없겠지만...)
+
+하지만 SCSS나 타입스크립트가 브라우저 상에 직접적으로 렌더링이 되는 것이 아니기 때문에 결국 브라우저가 읽을 수 있는 CSS 및 자바스크립트로 변환을 시켜줘야만 하는데 이게 생각보다 만만치 않았다.
+
+<a href="https://sass-lang.com/documentation/js-api/#usage" target="_blank">SCSS 컴파일</a>이나 
+<a href="https://www.typescriptlang.org/docs/handbook/compiler-options.html" target="_blank">타입스크립트 컴파일</a>도 결국 외부 NPM 라이브러리 패키지의 힘을 사용해야만 했고 이를 매번 따로 명령어를 만들어서 컴파일을 하려 하니 쉽지 않은 일이었다. 
+<ins>***그래서 이러한 태스크들을 자동화해줄 수 있는 방안을 마련해야 했다.***</ins>
+
+#### 왜 하필이면 Gulp였는가?
+
+보통 빌드 툴이라고 하면 <a href="https://webpack.js.org/" target="_blank">Webpack</a>을 많이 떠올리곤 한다.[^2] 그래서 Webpack을 사용해볼까 했었지만 다음과 같은 이유로 Gulp를 택했다.
+
+1. <ins>*간결함*</ins>: 설정이 굉장히 간단하고 이에 코드량 또한 Webpack을 사용할 때보다 훨씬 적다. Syntax 또한 간단해서 공식 문서만 확인하면서 하더라도 코드를 직관적으로 쓸 수 있다.
+2. <ins>*성능*</ins>: 인메모리 형식으로 태스크들이 관리되기 때문에 훨씬 빠르고 효율적인 퍼포먼스를 낼 수 있다. 특히 싱글 어플리케이션에 대해서는 큰 효율을 자랑하고 있다.
+
+[^2]:
+    <a href="https://create-react-app.dev/" target="_blank">create-react-app</a> 안에 내장되어 있는 <a href="https://github.com/facebook/create-react-app/tree/main/packages/react-scripts/scripts" target="_blank">react-scripts 코드</a> 또한 Webpack을 사용하고 있다.
+
+#### Gulp에 대한 평가
+
+직접 사용해보니 꽤나 만족스러웠다. 간단한 정적인 웹 사이트를 만드는 거라 성능적으로 최적화해야 한다든지 그런 작업은 할 필요는 없었지만 한 번에 여러 태스크들을 해결할 수 있다는 점, 그리고 무엇보다 심플함에 매료되었다.
+하지만 보다 복잡한 프로세스를 가지고 있는 어플리케이션의 경우 단순 태스크 러너인 Gulp를 사용하는 것은 문제가 될 것이라 생각됐다.
+
+<br/>
+
+### 느낀점
+
+솔직히 말하자면 Gulp 설정에서 어려웠던 점이라곤 어떤 Gulp 플러그인들을 쓰면 좋을지에 대한 부분의 고민만 있었을 뿐, 설정 등에 대한 별다른 어려움은 찾질 못했다.
+추후에는 동영상 파일도 최적화시킬 수 있는 태스크도 같이 마련해보면 좋을 것 같다는 생각을 했었다.
+
+반응형은 항상 어려웠다. 보통의 경우 데스크톱, 태블릿 그리고 모바일 이렇게 3개로만 분기점을 나눠서 작업하는데 UI 디자인 상 분기점을 3개로만 나누는 건 쉽지 않았다.
+그리고 UI 디자이너의 의도에 맞추게 된다면 더 세분화된 분기점을 마련해야 할텐데 이걸 어떻게 변수로 효율적으로 관리할 수 있을지 고민이었다.
