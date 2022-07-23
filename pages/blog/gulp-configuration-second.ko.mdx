@@ -25,6 +25,13 @@ yarn add -D browser-sync
 
 <a href="https://browsersync.io" target="_blank">browser-sync</a>: 자동 새로고침을 해주는 편리한 플러그인이다.
 
+<Callout>
+  <a href="https://github.com/schickling/gulp-webserver" target="_blank">gulp-webserver</a>라는 패키지도 사용할 순 있지만 속도가 너무 느리기 때문에 사용하지 않기로 결심했다. 
+</Callout>
+
+<br/>
+<br/>
+
 <CH.Scrollycoding>
 
 ### Importing
@@ -121,7 +128,7 @@ export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image, Watch]);
 `Watch()`라는 함수를 생성하였다.
 이 함수는 글자 그대로 변동이 되는 모든 파일들을 Gulp로 하여금 지켜보게 만드는 태스크이다.
 
-```js focus=75:77
+```js focus=76:78
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
 const htmlmin = require("gulp-htmlmin");
@@ -216,7 +223,7 @@ export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image, Watch]);
 [^1]:
     <a href="https://browsersync.io/docs/gulp#gulp-install" target="_blank">Browsersync + Gulp.js</a>
 
-```js focus=76:80
+```js focus=76:81
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
 const htmlmin = require("gulp-htmlmin");
@@ -317,7 +324,7 @@ export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image, Watch]);
 
 다음 파라미터에는 변화가 일어났을 때 실행시킬 태스크를 적으면 된다. 이 경우, 우리는 HTML, SCSS 그리고 타입스크리트를 모두 봐야 하기 때문에 앞서 만든 `PugIntoHTML()`, `SCSStoCSS()` 그리고 `TStoJS()` 태스크를 붙여준다.
 
-```js focus=81:83
+```js focus=82:84
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
 const htmlmin = require("gulp-htmlmin");
@@ -413,7 +420,7 @@ export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image, Watch]);
 
 생성한 태스크를 `dev` 명령어에 연결시켜준다.
 
-```js focus=80
+```js focus=87
 const { src, dest, series } = require('gulp');
 const pug = require('gulp-pug');
 const htmlmin = require("gulp-htmlmin");
@@ -445,25 +452,24 @@ const routes = {
 }
 
 function PugIntoHTML() {
-    return src(routes.pug.src)
-        .pipe(pug())
-        .pipe(htmlmin({ collapseWhitespace: true }))
-        .pipe(dest(routes.pug.build));
+  return gulp
+    .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.docs))
+    .pipe(browserSync.stream());
 }
 
 function SCSStoCSS() {
-  return gulp
-    .src(routes.scss.src)
-    .pipe(sass())
-    .pipe(autoPrefixer())
-    .pipe(
-      csso({
-        sourceMap: false,
-        debug: true,
-      })
-    )
-    .pipe(gulp.dest(routes.scss.docs))
-    .pipe(browserSync.stream());
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
 }
 
 function TStoJS() {
@@ -484,6 +490,12 @@ function TStoJS() {
     .pipe(gulp.dest("build"))
 }
 
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
 function Watch() {
   browserSync.init({
     server: {
@@ -495,7 +507,7 @@ function Watch() {
   gulp.watch(routes.ts.src, TStoJS);
 }
 
-export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Watch]);
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image, Watch]);
 ```
 
 </CH.Scrollycoding>
@@ -509,3 +521,668 @@ export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Watch]);
 <br/>
 
 ## 이전 파일 삭제하기
+
+새롭게 파일들을 수정하고 저장시킬 때마다 기존의 오래된 파일들을 삭제할 필요가 있다.
+이를 위해 <a href="https://github.com/sindresorhus/del#readme" target="_blank">del</a>이라는 패키지를 이용하여 기존의 오래된 파일들을 삭제해주도록 한다.
+
+```bash
+# npm
+npm i -D del
+
+# yarn
+yarn add -D del
+```
+
+<a href="https://github.com/sindresorhus/del#readme" target="_blank">del</a>: 특정 경로에 있는 파일들을 지워주는 태스크를 수행하는 플러그인이다.
+
+<br/>
+
+<CH.Scrollycoding>
+
+### Importing
+
+필요한 패키지를 불러온다.
+
+```js focus=15
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const browserSync = require("browser-sync").create();
+const del = require("del");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+}
+
+function PugIntoHTML() {
+  return gulp
+    .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.docs))
+    .pipe(browserSync.stream());
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
+function Watch() {
+  browserSync.init({
+    server: {
+      baseDir: "./build",
+    },
+  });
+  gulp.watch(routes.scss.src, SCSStoCSS);
+  gulp.watch(routes.html.src, MinifyHTML);
+  gulp.watch(routes.ts.src, TStoJS);
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image, Watch]);
+```
+
+---
+
+### 태스크 설정
+
+`Clean()`이라는 태스크를 생성하였다.
+이 태스크는 다른 태스크들이 수행되기 전 항상 먼저 수행이 되게끔 하겠다 (그래야 전의 파일들이 지워질 수 있기 때문).
+
+```js focus=88:90
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const browserSync = require("browser-sync").create();
+const del = require("del");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+}
+
+function PugIntoHTML() {
+  return gulp
+    .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.docs))
+    .pipe(browserSync.stream());
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
+function Watch() {
+  browserSync.init({
+    server: {
+      baseDir: "./build",
+    },
+  });
+  gulp.watch(routes.scss.src, SCSStoCSS);
+  gulp.watch(routes.html.src, MinifyHTML);
+  gulp.watch(routes.ts.src, TStoJS);
+}
+
+function Clean() {
+  return;
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image, Watch]);
+```
+
+---
+
+#### `del` 등록하기
+
+우리가 지워야 할 파일들은 아직 컴파일되기 전 파일들이 담겨 있는 `src/` 폴더가 아닌 `build/` 폴더이다.
+따라서, `build/` 폴더 안의 파일들을 지워주도록 해야 한다.[^2]
+
+[^2]: 참조: <a href="https://github.com/sindresorhus/del#usage" target="_blank">Del Usage</a>
+
+```js focus=88:90
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const browserSync = require("browser-sync").create();
+const del = require("del");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+}
+
+function PugIntoHTML() {
+  return gulp
+    .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.docs))
+    .pipe(browserSync.stream());
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
+function Watch() {
+  browserSync.init({
+    server: {
+      baseDir: "./build",
+    },
+  });
+  gulp.watch(routes.scss.src, SCSStoCSS);
+  gulp.watch(routes.html.src, MinifyHTML);
+  gulp.watch(routes.ts.src, TStoJS);
+}
+
+function Clean() {
+  return del(["build/"]);
+}
+
+export const dev = series([PugIntoHTML, SCSStoCSS, TStoJS, Image, Watch]);
+```
+
+---
+
+### 태스크 등록하기
+
+이후, `dev` 스크립트 명령어에 태스크를 등록해준다.
+매번 새로고침이 될 때마다 기존 파일들이 삭제되어야 하므로 맨 앞에다 태스크를 위치시켜준다.
+
+```js focus=92
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const browserSync = require("browser-sync").create();
+const del = require("del");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+}
+
+function PugIntoHTML() {
+  return gulp
+    .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.docs))
+    .pipe(browserSync.stream());
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
+function Watch() {
+  browserSync.init({
+    server: {
+      baseDir: "./build",
+    },
+  });
+  gulp.watch(routes.scss.src, SCSStoCSS);
+  gulp.watch(routes.html.src, MinifyHTML);
+  gulp.watch(routes.ts.src, TStoJS);
+}
+
+function Clean() {
+  return del(["build/"]);
+}
+
+export const dev = series([Clean, PugIntoHTML, SCSStoCSS, TStoJS, Image, Watch]);
+```
+
+</CH.Scrollycoding>
+
+<br/>
+
+## 태스크 세분화하기
+
+좀 더 직관적으로 태스크들을 관리하기 위하여 태스크들을 나눠보도록 하자.
+
+<br/>
+
+<CH.Scrollycoding>
+
+### 메인
+
+여기서 핵심적인 태스크들을 고르자면 다음과 같을 것이다.
+
+1. `PugIntoHTML()`
+2. `SCSStoCSS()`
+3. `TStoJS()`
+
+이 셋을 `progress`라는 이름의 태스크 하나로 묶어보았다.
+
+```js focus=92
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const browserSync = require("browser-sync").create();
+const del = require("del");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+}
+
+function PugIntoHTML() {
+  return gulp
+    .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.docs))
+    .pipe(browserSync.stream());
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
+function Watch() {
+  browserSync.init({
+    server: {
+      baseDir: "./build",
+    },
+  });
+  gulp.watch(routes.scss.src, SCSStoCSS);
+  gulp.watch(routes.html.src, MinifyHTML);
+  gulp.watch(routes.ts.src, TStoJS);
+}
+
+function Clean() {
+  return del(["build/"]);
+}
+
+const progress = gulp.series([PugIntoHTML, SCSStoCSS, TStoJS]);
+```
+
+---
+
+### 기타
+
+`Watch()`의 경우 개발 단계에서만 필요할 뿐이기 때문에 빌드 단계에서는 빼도 된다.
+다만, `Clean()`의 경우 개발이든 빌드 단계에서든 공통적으로 들어가야 하는 태스크이다.
+
+따라서, 스크립트 명령어인 `dev`와 `build`의 특성에 맞게 태스크들을 다시 간추려보았다.
+
+```js focus=94:96
+const { src, dest, series } = require('gulp');
+const pug = require('gulp-pug');
+const htmlmin = require("gulp-htmlmin");
+const sass = require('gulp-sass')(requrie('sass'));
+const autoPrefixer = require("gulp-autoprefixer");
+const uglify = require("gulp-uglify");
+const browserify = require("browserify");
+const tsify = require("tsify");
+const buffer = require("vinyl-buffer");
+const source = require("vinyl-source-stream");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const tsProject = ts.createProject("tsconfig.json");
+const browserSync = require("browser-sync").create();
+const del = require("del");
+
+const routes = {
+    pug: {
+        src: "src/**/*.pug",
+        build: "build"
+    },
+    sass: {
+        src: "src/scss/style.scss",
+        build: "build/css/style.css"
+    },
+    ts: {
+        src: "src/ts/**/*.ts",
+        build: "build/js/",
+    },
+}
+
+function PugIntoHTML() {
+  return gulp
+    .src(routes.html.src)
+    .pipe(htmlmin({ collapseWhitespace: true }))
+    .pipe(gulp.dest(routes.html.docs))
+    .pipe(browserSync.stream());
+}
+
+function SCSStoCSS() {
+    return src(routes.scss.src)
+        .pipe(sass().on("error", sass.logError))
+        .pipe(autoPrefixer())
+        .pipe(
+            uglifycss({
+                maxLineLen: 80,
+                uglyComments: true,
+            })
+        )
+        .pipe(dest(routes.scss.build));
+}
+
+function TStoJS() {
+  return browserify({
+    basedir: ".",
+    debug: true,
+    entries: ["src/ts/main.ts"],
+    cache: {},
+    packageCache: {},
+  })
+    .plugin(tsify)
+    .bundle()
+    .pipe(source("js/bundle.js"))
+    .pipe(buffer())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(uglify())
+    .pipe(sourcemaps.write("./"))
+    .pipe(gulp.dest("build"))
+}
+
+function Image() {
+  return src(routes.image.src)
+    .pipe(image())
+    .pipe(gulp.dest(routes.image.build));
+}
+
+function Watch() {
+  browserSync.init({
+    server: {
+      baseDir: "./build",
+    },
+  });
+  gulp.watch(routes.scss.src, SCSStoCSS);
+  gulp.watch(routes.html.src, MinifyHTML);
+  gulp.watch(routes.ts.src, TStoJS);
+}
+
+function Clean() {
+  return del(["build/"]);
+}
+
+const progress = gulp.series([PugIntoHTML, SCSStoCSS, TStoJS]);
+
+exports.dev = gulp.series([Clean, progress, Watch]);
+exports.build = gulp.series([Clean, progress]);
+```
+
+---
+
+#### 스크립트 명령어 수정
+
+그리고 세분화한 스크립트 명령어 `dev`와 `build`를 `package.json` 파일에 업데이트 시켜준다.
+
+```json package.json
+{
+  "scripts": {
+    "dev": gulp dev,
+    "build": gulp build
+  }
+}
+```
+
+</CH.Scrollycoding>
+
+<br/>
+
+## Github Page 배포
