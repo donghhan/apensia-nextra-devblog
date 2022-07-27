@@ -32,7 +32,7 @@ const FEEDBACK_LINK_WITH_TRANSLATIONS = {
 export default {
   projectLink: "https://github.com/donghhan",
   docsRepositoryBase: "https://github.com/vercel/swr-site/blob/master/pages",
-  titleSuffix: " – SWR",
+  titleSuffix: " – Apensia",
   search: true,
   unstable_flexsearch: true,
   floatTOC: true,

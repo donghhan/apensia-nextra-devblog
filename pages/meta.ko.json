@@ -4,7 +4,7 @@
     "type": "page",
     "hidden": true
   },
-  "docs": {
+  "projects": {
     "title": "프로젝트",
     "type": "page"
   },
@@ -12,8 +12,22 @@
     "title": "예시코드",
     "type": "page"
   },
-  "blog": {
-    "title": "블로그",
+  "ai": {
+    "title": "AI",
+    "type": "page",
+    "theme": {
+      "sidebar": false
+    }
+  },
+  "frontend": {
+    "title": "프론트엔드",
+    "type": "page",
+    "theme": {
+      "sidebar": false
+    }
+  },
+  "backend": {
+    "title": "백엔드",
     "type": "page",
     "theme": {
       "sidebar": false

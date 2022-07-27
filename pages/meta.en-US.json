@@ -4,7 +4,7 @@
     "type": "page",
     "hidden": true
   },
-  "docs": {
+  "projects": {
     "title": "Projects",
     "type": "page"
   },
@@ -12,8 +12,22 @@
     "title": "Examples",
     "type": "page"
   },
-  "blog": {
-    "title": "Blog",
+  "ai": {
+    "title": "AI",
+    "type": "page",
+    "theme": {
+      "sidebar": false
+    }
+  },
+  "frontend": {
+    "title": "Frontend",
+    "type": "page",
+    "theme": {
+      "sidebar": false
+    }
+  },
+  "backend": {
+    "title": "Backend",
     "type": "page",
     "theme": {
       "sidebar": false

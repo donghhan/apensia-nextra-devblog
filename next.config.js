@@ -1,5 +1,7 @@
 const { remarkCodeHike } = require("@code-hike/mdx");
 const theme = require("shiki/themes/material-darker.json");
+const remarkMath = require("remark-math");
+const rehypteKatex = require("rehype-katex");
 
 const withNextra = require("nextra")({
   theme: "nextra-theme-docs",
@@ -12,7 +14,9 @@ const withNextra = require("nextra")({
         remarkCodeHike,
         { theme, lineNumbers: false, showCopyButton: true, autoImport: true },
       ],
+      [remarkMath],
     ],
+    rehypePlugins: [rehypteKatex],
   },
 });
 
@@ -24,44 +28,9 @@ module.exports = withNextra({
   redirects: () => {
     return [
       {
-        source: "/docs",
-        destination: "/docs/getting-started",
+        source: "/projects",
+        destination: "/projects/gulp-static",
         statusCode: 301,
-      },
-      {
-        source: "/advanced/performance",
-        destination: "/docs/advanced/performance",
-        statusCode: 301,
-      },
-      {
-        source: "/advanced/cache",
-        destination: "/docs/advanced/cache",
-        statusCode: 301,
-      },
-      {
-        source: "/docs/cache",
-        destination: "/docs/advanced/cache",
-        statusCode: 301,
-      },
-      {
-        source: "/change-log",
-        destination: "/docs/change-log",
-        statusCode: 301,
-      },
-      {
-        source: "/blog/swr-1",
-        destination: "/blog/swr-v1",
-        statusCode: 301,
-      },
-      {
-        source: "/docs",
-        destination: "/docs/getting-started",
-        statusCode: 302,
-      },
-      {
-        source: "/examples",
-        destination: "/examples/basic",
-        statusCode: 302,
       },
     ];
   },

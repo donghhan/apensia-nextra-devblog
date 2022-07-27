@@ -1,8 +1,8 @@
 import { getPagesUnderRoute } from "nextra/context";
 import Link from "next/link";
 
-export default function BlogIndex({ more = "Read more" }) {
-  return getPagesUnderRoute("/blog").map((page) => {
+export default function AIIndex({ more = "Read more" }) {
+  return getPagesUnderRoute("/ai").map((page) => {
     // Alias `<a>` to avoid it being replaced by MDX components.
     const A = "a";
     return (
