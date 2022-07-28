@@ -4,7 +4,7 @@ specifiers:
   '@code-hike/mdx': ^0.6.0
   '@reach/skip-nav': ^0.16.0
   autoprefixer: ^10.4.2
-  focus-visible: ^5.1.0
+  focus-visible: ^5.2.0
   intersection-observer: ^0.10.0
   markdown-to-jsx: ^6.11.4
   next: ^12.1.0
@@ -14,7 +14,7 @@ specifiers:
   react: ^17.0.2
   react-dom: ^17.0.2
   react-icons: ^4.4.0
-  react-intersection-observer: ^8.26.2
+  react-intersection-observer: ^8.33.1
   rehype-katex: 5.0.0
   remark-math: 4.0.0
   shiki: ^0.10.1
@@ -566,7 +566,7 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.19.1
-      caniuse-lite: 1.0.30001302
+      caniuse-lite: 1.0.30001373
       fraction.js: 4.1.2
       normalize-range: 0.1.2
       picocolors: 1.0.0
@@ -599,7 +599,7 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001302
+      caniuse-lite: 1.0.30001373
       electron-to-chromium: 1.4.36
       escalade: 3.1.1
       node-releases: 2.0.1
@@ -616,8 +616,8 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /caniuse-lite/1.0.30001302:
-    resolution: {integrity: sha512-YYTMO+tfwvgUN+1ZnRViE53Ma1S/oETg+J2lISsqi/ZTNThj3ZYBOKP2rHwJc37oCsPqAzJ3w2puZHn0xlLPPw==}
+  /caniuse-lite/1.0.30001373:
+    resolution: {integrity: sha512-pJYArGHrPp3TUqQzFYRmP/lwJlj8RCbVe3Gd3eJQkAV8SAC6b19XS9BjMvRdvaS8RMkaTN8ZhoHP6S1y8zzwEQ==}
 
   /ccount/2.0.1:
     resolution: {integrity: sha512-eyrF0jiFpY+3drT6383f1qhkbGsLSifNAjA61IUjZjmLCWjItY6LB9ft9YhoDgwfmclB2zhu51Lc7+95b8NRAg==}
@@ -1947,7 +1947,7 @@ packages:
         optional: true
     dependencies:
       '@next/env': 12.1.0
-      caniuse-lite: 1.0.30001302
+      caniuse-lite: 1.0.30001373
       postcss: 8.4.5
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
