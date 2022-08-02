@@ -1,3 +1,4 @@
 {
-    "custom django validator": "커스텀 장고"
+    "custom django validator": "커스텀 장고",
+    "user modeling": "커스텀 User 모델 만들기"
 }

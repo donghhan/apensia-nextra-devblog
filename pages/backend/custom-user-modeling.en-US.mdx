@@ -1,0 +1,304 @@
+---
+title: Making Django custom User models
+image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
+description: "Let's create our own Django custom User models."
+date: July 31st, 2022
+---
+
+import Callout from 'nextra-theme-docs/callout'
+import Bleed from 'nextra-theme-docs/bleed'
+
+# Customizing User models in Django
+
+We can simply make our User models <a href="https://docs.djangoproject.com/en/4.0/intro/tutorial02/#creating-models" target="_blank">in a basic way</a> that Django explains.
+However, it would be much better if we could avoid making new fields manually and import all information fields that we can think of when it comes to "Users".
+In this section, let's see how we can make our custom User models in sexier way.
+
+Django is giving us two different ways as follows:[^1]
+
+1. <a href="https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#extending-user" target="_blank">Expanding</a> from the current User model
+2. <a href="https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#auth-custom-user" target="_blank">Replacing</a> the current User model
+
+[^1]: Reference: <a href="https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#customizing-authentication-in-django" target="_blank">Customizing authentication in Django</a>
+
+<br/>
+
+## Initializing Project
+
+Please refer to <a href="https://www.apensiablog.dev/ko/backend/custom-validator-django#%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0" target="_blank">this section</a>.
+
+<br/>
+
+## Expanding
+
+The basic methodology is that we are going to define secondary classes that we would like to add or change,
+and then expand those classes from `User` class from `django.contrib.auth.models`.
+
+<br/>
+
+<CH.Scrollycoding>
+
+### Inheriting `User` class
+
+Let's import `User` class first.
+
+If we dig into codes of `User` class, we can find out that it is inherited from `AbstractUser`, which we will see later.[^2]
+[^2]: <a href="https://github.com/django/django/blob/6654289f5b350dfca3dc4f6abab777459b906756/django/contrib/auth/models.py#L405" target="_blank"><code>User</code> class code</a>
+
+Therefore, it provides basic required fields such as `username` and `password` with some other optional fields.
+
+```py users/models.py focus=2
+from django.db import models
+from django.contrib.auth.models import User
+
+
+class Customer(models.Model):
+    pass
+
+
+class Admin(models.Model):
+    pass
+```
+
+---
+
+### Creating secondary classes
+
+Now it's time to define secondary classes with which we want to connect `User` class.
+For instance, when we are thinking about E-commerce platform, we can think of customers who visit platform and admin users who control platform.
+Let's make this happen with our code.
+
+```py users/models.py focus=5:6,9:10
+from django.db import models
+from django.contrib.auth.models import User
+
+
+class Customer(models.Model):
+    pass
+
+
+class Admin(models.Model):
+    pass
+```
+
+---
+
+#### Creating `Customer` class
+
+If we want to change information within `User` class,
+We can use <a href="https://docs.djangoproject.com/en/4.0/ref/models/fields/#django.db.models.OneToOneField" target="_blank"><code>OneToOneField</code></a>
+to connect `Customer` class with `User` class.
+
+Then, we can define further extra fields to attach to `Customer` class.
+In this case, I newly added `address` field.
+
+```py users/models.py focus=5:7
+from django.db import models
+from django.contrib.auth.models import User
+
+
+class Customer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    address = models.CharField(max_length=150)
+
+
+class Admin(models.Model):
+    pass
+```
+
+---
+
+#### Creating `Admin` class
+
+I created `Admin` class for admin users.
+As we did in previous section, I made `admin_user` property and connected it with `User` using `OneToOneField` field.
+
+To set this user as admin, I created <a href="https://docs.djangoproject.com/en/4.0/ref/models/fields/#booleanfield" target="_blank"><code>BooleanField</code></a> called `is_admin`.
+
+```py users/models.py focus=10:12
+from django.db import models
+from django.contrib.auth.models import User
+
+
+class Customer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    address = models.CharField(max_length=150)
+
+
+class Admin(models.Model):
+    admin_user = models.OneToOneField(User, on_delete=models.CASCADE)
+    is_admin = models.BooleanField(default=True)
+```
+
+---
+
+### Registering into `admin.py`
+
+Let's register our models into `admin.py`.
+We will be using <a href="https://docs.djangoproject.com/en/4.0/ref/contrib/admin/#django.contrib.admin.InlineModelAdmin" target="_blank"><code>InlineModelAdmin</code></a> method.
+
+I imported <a href="https://github.com/django/django/blob/6654289f5b350dfca3dc4f6abab777459b906756/django/contrib/auth/admin.py#L44" target="_blank"><code>UserAdmin</code></a> within `User` class with giving alias as `BaseUserAdmin`
+and connected to `UserAdmin` class after creating it.
+
+```py users/admin.py focus=2:4,15:20
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
+from .models import Customer, Admin
+
+
+class CustomerInline(admin.StackedInline):
+    pass
+
+
+class AdminInline(admin.StackedInline):
+    pass
+
+
+class UserAdmin(BaseUserAdmin):
+    inlines = []
+
+
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
+
+```
+
+---
+
+#### Creating `CustomerInline` Admin model
+
+I created `CustomerInline` Admin model to connect with `Customer` model.
+
+1. Connect `Customer` model with <a href="https://docs.djangoproject.com/en/4.0/ref/contrib/admin/#django.contrib.admin.InlineModelAdmin.model" target="_blank"><code>model</code></a> property.
+2. I set <a href="https://docs.djangoproject.com/en/4.0/ref/contrib/admin/#django.contrib.admin.InlineModelAdmin.can_delete" target="_blank"><code>can_delete</code></a> as `False` so that users won't be deleted.
+   > Setting value for `can_delete` may rely on your service policy. I just followed what it showed on the official documentation but if you need to let admin users delete users (whatsoever), then you may set it as `True`.
+3. Set value of <a href="https://docs.djangoproject.com/en/4.0/ref/contrib/admin/#django.contrib.admin.InlineModelAdmin.verbose_name_plural" target="_blank"><code>verbose_name_plural</code></a> when we have multiple users.
+
+```py users/admin.py focus=7:10
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
+from .models import Customer, Admin
+
+
+class CustomerInline(admin.StackedInline):
+    model = Customer
+    can_delete: bool = False
+    verbose_name_plural: str = "Customers"
+
+
+class AdminInline(admin.StackedInline):
+    pass
+
+
+class UserAdmin(BaseUserAdmin):
+    inlines = []
+
+
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
+```
+
+---
+
+#### Creating `AdminInline` Admin model
+
+It goes same with `Admin` model class as we exactly did previously.
+
+```py users/admin.py focus=13:16
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
+from .models import Customer, Admin
+
+
+class CustomerInline(admin.StackedInline):
+    model = Customer
+    can_delete: bool = False
+    verbose_name_plural: str = "Customers"
+
+
+class AdminInline(admin.StackedInline):
+    model = Admin
+    can_delete: bool = False
+    verbose_name_plural: str = "Admin Users"
+
+
+class UserAdmin(BaseUserAdmin):
+    inlines = []
+
+
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
+```
+
+---
+
+#### Connecting `UserAdmin` Admin model class
+
+I inherited `BaseUserAdmin` to `UserAdmin` Admin class
+and then connected `CustomerInline` and `AdminInline`.
+
+```py users/admin.py focus=19:20
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
+from .models import Customer, Admin
+
+
+class CustomerInline(admin.StackedInline):
+    model = Customer
+    can_delete: bool = False
+    verbose_name_plural: str = "Customers"
+
+
+class AdminInline(admin.StackedInline):
+    model = Admin
+    can_delete: bool = False
+    verbose_name_plural: str = "Admin Users"
+
+
+class UserAdmin(BaseUserAdmin):
+    inlines = (CustomerInline, AdminInline)
+
+
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
+```
+
+</CH.Scrollycoding>
+
+<br/>
+
+### Result
+
+You will be able to see as below once you started your server.
+we can put `address` field information that is defined at `Customer` class
+and `is_admin` field information that is defined at `Admin` class, respectively.
+
+<br/>
+
+<center>![user_class](../../media/custom-user-django/user_class.png)</center>
+
+<br/>
+
+After we fill out all necessary information, you will be redirected to the page where we can put secondary information.
+
+<br/>
+
+<center>![user_class_second](../../media/custom-user-django/user_class_second.png)</center>
+
+<br/>
+
+Finally, we can see the result page at Django admin page as below:
+
+<br/>
+
+<center>![user_class_second](../../media/custom-user-django/user_class_dashboard.png)</center>
+
+<br/>
+
+## `AbstractUser`
+
+## `AbstractBaseUser`
