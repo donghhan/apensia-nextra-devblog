@@ -171,7 +171,7 @@ admin.site.register(User, UserAdmin)
 
 1. <a href="https://docs.djangoproject.com/en/4.0/ref/contrib/admin/#django.contrib.admin.InlineModelAdmin.model" target="_blank"><code>model</code></a> 프로퍼티에 앞서 만든 `Customer` 모델 클래스를 연결해준다.
 2. <a href="https://docs.djangoproject.com/en/4.0/ref/contrib/admin/#django.contrib.admin.InlineModelAdmin.can_delete" target="_blank"><code>can_delete</code></a>에 `False` 값을 줌으로서 생성된 유저는 삭제될 수 없도록 만들었다.
-    > `can_delete` 프로퍼티는 만들고자 하는 서비스의 정책에 따라 `True` 혹은 `False`가 될 수 있을 것이다. 필자의 경우 공식 문서에 나온 내용 토대로 했지만 어드민이 (어떤 이유에서든) 유저를 삭제해야 할 필요가 있다면 기본값인 `True`로 놔둬도 괜찮을 것 같다.
+> `can_delete` 프로퍼티는 만들고자 하는 서비스의 정책에 따라 `True` 혹은 `False`가 될 수 있을 것이다. 필자의 경우 공식 문서에 나온 내용 토대로 했지만 어드민이 (어떤 이유에서든) 유저를 삭제해야 할 필요가 있다면 기본값인 `True`로 놔둬도 괜찮을 것 같다.
 3. <a href="https://docs.djangoproject.com/en/4.0/ref/contrib/admin/#django.contrib.admin.InlineModelAdmin.verbose_name_plural" target="_blank"><code>verbose_name_plural</code></a>를 설정해줌으로서 `Customer`들이 여러 개가 있을 때 Django admin 페이지에서 어떻게 보일지 설정해준다.
 
 ```py users/admin.py focus=7:10
@@ -298,6 +298,16 @@ Django admin 페이지에서 최종적으로 다음과 같이 보이게 된다.
 
 <br/>
 
-## `AbstractUser`
+## 대체
 
-## `AbstractBaseUser`
+이번에는 좀 더 복잡하지만 더욱 커스터마이징 할 수 있는 방법으로 해보겠다.
+이 포스트에선 <a href="https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#django.contrib.auth.models.AbstractBaseUser" target="_blank"><code>AbstractBaseUser</code></a>의 방법을 사용해보겠다.
+
+`AbstractBaseUser`에 대한 <a href="https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#specifying-a-custom-user-model" target="_blank">공식 문서의 내용</a>에 따르면
+의 경우 인증[^3]에 대한 기능만 있을 뿐 나머지 필드들은 전부 직접 구현을 해야하는 점이 특징이다.
+
+[^3]: 참고: <a href="https://www.onelogin.com/learn/authentication-vs-authorization" target="_blank">인증과 인가의 차이점</a>
+
+<Callout>
+  `REQUIRED_FIELDS`를 설정해주지 않을 경우 
+</Callout>
