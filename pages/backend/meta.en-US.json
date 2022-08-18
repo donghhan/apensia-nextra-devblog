@@ -1,4 +1,5 @@
 {
     "custom django validator": "custom django validator",
-    "user modeling": "Customizing User Model"
+    "user modeling": "Customizing User Model",
+    "django i18n": "장고 다국어 지원"
 }

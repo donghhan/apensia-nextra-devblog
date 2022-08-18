@@ -1,7 +1,7 @@
 ---
-title: Django 다국어 지원하기 
+title: Django 다국어 지원하기
 image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
-description: 'Django에서 다국어 지원을 해보자.'
+description: 'Django에서 다국어 기능을 구현해보자.'
 date: August 11th, 2022
 ---
 
@@ -19,23 +19,23 @@ import Bleed from 'nextra-theme-docs/bleed'
 ## Django 다국어 기능 설정
 
 Django가 설정된 언어에 맞춰 자동적으로 번역을 해주는 것이 아니라 우리가 직접 일일히 번역을 완수해야 하기 때문에
-다국어 지원 기능을 생각한다면 프로젝트 맨 처음부터 미리 준비해두는 것이 좋다.
+다국어 지원 기능을 생각한다면 **_프로젝트 맨 처음부터 미리 준비해두는 것이 좋다._**
 
 ### 사전 준비
 
-`locale`이라는 폴더 안에 우리가 작업할 외국어 폴더를 집어넣는다. 즉, 3개국어를 지원한다면 `locale` 폴더 안에도 3개의 외국어 폴더가 들어가 있어야 한다는 점이다.
+`locale`이라는 폴더 안에 우리가 작업할 외국어 폴더를 집어넣는다.
+`settings.py` 파일 안의 <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#language-code" target="_blank"><code>LANGUAGE_CODE</code></a>의 기본값은 `en-us`로 설정되어 있으며,
+이 기본값으로 지정된 언어 이외에 추가적으로 지원할 외국어 개수만큼 `locale` 폴더 안에 외국어 폴더를 만들어주어야 한다.
 
 #### `locale` 폴더 생성
 
-`locale`이란 폴더를 프로젝트 루트 경로에 생성해주도록 하자. .
-이후, `locale` 폴더 안에 우리가 작업할 다국어 폴더를 넣도록 하자.
-필자의 경우 영어(`en`)와 태국어(`th`)로 설정해주었다.
+`locale`이란 폴더를 프로젝트 루트 경로에 생성해주고, 필자의 경우 태국어를 지원할 것이기 때문에 태국어(`th`) 폴더를 생성해주었다.
 
 > <a href="https://docs.djangoproject.com/en/4.1/topics/i18n/#term-language-code" target="_blank">언어 코드</a>를 참고하여 폴더명을 정해주도록 하자.
 언어 코드의 경우 <a href="http://www.i18nguy.com/unicode/language-identifiers.html" target="_blank">다음</a>에서 확인이 가능하다.
 
 ```bash
-mkdir locale && mkdir locale/en && mkdir locale/th
+mkdir locale && mkdir locale/th
 ```
 
 <br/>
@@ -58,7 +58,7 @@ LOCAL_PATH = os.path.join(BASE_DIR, "locale")
 
 ---
 
-#### `MIDDLEWARE` 설정
+#### `Middleware` 설정
 
 웹 사이트를 사용하는 사용자들이 각자 본인들이 원하는 언어로 서비스를 이용할 수 있게끔 하고 싶다면 `MIDDLEWARE` 설정 부분에 <a href="https://docs.djangoproject.com/en/4.1/ref/middleware/#module-django.middleware.locale" target="_blank"><code>LocaleMiddleware</code></a>를 추가해주도록 한다.
 
@@ -79,7 +79,7 @@ MIDDLEWARE = [
 
 #### 다국어 지원 활성화
 
-이어서, `settings.py` 파일에 <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-USE_I18N" target="_blank"><code>USE_I18N</code></a>에 `True` 값으로 설정해주자.
+마지막으로 `settings.py` 파일에 <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-USE_I18N" target="_blank"><code>USE_I18N</code></a>에 `True` 값으로 설정해주자.
 
 ```py settings.py
 USE_I18N = True
@@ -89,16 +89,18 @@ USE_I18N = True
 
 ### 번역하기
 
-이제 본격적으로 번역 작업을 시작해보도록 하자.
-
-기본적으로 `settings.py` 파일 안의 <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#language-code" target="_blank"><code>LANGUAGE_CODE</code></a>의 기본값은 `en-us`로 설정되어 있다.
-여기서부터 기본적으로 설정되어 있는 영어에서 우리가 어떤 언어로 번역을 할 건지 정해줘야 하는 부분이 되겠다.
+이제 본격적으로 번역 작업을 시작해보도록 하자. 여기서부터 기본으로 설정되어 있는 영어 원본 파일을 우리가 번역하고자 하는 다른 언어 파일로 번역해주는 작업이 되겠다.
 
 #### 번역할 부분 지정해주기
 
 앞선 포스트에서 만들어봤던 `User` 모델 클래스의 내부 필드 및 프로퍼티들에 대하여 번역을 해보도록 하겠다.
 
-이를 위해 <a href="https://docs.djangoproject.com/en/4.1/ref/utils/#django.utils.translation.gettext_lazy" target="_blank"><code>gettext\*lazy</code></a> 모듈을 `_` alias로 가져온 후 번역을 넣을 각각의 프로퍼티들에게 지정을 해준다. 필자의 경우 설명을 요하는 부분인`verbose_name`과 `help_text` 부분을 설정해주었다.
+이를 위해 <a href="https://docs.djangoproject.com/en/4.1/ref/utils/#django.utils.translation.gettext_lazy" target="_blank"><code>gettext lazy()</code></a> 모듈을 `_` alias로 가져온 후 번역을 넣을 각각의 프로퍼티들에게 지정을 해준다. 필자의 경우 설명을 요하는 부분인`verbose_name`과 `help_text` 부분을 설정해주었다.
+
+> `lazy`라는 끝말이 붙었다는 것은 글자 그대로 어떤 작업을 <ins>뒤늦게</ins> 작업을 한다는 뜻이다.
+> 즉, 값이 처음 호출되었을 때부터가 아닌 값에 접근했을 때 해당 작업이 이루어진다는 뜻이다.[^1]
+
+[^1]: 참조: <a href="https://nsikakimoh.com/blog/gettext-and-gettext_lazy-functions-in-django#what-is-the-difference-between-gettext-and-gettext_lazy" target="_blank">What is the Difference Between `gettext()` and `gettext_lazy()`</a>
 
 ```py users/models.py focus=1,10,17:19,22,24 box=1[38:54],10[22:34],17[19:20],22[22:32],24[19:62]
 from django.utils.translation import gettext_lazy as _
@@ -130,6 +132,15 @@ class User(AbstractBaseUser):
     # ... 중략 ...
 ```
 
+<Callout>
+    `models.py`나 `forms.py` 및 `apps.py`에 정의된 필드들은 프로젝트가 시작될 때 오직 한 번만 호출이 되기 때문에 `gettext` 모듈을 사용하게 될 경우 맨 처음 설정된 기본 언어로만 번역이 되어 
+    추후 유저가 언어를 변경해도 적용이 되질 않게 된다. 이 때문에 `gettext_lazy` 모듈을 사용하도록 한다.[^2]
+</Callout>
+
+[^2]: 참조: <a href="https://nsikakimoh.com/blog/gettext-and-gettext_lazy-functions-in-django#why-you-should-use-gettext_lazy-in-models-and-forms-instead-of-gettext" target="_blank">Why you should use `gettext_lazy()` in Models and Forms instead of `gettext()`</a>
+
+<br/>
+
 #### 번역 파일 만들기
 
 <a href="https://docs.djangoproject.com/en/4.1/ref/django-admin/#makemessages" target="_blank"><code>django-admin makemessages</code></a> 명령어를 이용하여 
@@ -145,9 +156,13 @@ django-admin makemessages --locale=th
 <br/>
 <center>![makemessages](../../media/django-i18n/makemessages.png)</center>
 
+<br/>
+
 #### 번역하기
 
 `.po` 확장자 파일을 연 후 `msgid` 안의 문자열을 번역하고자 하는 언어에 맞게 `msgstr`에 번역을 해주도록 하자.
+
+<br/>
 
 #### 번역 파일 컴파일하기
 
