@@ -1,0 +1,327 @@
+---
+title: Django 모델 설계
+image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
+description: 'Django에서 Model을 설정해보자'
+date: August 19th, 2022
+---
+
+import Callout from 'nextra-theme-docs/callout'
+import Bleed from 'nextra-theme-docs/bleed'
+
+# Django 모델
+
+Django에서 <a href="https://docs.djangoproject.com/en/4.1/intro/tutorial02/#creating-models" target="_blank">모델</a>
+이란 한마디로 데이터의 생김새를 보여주는 것이다.
+복잡한 SQL문을 구성할 필요가 없이 Django에서 제공해주는 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.Field" target="_blank">필드</a>들만 적절히 사용하면
+손쉽게 데이터베이스를 설계할 수 있다.
+
+## 고찰
+
+백엔드 설계에 있어 가장 큰 골칫거리라 하면 바로 데이터의 모양인 모델을 설정해주는 일이 아닐까 싶다.
+필자가 공유경제 플랫폼 Let'sh 어플리케이션을 개발할 때에도 다양한 종류의 데이터를 다뤄야만 했다.
+서비스가 고도화되면 될수록 그 복잡도는 높아가겠지만 일단 제일 미니멀하게 필요로 하는 데이터엔 무엇이 있을지 간추려본 결과 다음과 같이 정리가 되었다.
+
+1. 유저
+2. 공유 아이템 (숙소, 이동수단 등)
+3. 리뷰
+4. 예약
+5. 메세지
+6. 기타 (서비스 고도화 시점)
+
+공유 아이템이란 말 그대로 유저들이 다른 유저들과 공유할 수 있는 아이템들을 의미한다.
+MVP 단계에서는 숙소와 자가용만 하기로 결심했지만 서비스가 고도화되면서 어드민 유저들이 다양한 카테고리들을 추가할 수 있게끔 하는 것도 나쁘지 않아보였다.
+
+<br/>
+
+### 모델 브레인스토밍
+
+필자가 만든 앱들은 다음과 같이 이름을 지었다.
+
+<br/>
+
+<center>
+|        앱 이름         |       설명        |
+| :--------------------: | :---------------: |
+|          유저          |      `users`      |
+|   공유 아이템 (숙소)   |  `accomodations`  |
+| 공유 아이템 (이동수단) | `transportations` |
+|          리뷰          |     `reviews`     |
+|          예약          |  `reservations`   |
+|         메세지         |    `messages`     |
+</center>
+
+유저 부분의 모델링은 필자의 <a href="https://www.apensiablog.dev/ko/backend/custom-user-modeling" target="_blank">이 포스트</a>를 참고하길 바란다.
+
+숙소와 이동수단의 경우 똑같은 공유 아이템이지만 그 성격에 약간 차이가 있어서 따로 앱을 설정해주기로 하였다.
+
+<br/>
+
+### `django-countries` 패키지 설치
+
+여러 나라들에 대한 선택을 할 수 있게 해주는 <a href="https://pypi.org/project/django-countries/" target="_blank">django-countries</a> 외부 라이브러리를 설치해주자.
+
+```bash
+# pipenv shell로 가상환경이 설정된 상태에서
+pipenv install django-countries
+```
+
+<br/>
+
+이후, `INSTALLED_APPS`에 설치해주도록 하자.
+필자의 경우 필자가 직접 만든 Django 내부 앱과 외부 라이브러리들을 구별하기 위해 `INSTALLED_APPS`를 다음과 같이 쪼개어 보았다.
+`DJANGO_BUILTIN_APPS`가 맨 처음 `INSTALLED_APPS` 안에 있던 앱들이며 `THIRDPARTY_APPS`는 외부 라이브러리, 그리고 `DJANGO_PROJECT_APPS`가 필자가 직접 설치한 Django 앱들이다.
+
+```py settings.py
+DJANGO_BUILTIN_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+]
+
+THIRDPARTY_APPS = [
+    "django_countries"
+]
+
+DJANGO_PROJECT_APPS = [
+    "users.apps.UsersConfig",
+]
+
+INSTALLED_APPS = DJANGO_BUILTIN_APPS + DJANGO_PROJECT_APPS + THIRDPARTY_APPS
+```
+
+<br/>
+
+## 모델링 - 숙소
+
+먼저, 다음 명령어를 통해 숙소 앱을 만들도록 한다.
+
+```bash
+django-admin startapp accomodations
+```
+
+<br/>
+
+이후, `settings.py`의 `INSTALLED_APPS`에서 우리가 만든 `accomodations` 앱을 등록하자.
+
+```py settings.py focus=3
+DJANGO_PROJECT_APPS = [
+    "users.apps.UsersConfig",
+    "accomodations.apps.AccomodationsConfig",
+]
+```
+
+<br/>
+
+<CH.Scrollycoding>
+
+### `Accomodation` 모델 클래스 생성
+
+`Accomodation`이라는 이름의 모델 클래스를 생성해주자.
+
+```py accomodations/models.py focus=1:6
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+
+class Accomodation(models.Model):
+
+    """Accomodation Model Definition"""
+
+    name = models.CharField(max_length=150, verbose_name=_("Name of accomodation"))
+    price = models.DecimalField(
+        max_digits=7,
+        decimal_places=2,
+        verbose_name=_("Price"),
+        help_text=_("Per night"),
+    )
+    city = models.CharField(max_length=200, verbose_name=_("City"))
+    country = CountryField(
+        blank_label="---Choose Country---", verbose_name=_("Country")
+    )
+    description = models.TextField(
+        verbose_name=_("Description of accomodations"), null=True, blank=True
+    )
+    max_guest = models.IntegerField(verbose_name=_("Maximum number of guests allowed"))
+```
+
+---
+
+### 필드 설정
+
+필요한 필드들을 설정해보도록 하겠다.
+
+#### `name`
+
+숙소의 이름이다. <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#charfield" target="_blank"><code>CharField</code></a>를 이용하여 설정해주었다.
+
+필수 속성인 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.CharField.max_length" target="_blank"><code>max_length</code></a>는 150자 내외로 지정해주었다.
+
+<a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#verbose-name" target="_blank"><code>verbose_name</code></a>를 지정해주어 필드의 이름이 지정된 메세지로 나오게끔 설정해주었다.
+
+```py accomodations/models.py focus=8
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+
+class Accomodation(models.Model):
+
+    """Accomodation Model Definition"""
+
+    name = models.CharField(max_length=150, verbose_name=_("Name of accomodation"))
+    price = models.DecimalField(
+        max_digits=7,
+        decimal_places=2,
+        verbose_name=_("Price"),
+        help_text=_("Per night"),
+    )
+    city = models.CharField(max_length=200, verbose_name=_("City"))
+    country = CountryField(
+        blank_label="---Choose Country---", verbose_name=_("Country")
+    )
+    description = models.TextField(
+        verbose_name=_("Description of accomodations"), null=True, blank=True
+    )
+    max_guest = models.IntegerField(verbose_name=_("Maximum number of guests allowed"))
+```
+
+---
+
+#### `price`
+
+숙소의 1박당 가격이다. <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#decimalfield" target="_blank"><code>DecimalField</code></a>를 이용하여 설정해주었다.
+
+> <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.FloatField" target="_blank"><code>FloatField</code></a>도 있었으나 반올림 등의 이슈 때문에 화폐의 경우 `FloatField` 보다는 `DecimalField`를 이용하는 것이 더 바람직하다는 의견이 있길래 `DecimalField`를 사용하기로 했다.[^1]
+
+[^1]: 참조: <a href="https://stackoverflow.com/a/27448197/13121145" target="_blank">Django: FloatField or DecimalField for Currency?</a>
+
+(소수점을 포함한) 숫자의 최대 길이를 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DecimalField.max_digits"><code>max_digits</code></a>로 설정해주었고,
+소수점을 몇번째 자리까지 보여줄 것인지는 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DecimalField.decimal_places" target="_blank"><code>decimal_places</code></a>로 설정해주었다.
+
+```py accomodations/models.py focus=9:14
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+
+class Accomodation(models.Model):
+
+    """Accomodation Model Definition"""
+
+    name = models.CharField(max_length=150, verbose_name=_("Name of accomodation"))
+    price = models.DecimalField(
+        max_digits=7,
+        decimal_places=2,
+        verbose_name=_("Price"),
+        help_text=_("Per night"),
+    )
+    city = models.CharField(max_length=200, verbose_name=_("City"))
+    country = CountryField(
+        blank_label="---Choose Country---", verbose_name=_("Country")
+    )
+    description = models.TextField(
+        verbose_name=_("Description of accomodations"), null=True, blank=True
+    )
+    max_guest = models.IntegerField(verbose_name=_("Maximum number of guests allowed"))
+```
+
+---
+
+#### `city`
+
+숙소의 도시 위치이다. 역시 `CharField`로 설정해주었다.
+
+```py accomodations/models.py focus=15
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+
+class Accomodation(models.Model):
+
+    """Accomodation Model Definition"""
+
+    name = models.CharField(max_length=150, verbose_name=_("Name of accomodation"))
+    price = models.DecimalField(
+        max_digits=7,
+        decimal_places=2,
+        verbose_name=_("Price"),
+        help_text=_("Per night"),
+    )
+    city = models.CharField(max_length=200, verbose_name=_("City"))
+    country = CountryField(
+        blank_label="---Choose Country---", verbose_name=_("Country")
+    )
+    description = models.TextField(
+        verbose_name=_("Description of accomodations"), null=True, blank=True
+    )
+    max_guest = models.IntegerField(verbose_name=_("Maximum number of guests allowed"))
+```
+
+---
+
+#### `country`
+
+숙소가 위치한 나라이다. 앞서 설치한 django-countries의 <a href="https://pypi.org/project/django-countries/#countryfield" target="_blank"><code>CountryField</code></a>를 사용해준다.
+
+공식 문서에서 살펴볼 수 있듯이 빈 셀의 경우 `blank_label`을 사용하여 커스터마이징도 할 수 있다.
+
+```py accomodations/models.py focus=3,18:20
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from django_countries.fields import CountryField
+
+
+class Accomodation(models.Model):
+
+    """Accomodation Model Definition"""
+
+    name = models.CharField(max_length=150, verbose_name=_("Name of accomodation"))
+    price = models.DecimalField(
+        max_digits=7,
+        decimal_places=2,
+        verbose_name=_("Price"),
+        help_text=_("Per night"),
+    )
+    city = models.CharField(max_length=200, verbose_name=_("City"))
+    country = CountryField(
+        blank_label="---Choose Country---", verbose_name=_("Country")
+    )
+    description = models.TextField(
+        verbose_name=_("Description of accomodations"), null=True, blank=True
+    )
+    max_guest = models.IntegerField(verbose_name=_("Maximum number of guests allowed"))
+```
+
+---
+
+#### `description`
+
+숙소가 위치한 나라이다. 앞서 설치한 django-countries의 <a href="https://pypi.org/project/django-countries/#countryfield" target="_blank"><code>CountryField</code></a>를 사용해준다.
+
+공식 문서에서 살펴볼 수 있듯이 빈 셀의 경우 `blank_label`을 사용하여 커스터마이징도 할 수 있다.
+
+```py accomodations/models.py focus=3,18:20
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from django_countries.fields import CountryField
+
+
+class Accomodation(models.Model):
+
+    """Accomodation Model Definition"""
+
+    name = models.CharField(max_length=150, verbose_name=_("Name of accomodation"))
+    price = models.DecimalField(
+        max_digits=7,
+        decimal_places=2,
+        verbose_name=_("Price"),
+        help_text=_("Per night"),
+    )
+    city = models.CharField(max_length=200, verbose_name=_("City"))
+    country = CountryField(
+        blank_label="---Choose Country---", verbose_name=_("Country")
+    )
+    description = models.TextField(
+        verbose_name=_("Description of accomodations"), null=True, blank=True
+    )
+    max_guest = models.IntegerField(verbose_name=_("Maximum number of guests allowed"))
+```
+
+</CH.Scrollycoding>
