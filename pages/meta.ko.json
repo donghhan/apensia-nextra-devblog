@@ -32,5 +32,12 @@
     "theme": {
       "sidebar": false
     }
+  },
+  "algorithm": {
+    "title": "알고리즘",
+    "type": "page",
+    "theme": {
+      "sidebar": false
+    }
   }
 }

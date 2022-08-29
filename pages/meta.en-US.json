@@ -32,5 +32,12 @@
     "theme": {
       "sidebar": false
     }
+  },
+  "algorithm": {
+    "title": "Algorithm",
+    "type": "page",
+    "theme": {
+      "sidebar": false
+    }
   }
 }

@@ -120,6 +120,7 @@ DJANGO_PROJECT_APPS = [
 ### `Accomodation` 모델 클래스 생성
 
 `Accomodation`이라는 이름의 모델 클래스를 생성해주자.
+숙소와 관련된 데이터 모양은 이제부터 이 모델 클래스 내부에서 정의가 된다.
 
 ```py accomodations/models.py focus=1:6
 from django.db import models
@@ -156,9 +157,7 @@ class Accomodation(models.Model):
 
 숙소의 이름이다. <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#charfield" target="_blank"><code>CharField</code></a>를 이용하여 설정해주었다.
 
-필수 속성인 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.CharField.max_length" target="_blank"><code>max_length</code></a>는 150자 내외로 지정해주었다.
-
-<a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#verbose-name" target="_blank"><code>verbose_name</code></a>를 지정해주어 필드의 이름이 지정된 메세지로 나오게끔 설정해주었다.
+필수 속성인 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.CharField.max_length" target="_blank"><code>max_length</code></a>는 150자 내외로 지정해주었으며, <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#verbose-name" target="_blank"><code>verbose_name</code></a>를 지정해주어 필드의 이름이 지정된 메세지로 나오게끔 설정해주었다.
 
 ```py accomodations/models.py focus=8
 from django.db import models
@@ -191,7 +190,7 @@ class Accomodation(models.Model):
 
 숙소의 1박당 가격이다. <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#decimalfield" target="_blank"><code>DecimalField</code></a>를 이용하여 설정해주었다.
 
-> <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.FloatField" target="_blank"><code>FloatField</code></a>도 있었으나 반올림 등의 이슈 때문에 화폐의 경우 `FloatField` 보다는 `DecimalField`를 이용하는 것이 더 바람직하다는 의견이 있길래 `DecimalField`를 사용하기로 했다.[^1]
+> 미국 달러를 표시하기 위한 방법으로 소수점까지 나타낼 수 있는 필드가 필요했다. <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.FloatField" target="_blank"><code>FloatField</code></a>도 있었으나 반올림 등의 이슈 때문에 화폐의 경우 `FloatField` 보다는 `DecimalField`를 이용하는 것이 더 바람직하다는 의견이 있길래 `DecimalField`를 사용하기로 했다.[^1]
 
 [^1]: 참조: <a href="https://stackoverflow.com/a/27448197/13121145" target="_blank">Django: FloatField or DecimalField for Currency?</a>
 
@@ -258,7 +257,7 @@ class Accomodation(models.Model):
 
 #### `country`
 
-숙소가 위치한 나라이다. 앞서 설치한 django-countries의 <a href="https://pypi.org/project/django-countries/#countryfield" target="_blank"><code>CountryField</code></a>를 사용해준다.
+숙소가 위치한 나라이다. 앞서 설치한 django-countries 패키지의 <a href="https://pypi.org/project/django-countries/#countryfield" target="_blank"><code>CountryField</code></a>를 사용해준다.
 
 공식 문서에서 살펴볼 수 있듯이 빈 셀의 경우 `blank_label`을 사용하여 커스터마이징도 할 수 있다.
 
@@ -293,11 +292,44 @@ class Accomodation(models.Model):
 
 #### `description`
 
-숙소가 위치한 나라이다. 앞서 설치한 django-countries의 <a href="https://pypi.org/project/django-countries/#countryfield" target="_blank"><code>CountryField</code></a>를 사용해준다.
+숙소에 대한 기본 설명이 되는 부분이다.
+긴 설명을 적어야 하는 부분이기 때문에 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#textfield" target="_blank"><code>TextField</code></a>를 이용하였다.
 
-공식 문서에서 살펴볼 수 있듯이 빈 셀의 경우 `blank_label`을 사용하여 커스터마이징도 할 수 있다.
+```py accomodations/models.py focus=21:23
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from django_countries.fields import CountryField
 
-```py accomodations/models.py focus=3,18:20
+
+class Accomodation(models.Model):
+
+    """Accomodation Model Definition"""
+
+    name = models.CharField(max_length=150, verbose_name=_("Name of accomodation"))
+    price = models.DecimalField(
+        max_digits=7,
+        decimal_places=2,
+        verbose_name=_("Price"),
+        help_text=_("Per night"),
+    )
+    city = models.CharField(max_length=200, verbose_name=_("City"))
+    country = CountryField(
+        blank_label="---Choose Country---", verbose_name=_("Country")
+    )
+    description = models.TextField(
+        verbose_name=_("Description of accomodations"), null=True, blank=True
+    )
+    max_guest = models.IntegerField(verbose_name=_("Maximum number of guests allowed"))
+```
+
+---
+
+#### `max_guest`
+
+한 방에 머물 수 있는 최대 투숙객의 수이다.
+긴 설명을 적어야 하는 부분이기 때문에 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#textfield" target="_blank"><code>TextField</code></a>를 이용하였다.
+
+```py accomodations/models.py focus=21:23
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField

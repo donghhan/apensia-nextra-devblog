@@ -19,8 +19,8 @@ const Vercel = ({ height = 20 }) => (
 );
 
 const TITLE_WITH_TRANSLATIONS = {
-  "en-US": "React Hooks for Data Fetching",
-  ko: "데이터 가져오기를 위한 React Hooks",
+  "en-US": "Apensia's Devblog",
+  ko: "Apensia 개발 블로그",
 };
 
 const FEEDBACK_LINK_WITH_TRANSLATIONS = {
