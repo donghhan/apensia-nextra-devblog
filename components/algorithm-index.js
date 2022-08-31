@@ -2,7 +2,7 @@ import { getPagesUnderRoute } from "nextra/context";
 import Link from "next/link";
 
 export default function AlgorithmIndex({ more = "Read more" }) {
-  return getPagesUnderRoute("/backend").map((page) => {
+  return getPagesUnderRoute("/algorithm").map((page) => {
     // Alias `<a>` to avoid it being replaced by MDX components.
     const A = "a";
     return (

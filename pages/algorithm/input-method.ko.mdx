@@ -1,0 +1,187 @@
+---
+title: 코딩 테스트를 위한 다양한 입력값 받기
+image: https://www.tabnine.com/academy/wp-content/uploads/2020/10/academy_1.png
+description: '파이썬과 자바스크립트에서 다양한 입력값을 받는 법을 알아보자.'
+date: August 31st, 2022
+---
+
+import Callout from 'nextra-theme-docs/callout'
+import Bleed from 'nextra-theme-docs/bleed'
+
+# 다양한 입력값 받기
+
+코딩 테스트를 준비하면서 몇몇 사이트들은 입력값 처리를 따로 해줄 필요가 없었지만
+다른 몇몇 사이트들은 입력값까지 직접 받아야 하는 경우가 생겼다.
+그래서 이번 기회에 다양한 입력값을 어떻게 받을 수 있는지 나름 정리를 해보았다.
+이 포스트에선 파이썬과 자바스크립트 방식을 나란히 정리해보았다.
+
+<br/>
+
+## 한 줄에 입력값 받기
+
+한 줄에 입력값을 받는 것은 각 변수별로 지정해주면 된다.
+
+### 기본
+
+파이썬에서의 입력값 받기는 굉장히 쉽다. 단순히 `input()`을 사용하면 된다. 다만, 그냥 `input()`을 사용하게 될 경우 어떤 값이 들어가게 되든 문자열로 받게 되니
+필요에 따라 형변환을 강제로 해주면 된다.
+
+자바스크립트는 `prompt()`를 사용하면 된다. 자바스크립트도 파이썬과 마찬가지로 단순히 `prompt()`로만 입력값을 받게 되면 문자열로 받게 되니
+필요에 따라 형변환을 해주면 된다.
+
+👉 **_각각의 출력문 `print()` 및 `console.log();` 부분에 마우스 오버를 하여 출력값을 볼 수 있다._**
+
+<CH.Code>
+
+```py main.py
+text = input() # 형변환을 안 해줄 경우 무조건 문자열로 받게 된다.
+# label 1 <class 'str'>
+print(text, type(text))
+
+a = int(input()) # 정수형으로 변환
+# label 1 <class 'int'>
+print(a, type(a))
+
+b = str(input()) # 문자열로 변환
+# label abc <class 'str'>
+print(b, type(b))
+
+c = float(input()) # 실수형으로 변환
+# label 1.51 <class 'float'>
+print(c, type(c))
+```
+
+---
+
+```js main.js
+const text = prompt(); // 형변환을 안 해줄 경우 무조건 문자열로 받게 된다.
+// label 1 string
+console.log(text, typeof text);
+
+const a = Number(prompt()); // 정수 및 실수형으로 변환
+// label 1 number
+console.log(a, typeof a);
+
+const b = String(prompt()); // 문자열로 변환
+// label abc string
+console.log(b, typeof b);
+```
+
+</CH.Code>
+
+<br/>
+
+### 더 효율적인 방법
+
+상기 방식에서 여러 입력값을 받게 될 경우 시간 초과가 발생할 수 있기 때문에 다른 방식으로 해볼 필요가 있다.
+
+파이썬에서는 <a hrer="https://docs.python.org/3/library/sys.html#sys.stdin" target="_blank"><code>sys.stdin</code></a>을 사용하여 입력값을 받고
+각 줄의 데이터를 읽어들이는 <a href="https://docs.python.org/3/library/readline.html" target="_blank"><code>readline</code></a> 모듈을 이용한다.
+
+자바스크립트에서는 크게 다음과 같이 두 가지 방식이 존재한다.
+
+1. <a href="https://nodejs.org/dist/latest-v16.x/docs/api/readline.html#readline" target="_blank"><code>readline</code> 모듈</a>을 이용하는 방법
+2. <a href="https://nodejs.org/dist/latest-v16.x/docs/api/fs.html#file-system" target="_blank"><code>fs</code> 모듈</a>을 이용하는 방법
+
+보통의 경우 `fs` 모듈을 이용하는 것이 `readline` 모듈을 이용할 때보다 더 빠르기 때문에 이번 포스트에서는 `fs` 모듈을 이용하는 방식으로 진행해보겠다.
+`fs` 모듈 내에는 <a href="https://nodejs.org/dist/latest-v16.x/docs/api/fs.html#fsreadfilesyncpath-options" target="_blank"><code>readFileSync()</code></a> 메소드가 있는데
+인자(문자열) 경로에 있는 파일의 콘텐츠를 읽어들인 후 객체 타입으로 반환을 해준다 (예제에서는 `data.txt`라는 텍스트 파일 안에 데이터를 집어넣었다는 가정 하에 진행한다). 이를 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/toString" target="_blank"><code>toString()</code></a> 메소드를 사용하여
+객체로 반환된 것을 문자열로 치환해주고 마지막으로 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim" target="_blank"><code>trim()</code></a> 메소드를 이용하여
+문자열의 양 끝 공백을 제거해준다.
+
+해당 부분은 문자열로 치환이 되었으니 숫자로 변경을 하고 싶을 경우 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" target="_blank"><code>Number()</code></a>로 감싸주면 된다.
+
+👉 **_각각의 출력문 `print()` 및 `console.log();` 부분에 마우스 오버를 하여 출력값을 볼 수 있다._**
+
+<CH.Code>
+
+```py main.py
+import sys
+
+input_int = int(sys.stdin.readline()) # 정수형으로 형 변환
+# label 1 <class 'int'>
+print(input_int, type(input_int))
+
+input_str = str(sys.stdin.readline()) # 문자열로 형 변환
+# label abc <class 'str'>
+print(input_str, type(input_str))
+```
+
+---
+
+```js main.js
+// 형 변환을 하지 않을 경우 문자열로 반환된다.
+const input = require('fs').readFileSync('data.txt').toString().trim();
+// label 1 string
+console.log(input, typeof input);
+
+// 숫자로 형 변환을 할 경우
+const inputInNumber = Number(require('fs').readFileSync('data.txt').toString().trim());
+// label 1 number
+console.log(inputInNumber, typeof inputInNumber);
+```
+
+</CH.Code>
+
+<Callout>
+    파이썬에서 형변환을 거치지 않고 단순히 `a = sys.stdin.readline()`을 하게 되면 개행 처리 문자(`\n`)까지 받게 되므로, 반드시 형변환을 거친 후 사용하도록 하자. 
+</Callout>
+
+<br/>
+
+## 한 줄에 공백 기준으로 여러 입력값 받기
+
+입력되는 값들은 아래와 같다.
+
+```bash
+# 입력
+1 2 3 4 5
+```
+
+위의 방식을 토대로 파이썬에서는 <a href="https://docs.python.org/3/library/stdtypes.html?highlight=split#str.split" target="_blank"><code>split()</code></a>을 이용하여 공백 기준으로 문자열을 구분한다.
+이후, <a href="https://docs.python.org/3/library/functions.html#map" target="_blank"><code>map()</code></a> 내장 함수를 활용한다.
+`map()`은 반복되는 값(`interable`)에 대하여 어떤 함수(`function`)를 적용하여 새로운 `map` 객체를 반환해주는 역할을 한다.
+이후에 <a href="https://docs.python.org/3/library/functions.html#func-list" target="_blank"><code>list()</code></a>를 이용해 해당 `map` 객체를 배열 안에 담아준다.
+
+자바스크립트에서는 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split" target="_blank"><code>split()</code></a>를 이용하여 구분을 할 수 있다.
+이를 숫자형으로 형변환하기 위해서는 파이썬의 `map()` 메소드와 같이 자바스크립트에서도 존재하는 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank"><code>map()</code></a> 메소드를 이용한다.
+`map()`의 첫번째 인자로 적용을 시킬 콜백 함수를 받게 된다. 각각의 `el`에 대하여 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt" target="_blank"><code>parseInt()</code></a> 메소드를 이용해 각 원소들을 숫자형으로 치환해준다.
+
+<CH.Code>
+
+```py main.py
+import sys
+
+data_int = list(map(int, sys.stdin.readline().split())) # 정수형으로 형변환
+# label [1, 2, 3, 4, 5] <class 'list'>
+print(data_int, type(data_int))
+
+data_str = list(map(str, sys.stdin.readline().split())) # 문자형으로 형변환
+# label ['a', 'b', 'c', 'd', 'e'] <class 'list'>
+print(data_str, type(data_str))
+```
+
+---
+
+```js main.js
+// 기본: 문자열
+const inputInString = require("fs")
+  .readFileSync("data.txt")
+  .toString()
+  .trim()
+  .split(" ");
+// label ['1', '2', '3', '4', '5'] object
+console.log(inputInString, typeof inputInString);
+
+// 숫자로 형변환
+const inputInNumber = require("fs")
+  .readFileSync("data.txt")
+  .toString()
+  .trim()
+  .split(" ")
+  .map((el) => parseInt(el));
+// label [1, 2, 3, 4, 5] object
+console.log(inputInNumber, typeof inputInNumber);
+```
+
+</CH.Code>
