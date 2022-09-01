@@ -7,6 +7,7 @@ date: August 31st, 2022
 
 import Callout from 'nextra-theme-docs/callout'
 import Bleed from 'nextra-theme-docs/bleed'
+import { SiJavascript, SiPython } from 'react-icons/si'
 
 # 다양한 입력값 받기
 
@@ -75,7 +76,7 @@ console.log(b, typeof b);
 
 상기 방식에서 여러 입력값을 받게 될 경우 시간 초과가 발생할 수 있기 때문에 다른 방식으로 해볼 필요가 있다.
 
-파이썬에서는 <a hrer="https://docs.python.org/3/library/sys.html#sys.stdin" target="_blank"><code>sys.stdin</code></a>을 사용하여 입력값을 받고
+파이썬에서는 <a href="https://docs.python.org/3/library/sys.html#sys.stdin" target="_blank"><code>sys.stdin</code></a>을 사용하여 입력값을 받고
 각 줄의 데이터를 읽어들이는 <a href="https://docs.python.org/3/library/readline.html" target="_blank"><code>readline</code></a> 모듈을 이용한다.
 
 자바스크립트에서는 크게 다음과 같이 두 가지 방식이 존재한다.
@@ -138,18 +139,27 @@ console.log(inputInNumber, typeof inputInNumber);
 1 2 3 4 5
 ```
 
-위의 방식을 토대로 파이썬에서는 <a href="https://docs.python.org/3/library/stdtypes.html?highlight=split#str.split" target="_blank"><code>split()</code></a>을 이용하여 공백 기준으로 문자열을 구분한다.
+<br/>
+
+<span class="logo"><SiPython/></span>
+
+<a href="https://docs.python.org/3/library/stdtypes.html?highlight=split#str.split" target="_blank"><code>split()</code></a>을 이용하여 공백 기준으로 문자열을 구분한다.
 이후, <a href="https://docs.python.org/3/library/functions.html#map" target="_blank"><code>map()</code></a> 내장 함수를 활용한다.
 `map()`은 반복되는 값(`interable`)에 대하여 어떤 함수(`function`)를 적용하여 새로운 `map` 객체를 반환해주는 역할을 한다.
 이후에 <a href="https://docs.python.org/3/library/functions.html#func-list" target="_blank"><code>list()</code></a>를 이용해 해당 `map` 객체를 배열 안에 담아준다.
 
-자바스크립트에서는 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split" target="_blank"><code>split()</code></a>를 이용하여 구분을 할 수 있다.
+<br/>
+<br/>
+
+<span class="logo"><SiJavascript/></span>
+
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split" target="_blank"><code>split()</code></a>를 이용하여 구분을 할 수 있다.
 이를 숫자형으로 형변환하기 위해서는 파이썬의 `map()` 메소드와 같이 자바스크립트에서도 존재하는 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" target="_blank"><code>map()</code></a> 메소드를 이용한다.
 `map()`의 첫번째 인자로 적용을 시킬 콜백 함수를 받게 된다. 각각의 `el`에 대하여 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt" target="_blank"><code>parseInt()</code></a> 메소드를 이용해 각 원소들을 숫자형으로 치환해준다.
 
 <CH.Code>
 
-```py main.py
+```py python
 import sys
 
 data_int = list(map(int, sys.stdin.readline().split())) # 정수형으로 형변환
@@ -163,7 +173,7 @@ print(data_str, type(data_str))
 
 ---
 
-```js main.js
+```js javascript
 // 기본: 문자열
 const inputInString = require("fs")
   .readFileSync("data.txt")
@@ -185,3 +195,134 @@ console.log(inputInNumber, typeof inputInNumber);
 ```
 
 </CH.Code>
+
+> ### 🙋‍♂️ `Number()`와 `parseInt()`의 차이점 [^1]
+>
+> `Number()`의 경우 타입을 변경하지만 `parseInt()`의 경우 입력값을 파싱하여 숫자로 변환시켜준다. 예를 들어,
+>
+> ```js
+> // 타입 변경
+> Number('123hello'); // NaN
+> Number('5e1'); // 50 👉 Numeric Literals 참조
+> ```
+>
+> `Number()`의 경우 인자 안의 문자열의 타입을 숫자형으로 바꿔주되, 만일 인자 안의 문자열 중 숫자로 변환될 수 있는 것들이 없는 경우 `NaN`을 반환한다.
+> `5e1`의 경우 numeric literal의 제곱 법칙을 따라 문자열이지만 숫자형으로 인식하여 해당 값을 숫자형으로 반환시켜준다 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar#numeric_literals" target="_blank">&rarr; Numeric Literal의 exponential 부분 참조</a>
+>
+> <br/>
+>
+> `Number()` 대신 연산자 `+`를 앞에 써도 똑같은 결과값을 가져오게 된다.
+>
+> ```js
+> console.log(+'123hello'); // NaN
+> console.log(+'5e1'); // 50
+> ```
+>
+> <br/>
+>
+> 반면 `parseInt()`의 경우, 인자 안의 문자열 중 숫자로 되어 있는 것들만 찾아서 숫자값으로 반환해준다.
+>
+> ```js
+> // 파싱하여 숫자로 변경
+> parseInt('32px'); // 32
+> parseInt('5e1'); // 5
+> ```
+
+[^1]: 참조: <a href="https://thisthat.dev/number-constructor-vs-parse-int/" target="_blank"><code>Number()</code> vs <code>parseInt()</code></a>
+
+<br/>
+
+## 여러 줄에 걸쳐 입력값 받기
+
+이번에는 여러 줄에 입력값을 받는 법에 대해 알아보겠다. 여러 줄에 걸쳐 입력값을 받는 방법에는 크게 두가지 방법이 있을 것이다.
+
+1. 무한정 입력값을 받는 방법
+2. 테스트 케이스(T)만큼 입력값을 받는 방법
+
+<br/>
+
+### 입력값을 무한정 받기
+
+필요에 따라선 입력값을 정말 무한정 받을 순 있겠지만 대체적으로 코딩 테스트에서는 특정 입력값을 넣게 되면 종료가 되는 부분이 있다.
+
+<br/>
+
+### 테스트 케이스 줄만큼 입력값 받기
+
+대부분의 입력값을 받는 행위는 아마도 이렇게 받을 것이다. 입력값은 다음과 같다.
+
+```bash
+# 테스트 케이스 (자연수)
+5
+# 이후 각 줄에 테스트 케이스 수만큼 하나씩 입력값 받음
+1
+2
+3
+4
+5
+```
+
+<br/>
+
+<span class="logo"><SiPython/></span>
+
+테스트 케이스는 일반적으로 자연수로 주어지기 때문에 간단하게 `int(input())`으로 받아도 무난하다.
+
+아래 `input_str`의 경우 다음 순서대로 코드를 작성하였다.
+
+1. `for _ in range(T)`: 테스트 케이스(`T`)만큼만 반복하면 되고 반복되는 값이 필요 없으므로 `_`로 받아주었다. 그리고 <a href="https://docs.python.org/3/library/stdtypes.html?highlight=range#range" target="_blank"><code>range()</code></a>를 이용하여 인덱스 범위를 지정해주었다.
+2. 입력값은 위에서 살펴본 대로 `str(sys.stdin.readline().rstrip())` 코드를 가지고 `T`만큼 한 줄에 하나씩 입력값을 받는다. <a href="https://docs.python.org/3/library/stdtypes.html?highlight=rstrip#bytearray.rstrip" target="_blank"><code>rstrip()</code></a>을 사용한 이유는 `readline()`을 쓰게 되면 오른쪽에 자동으로 딸려오는 개행 문자 `\n`을 없애주기 위함이다.
+3. 이를 전체 `[]`로 감싸서 배열 안에 담아준다. 이를 파이썬에서는 <a href="https://docs.python.org/3/tutorial/datastructures.html?highlight=list%20comprehension#list-comprehensions" target="_blank">List Comprehension</a>이라 부른다.
+
+👉 **_각각의 출력문 `print()` 부분에 마우스 오버를 하여 출력값을 볼 수 있다._**
+
+```py main.py
+import sys
+
+T = int(input())
+
+# 문자열로 입력값 받기
+input_str = [str(sys.stdin.readline().rstrip()) for _ in range(T)]
+# label 5 ['1', '2', '3', '4', '5']
+print(T, input_str)
+# label <class 'list'> <class 'str'>
+print(type(input_str), type(input_str[0]))
+
+# 정수형으로 입력값 받기
+input_int = [int(sys.stdin.readline().rstrip()) for _ in range(T)]
+# label 5 [1, 2, 3, 4, 5]
+print(T, input_int)
+# label <class 'list'> <class 'int'>
+print(type(input_int), type(input_int[0]))
+```
+
+<br/>
+
+<span class="logo"><SiJavascript/></span>
+
+1. 자바스크립트에서는 위에서 봤던 것과 거의 유사하지만 맨 마지막의 `split()`의 인자로 개행 문자열 `\n`을 넣어줌으로서 각 입력값이 한 줄에 입력될 수 있도록 한다.
+2. 이후 상수 `T`와 `arr`을 선언하여 `input`에 있는 값들을 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment" target="_blank">구조 분해 할당</a>을 통해 각각의 값들을 담는다.
+3. 이때, `arr` 안의 값들을 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax" target="_blank">Spread Operator</a>를 이용하여 내부 값들을 꺼내온다.
+
+```js
+// 문자열로 변환
+const input = require('fs').readFileSync('data.txt').toString().trim().split("\n");
+const [T, ...arr] = input;
+// label 5 [ '1', '2', '3', '4', '5' ]
+console.log(T, arr);
+// label object
+console.log(typeof arr);
+
+// 숫자형으로 변환
+const inputInNumber = require("fs")
+  .readFileSync("data.txt")
+  .toString()
+  .trim()
+  .split("\n")
+  .map((el) => parseInt(el));
+const [T2, ...arrTwo] = inputInNumber;
+// label 5 [ 1, 2, 3, 4, 5 ]
+console.log(T2, arrTwo);
+// label object
+console.log(typeof arrTwo);
+```

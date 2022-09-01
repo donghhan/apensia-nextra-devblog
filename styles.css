@@ -36,6 +36,10 @@ a {
   text-decoration: none;
 }
 
+.logo {
+  font-size: 1.5rem;
+}
+
 .wrapper {
   display: grid;
   width: 100%;
