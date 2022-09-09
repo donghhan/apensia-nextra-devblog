@@ -1,0 +1,31 @@
+---
+title: 구글을 들어가면 무슨 일이 벌어질까? 
+image: https://cxl.com/wp-content/uploads/2019/09/image3-1024x529.png
+description: '네크워크 기초에 대하여 알아보자.'
+date: September 2nd, 2022
+---
+
+import Callout from 'nextra-theme-docs/callout'
+import Bleed from 'nextra-theme-docs/bleed'
+
+# 네트워크
+
+네이버나 구글에 들어갔을 때 과연 컴퓨터 내부에선 어떤 일이 벌어지고 있을까?
+
+## URL 해석
+
+예컨대 구글을 검색창에 쳐서 들어갔다고 가정해보자.
+그 경우 맨 처음 컴퓨터가 하는 일은 바로 URL을 해석하는 일이다.
+
+`scheme://<user>:<password>@<host>:<port>/<url-path>`
+
+## DNS 해석
+
+<a href="https://en.wikipedia.org/wiki/Domain_Name_System" target="_blank">DNS (Domain Name System)</a>이란 인간이 쉽게 읽을 수 있는 도메인 주소와 컴퓨터가 읽어들일 수 있는 IP 주소를 서로 변환해주는 시스템이다.
+브라우저가 서버로 요청을 보내기 전 브라우저 캐시와 호스트 파일을 참조한다.
+만일 있다면 IP를 반환하고, 그렇지 않을 경우 루트 서버, TLD 서버 그리고 인증 서버를 거쳐 IP를 반환하게 된다. 
+DNS를 운영하는 서버를 보통 네임서버(Name Server)라고 부른다.
+
+## 해당 IP로 서버 이동
+
+해당 IP가 할당된 서버가 존재하는 대역으로 이동한다. 이 때, 네트워크 장비 라우터를 통해 이동을 하며 동적 라우팅을 통해 이동하게 된다.

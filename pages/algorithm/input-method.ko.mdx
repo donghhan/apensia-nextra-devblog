@@ -276,7 +276,7 @@ console.log(inputInNumber, typeof inputInNumber);
 
 👉 **_각각의 출력문 `print()` 부분에 마우스 오버를 하여 출력값을 볼 수 있다._**
 
-```py main.py
+```py
 import sys
 
 T = int(input())
@@ -304,6 +304,8 @@ print(type(input_int), type(input_int[0]))
 2. 이후 상수 `T`와 `arr`을 선언하여 `input`에 있는 값들을 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment" target="_blank">구조 분해 할당</a>을 통해 각각의 값들을 담는다.
 3. 이때, `arr` 안의 값들을 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax" target="_blank">Spread Operator</a>를 이용하여 내부 값들을 꺼내온다.
 
+👉 **_각각의 출력문 `console.log();` 부분에 마우스 오버를 하여 출력값을 볼 수 있다._**
+
 ```js
 // 문자열로 변환
 const input = require('fs').readFileSync('data.txt').toString().trim().split("\n");
@@ -326,3 +328,44 @@ console.log(T2, arrTwo);
 // label object
 console.log(typeof arrTwo);
 ```
+
+#### 첫째줄엔 테스트 케이스 두번째 줄에 공백으로 여러 개
+
+입력의 예시는 다음과 같다.[^2]
+
+[^2]:
+    <a href="https://www.acmicpc.net/problem/10818" target="_blank">백준 10818번</a>
+
+```bash
+5 # 테스트 케이스 수
+20 10 35 30 7 # 테스크 케이스 수만큼 받은 데이터 양
+```
+
+<br/>
+
+<span class="logo"><SiJavascript/></span>
+
+1. 맨 처음에 파일을 불러온 후 `.split()` 메소드로 개행 문자 별로 나눈 다음,
+2. 그 중 첫번째 요소는 `Number()`로 감싸주고,
+3. 두번째 요소는 다시 `.split()`으로 공백을 기준으로 데이터를 나눈 후, `.map()`으로 각 요소들을 숫자형으로 치환한다.
+
+👉 **_각각의 출력문 `console.log();` 부분에 마우스 오버를 하여 출력값을 볼 수 있다._**
+
+```js main.js
+const input = require("fs")
+  .readFileSync("data.txt")
+  .toString()
+  .trim()
+  .split("\n");
+const N = Number(input[0]);
+let nums = input[1].split(" ").map(Number);
+
+// label 5 [ 20, 10, 35, 30, 7 ]
+console.log(N, nums);
+// label number object
+console.log(typeof N, typeof nums);
+```
+
+### 주의 (예외 케이스)
+
+가끔씩 예외를 하게 될 수도 있다.
