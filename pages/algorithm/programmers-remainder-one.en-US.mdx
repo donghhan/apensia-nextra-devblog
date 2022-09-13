@@ -1,0 +1,96 @@
+---
+title: Programmers - Finding a number whose remainder is 1
+image: https://www.tabnine.com/academy/wp-content/uploads/2020/10/academy_1.png
+description: 'Progammers - Finding a number whose remainder is 1'
+date: September 11th, 2022
+---
+
+import Callout from 'nextra-theme-docs/callout'
+import Bleed from 'nextra-theme-docs/bleed'
+import { SiJavascript, SiPython } from 'react-icons/si'
+
+# Finding a number whose remainder is 1
+
+## Question
+
+Given a positive integer of `n`, complete solution function that `return`s a minimum value of `x` where remainder of `n` divided by `x` equals to 1.
+It can be proved that there is always an answer.
+
+## Condition
+
+3 ≤ `n` ≤ 1,000,000
+
+## Input & Output Example
+
+<br/>
+
+<center>
+| Input | Output |
+| ---- | ---- |
+| 10   | 3    |
+| 12   | 11   |
+</center>
+
+1. 10 divided by 3 will give us remainder of 1, and as there is no further positive integer smaller than 1, it should return 3.
+2. 12 divided by 11 will give us remainder of 1, and as there is no further positive integer smaller than 11, it should return 11.
+
+## Solution
+
+I used quite basic solution. I put all `x` in an array beginning from 2 to `n` (except 1).
+By the time numbers are input in order, I can just `return` the first value of the array.
+
+<br/>
+
+### Python
+
+```py
+answer = []
+
+for i in range(n):
+    if n % (i + 1) == 1:
+        answer.append(i + 1)
+
+return answer[0]
+```
+
+<br/>
+
+### JavaScript
+
+```js
+const arr = [];
+
+for (let i = 2; i < n; i++) {
+    if (n % i === 1) {
+        arr.push(i);
+    }
+}
+
+return arr[0];
+```
+
+## Other Solutions
+
+<details>
+  <summary>See more</summary>
+  <p>
+    Using `while` statement, keep adding up 1 to `answer` until `n` is divided by `x`
+    As we can simply need to return the smallest value, if we meet the condition within `while` statement, iteration will automatically stop and return the desired value.
+
+    <h3>Python</h3>
+
+    ```py
+    def solution(n):
+        return [x for x in range(1,n+1) if n%x==1][0]
+    ```
+
+    <h3>JavaScript</h3>
+
+    ```js
+    const answer = 1;
+    while (n % answer !== 1) answer++;
+    return answer;
+    ```
+
+  </p>
+</details>

@@ -17,4 +17,110 @@ import { SiJavascript, SiPython } from 'react-icons/si'
 
 <ins>&rarr; 2022년 9월 1일 기준으로 해당 포스트는 계속해서 변할 수 있음을 알린다.</ins>
 
-## 문자열 합치기
+## 문자열 인덱싱
+
+파이썬과 자바스크립트의 문자열은 각 자리별 고유의 인덱스가 부여가 된다. 이를 통해 우린 문자열을 이루는 각 글자의 위치를 파악할 수 있다.
+
+<br/>
+<br/>
+
+<span class="logo"><SiPython/></span>
+
+파이썬의 경우 다음과 같이 쉽게 인덱싱을 통해 원하는 값을 찾을 수 있다.
+물론 문자열의 길이를 초과하는 인덱스에 접근을 하려 하면 `IndexError`를 뱉게 된다.
+문자열 내부에 공백이 있을 경우 공백도 문자열로 취급하게 된다.
+
+👉 **_각각의 출력문 `print()` 부분에 마우스 오버를 하여 출력값을 볼 수 있다._**
+
+```py
+s = "abcd"
+
+# label a
+print(s[0]) # 문자열의 첫번째 요소 반환
+# label d
+print(s[-1]) # 문자열의 맨 마지막 요소 반환
+# label IndexError: string index out of range
+print(s[4]) # IndexError
+# label IndexError: string index out of range
+print(s[-5]) # IndexError
+
+s2 = "abcd efgh"
+# label
+print(s2[4]) # 공백 반환
+```
+
+<br/>
+
+<span class="logo"><SiJavascript/></span>
+
+자바스크립트도 마찬가지다.
+다만, 자바스크립트의 경우 문자열의 길이를 초과하는 인덱스에 접근하려 하면 `undefined`를 뱉게 된다.
+문자열 내부에 공백이 포함되어 있을 경우 공백도 문자열로 취급한다.
+
+```js
+const s = "abcd";
+
+// label a
+console.log(s[0]); // 문자열의 첫번째 요소 반환
+// label d
+console.log(s[s.length - 1]); // 문자열의 맨 미자막 요소 반환
+// label undefined
+console.log(s[4]);
+
+const s2 = "abcd efgh";
+
+// label
+console.log(s2[4]); // 공백 반환
+```
+
+<br/>
+
+## 문자열 슬라이싱
+
+슬라이싱이란 특정 범위 내에 해당하는 문자열만 잘라서 가져오는 것을 의미한다.
+
+<br/>
+
+<span class="logo"><SiPython/></span>
+
+파이썬의 경우 `[시작 인덱스:끝 인덱스]`로 하여 문자열 슬라이싱이 가능하며, 이 때 반환되는 문자열은 **_시작 인덱스_**부터 **_끝 인덱스 - 1_**까지 슬라이싱 해준다.
+
+👉 **_각각의 출력문 `print()` 부분에 마우스 오버를 하여 출력값을 볼 수 있다._**
+
+```py
+s = "abcd"
+
+# label ab
+print(s[0:2]) # 0번째 인덱스 ~ 1번째 인덱스까지
+# label bcd
+print(s[1:]) # 1번째 인덱스 ~ 맨 끝
+# label abc
+print(s[:3]) # 맨 처음 ~ 2번째 인덱스까지
+# label abcd
+print(s[:]) # 맨 처음부터 맨 끝까지
+```
+
+<br/>
+<span class="logo"><SiJavascript/></span>
+
+자바스크립트는 서로 다른 메소드들을 제공하고 있다.
+
+1. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substr" target="_blank"><code>substr(start[, length])</code></a>: `start` 인덱스부터 `length` 길이만큼 반환한다. `[]` 부분은 생략이 가능하며, 이 경우 `start`부터 문자열 끝까지 자른다.
+2. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring" target="_blank"><code>substring(indexStart, indexEnd)</code></a>; `indexStart`부터 `indexEnd - 1`까지 부분만 잘라준다.
+
+```js
+const s = "abcdefgh";
+
+// substr()
+// label ab
+console.log(s.substr(0, 2));
+// label cdefgh
+console.log(s.substr(2));
+
+// substring()
+// label ab
+console.log(s.substring(0, 2))
+
+// slice()
+
+```

@@ -1,0 +1,53 @@
+---
+title: 정렬
+image: https://www.tabnine.com/academy/wp-content/uploads/2020/10/academy_1.png
+description: '정렬 알고리즘에 대해 알아보자.'
+date: September 8th, 2022
+---
+
+import Callout from 'nextra-theme-docs/callout'
+import Bleed from 'nextra-theme-docs/bleed'
+import { SiJavascript, SiPython } from 'react-icons/si'
+
+# 정렬
+
+정렬이란 요소들을 일정한 순서대로 열거하는 알고리즘을 의미한다.
+
+- 정렬 기준은 사용자가 정할 수 있다 (오름차순 혹은 내림차순)
+- 크게 비교식과 분산식 정렬로 나눌 수 있다.
+- 대부분의 언어가 built-in으로 제공해준다.
+- 삽입, 선택, 버블, 머지, 힙, 퀵 등 다양한 정렬 방식이 존재한다.
+
+정렬이 어떤 식으로 이루어지는지 시각적으로 알아보고 싶다면 <a href="https://www.toptal.com/developers/sorting-algorithms" target="_blank">여기</a>를 참조하도록 하자.
+
+<br/>
+
+## 비교식 정렬
+
+글자 그대로 다른 요소들과 비교를 하면서 정렬을 하는 방식을 말한다.
+
+### 거품 정렬
+
+서로 인접한 두 요소를 검사하여 정렬하는 알고리즘이다. 시간복잡도는 $O(n^2)$이다.
+
+<br/>
+
+<span class="logo"><SiJavascript/></span>
+
+### 선택 정렬
+
+선택한 요소와 가장 우선순위가 높은 요소를 교환하는 정렬 알고리즘이다. 시간복잡도 역시 $O(n^2)$이다.
+
+### 삽입 정렬
+
+선택한 요소를 삽입할 수 있는 위치를 찾아 삽입하는 방식의 정렬 알고리즘이다. 시간복잡도 역시 $O(n^2)$이다.
+
+## 분산식 정렬
+
+### 합병 정렬
+
+분할 정복 알고리즘을 이용한 최선과 최악이 같은 안정적인 정렬 알고리즘이다. 시간복잡도는 $O(n \log n)$이다.
+
+### 퀵 정렬
+
+분할 정복 알고리즘을 이용한 매우 빠르지만 최악의 경우가 존재하는 불안정한 정렬이다. 시간복잡도 역시 $O(n \log n)$이다.
