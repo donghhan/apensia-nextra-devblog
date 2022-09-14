@@ -32,6 +32,11 @@ module.exports = withNextra({
         destination: "/projects/gulp-static",
         statusCode: 301,
       },
+      {
+        source: "/algorithm",
+        destination: "/algorithm/input-method",
+        statusCode: 301,
+      },
     ];
   },
 });
