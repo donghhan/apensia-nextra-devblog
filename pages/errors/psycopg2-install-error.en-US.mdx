@@ -1,7 +1,7 @@
 ---
 title: xcode-select Failed to locate 'clang', requesting installation of command line developer tools.
 image: https://www.tabnine.com/academy/wp-content/uploads/2020/10/academy_1.png
-description: 'poetry로 psycopg2 패키지를 설치하는 도중 발생된 에러'
+description: 'Error happened while installing psycopg2 package within poetry virtual environment'
 date: September 16th, 2022
 ---
 
@@ -9,17 +9,17 @@ import Callout from 'nextra-theme-docs/callout'
 import Bleed from 'nextra-theme-docs/bleed'
 import { SiJavascript, SiPython } from 'react-icons/si'
 
-# `psycopg2` 패키지 설치 에러
+# `psycopg2` package installation error
 
-## 시도
+## What I tried
 
-poetry로 가상환경을 꾸리고 나서 Django와 PostgreSQL를 연동하기 위해 <a href="https://pypi.org/project/psycopg2/" target="_blank">psycopg2</a> 패키지를 설치하고자 했다.
+I created virtual environment with poetry, and tried to install <a href="https://pypi.org/project/psycopg2/" target="_blank">psycopg2</a> package for connecting my Django project with PostgreSQL.
 
 <br/>
 
-## 문제 발생
+## What happened
 
-콘솔에 갑자기 긴 에러 메세지가 다음과 같이 나타났다.
+Suddenly my console spit out a number of lines of errors.
 
 ```bash
 > poetry add psycopg2
@@ -183,39 +183,39 @@ The following error occurred when trying to handle this error:
 
 <br/>
 
-## 문제 분석
+## Analysis
 
-제일 핵심적인 내용은 다음과 같이 macOS의 Command Line Tools Package 중 하나인 Clang과 관련된 문제처럼 보였다.
-여기서 Command Line Tools Package는 macOS에서 명령어를 이용하여 개발을 할 수 있도록 도와주는 Xcode와 별개로 다운로드 받을 수 있는 일종의 작은 패키지이다.[^1]
+The core part seemed to be Clang, which is one of the macOS's Command Line Tools Packages.
+Command Line Tools Package is the small package that can be downloaded separately from Xcode that allows us to do development with command line.[^1]
 
-[^1]: 참고: <a href="https://developer.apple.com/library/archive/technotes/tn2339/_index.html" target="_blank">What is the Command Line Tools Package?</a>
+[^1]: Reference: <a href="https://developer.apple.com/library/archive/technotes/tn2339/_index.html" target="_blank">What is the Command Line Tools Package?</a>
 
 `xcode-select: Failed to locate 'clang', requesting installation of command line developer tools.`
 
-## 문제 해결
+## Solutions
 
-해당 문제를 다음과 같이 분석해보았다.
+I analyzed the problem into two ways:
 
-1. M1 칩과 호환되지 않는 경우 &rarr; 다른 패키지를 써보자
-2. Command Line Developer Tools 문제의 경우
-
-<br/>
-
-### 시도1 &rarr; 😓 실패
-
-콘솔에서 얘기해준대로, psycopg2를 대신할 수 있는 <a href="https://pypi.org/project/psycopg2-binary/" target="_blank">psycopg2-binary</a> 패키지를 사용해보는 것은 어떨까 생각했다.
-
-하지만 여전히 위와 똑같은 에러가 발생하였다. 여기서 알 수 있는 점은 M1 칩과 호환이 되지 않는 것의 여부는 이 문제와 전혀 상관없어 보였다.
+1. It may not work in M1 chip &rarr; Let's use substitute!
+2. Problem in Command Line Developer Tools
 
 <br/>
 
-### 시도2 &rarr; 😊 성공
+### Attempt1 &rarr; 😓 Fail
 
-Stack Overflow 사이트에서 <a href="https://apple.stackexchange.com/questions/415563/repeatedly-being-asked-to-install-command-line-tools/446563#446563" target="_blank">구글링해본 결과</a> 다음 명령어를 통해서 해결할 수 있었다.
+I followed console's hint: using <a href="https://pypi.org/project/psycopg2-binary/" target="_blank">psycopg2-binary</a> package.
+
+But still I got same error as above. So I realized that this has nothing to do with M1 chip or whatsoever.
+
+<br/>
+
+### Attempt2 &rarr; 😊 Success
+
+I found one <a href="https://apple.stackexchange.com/questions/415563/repeatedly-being-asked-to-install-command-line-tools/446563#446563" target="_blank">result</a> on Stack Overflow and could solve the problem with the following command.
 
 `sudo xcode-select -switch /Library/Developer/CommandLineTools`
 
-그리고 <a href="https://apple.stackexchange.com/a/446624" target="_blank">바로 아래 답글에서</a> 확인할 수 있었던 것이 M1 칩의 Monterey 12.6 버전으로 업데이트 한 이후 Xcode CLI tools 14.0 버전을 설치한 이후
-문제가 발생되었다고 한다. 역시 macOS의 업데이트는 항상 날 이렇게 힘들게 한다.
+And I could find another thing <a href="https://apple.stackexchange.com/a/446624" target="_blank">at the very below reply</a> that there has been issue in downloading XCode CLI tools 14.0 after updating M1 chip's Monterey 12.6 version.
+This macOS updates always make me tired...
 
-~~그렇다면 여태까지 Django나 Pillow 같은 다른 패키지들은 어떻게 설치가 된 거지?~~
+~~Then how could I have been able to install other packages such as Django and Pillow?~~

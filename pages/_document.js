@@ -13,6 +13,8 @@ class MyDocument extends Document {
             integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB"
             crossOrigin="anonymous"
           />
+          <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+          {/* <script>mermaid.initialize({ startOnLoad: true });</script>  */}
         </Head>
         <body>
           <SkipNavLink />

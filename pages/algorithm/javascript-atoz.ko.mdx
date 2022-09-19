@@ -1,0 +1,142 @@
+---
+title: 자바스크립트에 대한 모든 것
+image: https://cxl.com/wp-content/uploads/2019/09/image3-1024x529.png
+description: '파이썬과 자바스크립트에서 문자열을 다루는 다양한 방법들에 대해 알아보자.'
+date: September 15th, 2022
+---
+
+import Callout from 'nextra-theme-docs/callout'
+import Bleed from 'nextra-theme-docs/bleed'
+import { Mermaid } from 'mdx-mermaid/Mermaid'
+import { SiJavascript, SiPython } from 'react-icons/si'
+
+# 자바스크립트 기초 및 심화
+
+자바스크립트의 기초 및 심화에 대한 지식을 나름 공부하여 정리한 글이다.
+
+## 메모리
+
+자바스크립트에서 어떤 변수에 값을 할당하게 되면
+
+1. 변수에 고유 식별자를 생성하고
+2. 메모리에 주소를 할당한다.
+3. 할당한 주소에 값을 저장한다.
+
+> 여기서 변수와 식별자의 차이점이라 하면
+> 변수란 "변할 수 있는 데이터"를 의미하고, 식별자란 어떤 데이터를 식별하는 데 사용하는 이름, 즉 변수명을 지칭한다.
+
+<br/>
+
+<center>
+    <figure>
+        <img src="https://lh3.googleusercontent.com/-YXC3gtpMlko/X3HA5DHH6MI/AAAAAAAAB3Q/VYM81zAFldY-cItuj7GMYA0Xy7Fy0GWBgCLcBGAsYHQ/image.png" alt="javascript variable" />
+        <figcaption>출처: Beta Labs</figcaption>
+    </figure>
+</center>
+
+<br/>
+
+### 다른 변수가 오게 될 경우
+
+예를 들어 다음과 같이 변수를 하나 선언했다고 가정해보자.
+
+```js
+let variable = 1;
+```
+
+<br/>
+
+만일 여기서 기존 변수에 새로운 변수를 대입을 하게 되면
+
+```js
+let variable2 = variable;
+```
+
+**새로운 변수는 기존 변수의 메모리를 참조하게 된다.**
+
+<br/>
+
+그렇다면 기존 변수를 조작하면 어떻게 될까?
+
+```js
+variable = variable + 1;
+```
+
+이 경우엔 두번째 변수의 값도 따라 변하는 것이 아니라 **새로운 메모리에 할당하여 값을 저장한다.** 그 이유는 <ins>자바스크립트에서 원시 타입은 불변하는 법칙을 가지고 있기 때문이다.</ins>
+
+👉 원시 타입이 변경될 때에는 항상 새로운 메모리에 값이 할당되어 자장된다.
+
+<CH.Scrollycoding>
+
+### hello
+
+<center>
+<Mermaid chart={`classDiagram
+    class Heap
+    class Call Stack
+`} />
+
+</center>
+위와 같이 기본적인 그래프가 이루어져있다.
+
+```js
+let a = 10;
+const b = 20;
+const arr = [];
+arr.push(5);
+arr.push(3);
+arr.push(1);
+```
+
+---
+
+### hello
+
+<center>
+<Mermaid chart={`classDiagram
+    class Heap
+    class CallStack {
+        +b = (0x004, 20)
+        +a = (0x004, 10)
+    }
+`} />
+
+</center>
+
+```js
+let a = 10;
+const b = 20;
+const arr = [];
+arr.push(5);
+arr.push(3);
+arr.push(1);
+```
+
+---
+
+### hello
+
+<center>
+<Mermaid chart={`classDiagram
+    class Heap {
+        +0xFFB, []
+    }
+    class CallStack {
+        +arr = (0x008, 0xFFB)
+        +b = (0x004, 20)
+        +a = (0x004, 10)
+    }
+`} />
+
+</center>
+
+```js
+let a = 10;
+const b = 20;
+const arr = [];
+arr.push(5);
+arr.push(3);
+arr.push(1);
+```
+
+</CH.Scrollycoding>
