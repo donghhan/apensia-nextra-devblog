@@ -1,0 +1,1005 @@
+---
+title: 배열
+image: https://www.tabnine.com/academy/wp-content/uploads/2020/10/academy_1.png
+description: '배열 총정리'
+date: September 23rd, 2022
+---
+
+import Callout from 'nextra-theme-docs/callout'
+import Bleed from 'nextra-theme-docs/bleed'
+import { SiJavascript, SiPython } from 'react-icons/si'
+
+## 배열 (순차 리스트)
+
+연관된 데이터를 연속적인 형태로 구성된 구조를 가진다. 이 때, 배열에 포함된 원소는 순서대로 번호(index)가 붙게 된다.
+
+이러한 배열의 특징으로는
+
+1. 고정된 크기를 가지며 일반적으론 동적으로 크기를 늘릴 수 없다.
+   - 다만 자바스크립트처럼 대부분의 스크립트 언어는 동적으로 크기가 증감되도록 만들어져 있다.
+2. 원하는 원소의 인덱스를 알고 있다면 $O(1)$로 원소를 찾을 수 있다.
+3. 원소를 삭제하면 해당 인덱스에 빈자리가 생긴다. 삭제 후 순서를 맞추려면 $O(n)$만큼 선형 시간이 걸린다.
+4. 원소를 특정 인덱스에 추가하려면 해당 인덱스에 자리를 만들고 나서 추가가 가능하다. 이 또한 $O(n)$만큼 선형 시간이 걸린다.
+
+⭐️ 따라서 **_추가 및 삭제 로직이 빈번하게 일어나는 경우_** 배열은 그다지 좋은 알고리즘 선택지가 아니다.
+
+<br/>
+
+### 배열 생성
+
+```js
+// 빈 배열 초기화
+const arr1 = [];
+const arrAnother = new Array();
+// label []
+console.log(arr1);
+// label []
+console.log(arrAnother);
+
+// 미리 초기화된 배열을 생성할 수 있다.
+const arr2 = [1, 2, 3, 4, 5];
+// label [1, 2, 3, 4, 5]
+console.log(arr2);
+
+// 많은 값을 같은 값으로 한 번에 초기화 할 경우
+// link[14:18] https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Array
+// link[24:27] https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill
+const arr3 = Array(10).fill(0);
+// label [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+console.log(arr3);
+
+// 특정 로직을 사용하여 초기화할 경우
+// link[20:23] https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from
+const arr4 = Array.from({ length: 10 }, (_, i) => i);
+// label [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+console.log(arr4);
+```
+
+<br/>
+
+### 배열 요소 추가/삭제
+
+```js
+const arr = [1, 2, 3];
+// label [1, 2, 3]
+console.log(arr);
+
+// 요소 4를 추가한다
+// link[5:8] https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
+// label [1, 2, 3, 4] O(1)
+arr.push(4);
+
+// 여러 요소를 한꺼번에 추가할 수 있다.
+// label [1, 2, 3, 4, 5, 6] O(1)
+arr.push(5, 6);
+
+// 특정 인덱스에 요소 추가하기
+// link[5:10] https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+// label [1, 2, 3, 128, 4, 5, 6] O(n)
+arr.splice(3, 0, 128);
+
+// 특정 인덱스 값 제거
+arr.splice(3, 1);
+// label 4 O(n)
+console.log(arr[3]);
+
+// pop 메소드
+// 맨 끝의 요소를 제거한다.
+arr.pop();
+// label 6
+console.log(arr.pop());
+
+// shift 메소드
+// 맨 앞의 요소를 제거한다.
+arr.shift();
+
+console.log(arr);
+```
+
+<br/>
+
+### 배열 합치기
+
+```js
+const arr1 = [1, 2, 3, 4, 5, 6];
+const arr2 = [7, 8, 9, 10];
+
+// concat 메소드
+// 원본 배열들은 변경하지 않은 채 합쳐진 배열이 반환된다.
+console.log(arr1.concat(arr2));
+console.log([].concat(arr1, arr2));
+
+// Spread Operator 사용
+console.log([...arr1, ...arr2]);
+```
+
+<br/>
+
+### 특이점
+
+1. 자바스크립트에서 배열의 크기는 동적으로 결정된다.
+
+```js
+// 자바스크립트에서 배열의 크기는 동적으로 결정된다.
+const arr = [];
+// label []
+console.log(arr);
+arr.push(1);
+arr.push(1);
+arr.push(2);
+arr.push(3);
+// label [1, 1, 2, 3]
+console.log(arr);
+```
+
+2. 자바스크립트에서의 배열은 근본적으로 타입이 객체 타입이므로 인덱스가 굳이 숫자형일 필요는 없다 (문자열도 가능).
+
+```js
+const arr = [1, 1, 2, 3];
+
+// label 4
+console.log(arr.length);
+
+arr["string"] = 10;
+arr[false] = 0;
+// label [1, 1, 2, 3, string: 10, false: 0]
+console.log(arr);
+// label 4
+console.log(arr.length);
+
+arr[4] = 5;
+// label 5
+console.log(arr.length);
+```
+
+<br/>
+
+## 연결 리스트
+
+각 요소를 포인터로 연결하여 관리하는 선형 자료구조이다. 여기서 각 요소는 노드라 부르며 데이터 영역과 포인터 영역으로 구성된다.
+아래 그림에서 첫 번째 노드를 Head라고 하며, 각각의 알파벳들은 데이터 영역을 의미한다. 그리고 Next라고 표기된 곳은 포인터 영역을 의미하여 다른 연결 리스트를 연결해주는 포인터이다.
+
+<br/>
+
+<center>
+    <figure>
+        <img src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/gq/2013/03/Linkedlist.png" alt="linked list" />
+        <figcaption>출처: GeeksforGeeks</figcaption>
+    </figure>
+</center>
+
+연결 리스트의 경우
+
+1. 메모리가 허용하는 한 요소를 제한없이 추가할 수 있다.
+2. 탐색에는 $O(n)$의 선형 시간이 소요된다.
+3. 요소를 추가하거나 제거할 때에는 $O(1)$이 소요된다.
+
+### 단일 연결 리스트
+
+Head에서 Tail까지 단방향으로 이어지는 연결 리스트이다. 가장 단순한 형태의 연결 리스트라 볼 수 있다.
+
+<br/>
+
+## 스택
+
+Last In, First Out(LIFO) 개념을 가진 선형 자료구조이다. 즉, 나중에 들어간 요소가 먼저 나오는 구조이다.
+제일 쉬운 예로 바닥이 막힌 상자를 생각하면 되겠다.
+
+<br/>
+
+<center>
+    <figure>
+        <img src="http://cfs3.tistory.com/upload_control/download.blog?fhandle=YmxvZzEyNDIxQGZzMy50aXN0b3J5LmNvbTovYXR0YWNoLzAvOS5wbmc%3D" alt="queue" />
+        <figcaption>출처: 안코덤</figcaption>
+    </figure>
+</center>
+
+### 배열 방식
+
+스택이라는 빈 배열에 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push" target="_blank"><code>push()</code></a>를 이용하여 요소를 순차적으로 집어넣을 수 있고,
+이후, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop" target="_blank"><code>pop()</code></a>을 이용하여 맨 뒤쪽의 요소를 제거할 수 있다.
+
+자바스크립트에선 배열의 중간 요소를 추가 및 삭제하는 로직을 사용하지 않았기 때문에 꽤 쉽게 구현이 가능하다.
+
+<br/>
+
+<center>
+    <figure>
+        <img src="https://media.geeksforgeeks.org/wp-content/uploads/growable-stack.png" alt="queue" />
+        <figcaption>출처: GeeksforGeeks</figcaption>
+    </figure>
+</center>
+
+<br/>
+
+```js
+const stack = [];
+
+// Push
+stack.push(1);
+stack.push(2);
+stack.push(3);
+// label [1, 2, 3]
+console.log(stack);
+
+// Pop
+stack.pop();
+// label [1, 2]
+console.log(stack);
+
+// 최상단 값 가져오기
+// label 2
+console.log(stack[stack.length - 1]);
+```
+
+<br/>
+
+### 연결 리스트 방식
+
+```js
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class Stack {
+    constructor() {
+        this.top = null;
+        this.size = 0;
+    }
+
+    push(value) {
+        const node = new Node(value);
+        node.next = this.top;
+        this.top = node;
+        this.size += 1;
+    }
+
+    pop() {
+        const value = this.top.value;
+        this.top = this.top.next;
+        this.size -= 1;
+        return value;
+    }
+
+    size() {
+        return this.size;
+    }
+}
+```
+
+<br/>
+
+```js
+const stack = new Stack();
+
+stack.push(1);
+stack.push(2);
+stack.push(3);
+// label 3
+console.log(stack.pop());
+stack.push(4);
+// label 4
+console.log(stack.pop());
+// label 2
+console.log(stack.pop());
+```
+
+## 큐
+
+First In, First Out(FIFO) 개념을 가진 선형 자료구조이다. 즉, 먼저 들어간 요소가 먼저 나오는 구조이다.
+큐의 맨 앞부분을 front라 하고, 맨 뒷부분을 rear라 한다. 그리고 요소를 큐에 삽입하는 것을 enqueue, 들어간 요소가 큐에서 빠져나오는 것을 dequeue라고 칭한다.
+
+<br/>
+
+<center>
+    <figure>
+        <img src="https://www.javascripttutorial.net/wp-content/uploads/2016/08/JavaScript-Queue-Illustration.png" alt="queue" />
+        <figcaption>출처: JavaScript Tutorial</figcaption>
+    </figure>
+</center>
+
+<br/>
+
+큐에는 크게 두 가지로 분류될 수 있다.
+
+1. 선형 큐
+2. 원형 큐
+
+<br/>
+
+### 선형 큐
+
+가장 대표적인 예로 놀이공원의 놀이기구를 타기 위한 줄을 생각하면 쉽다. 일자형으로 되어 있는 대기줄은 맨 앞사람이 맨 먼저 타게 된다.
+
+#### 배열 방식 (JS)
+
+아래 그림을 살펴보도록 하자.
+
+<br/>
+
+<center>
+    <figure>
+        <img src="https://media.geeksforgeeks.org/wp-content/uploads/queue-1.png" alt="linear queue with array" />
+        <figcaption>출처: GeeksforGeeks</figcaption>
+    </figure>
+</center>
+
+<br/>
+
+1. 첫번째 그림에서 큐의 맨 앞쪽의 값인 front는 10이고, 맨 뒷쪽의 값인 rear는 50이다.
+2. 이제 6번째 인덱스에 66이라는 새로운 값을 집어넣었다고(enqueue) 가정해보자. 이 경우 rear는 66이 된다. 그리고 맨 앞 0번째 인덱스 값인 10이 빠져나온다면(dequeue) 이제 front는 15가 된다.
+3. 변경된 큐의 위치에 따라서 인덱스를 앞으로 한 칸씩 이동시킨다.
+
+자바스크립트에선 배열의 크기가 동적으로 결정되기 때문에 배열에 값을 얼만큼 집어넣든지 크게 상관은 없지만 문제는 front와 rear의 값이 계속 바뀌고 이 값들이 한없이 커질 수 있다는 단점이 있다.
+그렇기 때문에 위의 3번에서 설명한대로 인덱스를 앞당기는 작업이 필요한데, 이렇게 될 경우 선형 시간이 소요되기 때문에 시간복잡도 측면에서 그리 효율적이지 못하다.
+
+<br/>
+
+<CH.Scrollycoding>
+
+##### `Queue` 클래스 생성
+
+`Queue` 클래스를 만든 후, 생성자 함수로서 배열 `queue`, 맨 앞 값인 `front`와 맨 뒤 값인 `rear`를 모두 `0`으로 초기화해준다.
+
+```js focus=1:6
+class Queue {
+    constructor() {
+        this.queue = [];
+        this.front = 0;
+        this.rear = 0;
+    }
+
+    enqueue(value) {
+        this.queue[this.rear++] = value;
+    }
+
+    dequeue() {
+        const value = this.queue[this.front];
+        delete this.queue[this.front];
+        this.front += 1;
+        return value;
+    }
+
+    peek() {
+        return this.queue[this.front];
+    }
+
+    size() {
+        return this.rear - this.front;
+    }
+}
+```
+
+---
+
+##### `enqueue` 메소드
+
+`queue` 배열에 집어넣을 `enqueue` 메소드이다.
+파라미터로 전달해준 `value`를 배열에 더해주되, `rear`에 값을 1씩 증가한 인덱스에 집어넣도록 한다.
+
+```js focus=8:10
+class Queue {
+    constructor() {
+        this.queue = [];
+        this.front = 0;
+        this.rear = 0;
+    }
+
+    enqueue(value) {
+        this.queue[this.rear++] = value;
+    }
+
+    dequeue() {
+        const value = this.queue[this.front];
+        delete this.queue[this.front];
+        this.front += 1;
+        return value;
+    }
+
+    peek() {
+        return this.queue[this.front];
+    }
+
+    size() {
+        return this.rear - this.front;
+    }
+}
+```
+
+---
+
+##### `dequeue` 메소드
+
+`queue` 배열에 요소를 삭제할 `dequeue` 메소드이다.
+배열의 맨 앞 값, 즉 `front` 인덱스의 값을 `value`로 초기화한 후, 해당 `value`를 배열에서 제외시킨다.
+그러면 배열 안에 있는 값들이 전부 앞으로 밀려야하기 때문에 `front`값에 1을 더해준다.
+마지막으로 제외시킨 `value`값을 반환한다.
+
+```js focus=12:17
+class Queue {
+    constructor() {
+        this.queue = [];
+        this.front = 0;
+        this.rear = 0;
+    }
+
+    enqueue(value) {
+        this.queue[this.rear++] = value;
+    }
+
+    dequeue() {
+        const value = this.queue[this.front];
+        delete this.queue[this.front];
+        this.front += 1;
+        return value;
+    }
+
+    peek() {
+        return this.queue[this.front];
+    }
+
+    size() {
+        return this.rear - this.front;
+    }
+}
+```
+
+---
+
+##### `peek` 메소드
+
+`queue` 배열의 가장 앞에 있는 값을 반환하는 메소드이다.
+
+```js focus=19:21
+class Queue {
+    constructor() {
+        this.queue = [];
+        this.front = 0;
+        this.rear = 0;
+    }
+
+    enqueue(value) {
+        this.queue[this.rear++] = value;
+    }
+
+    dequeue() {
+        const value = this.queue[this.front];
+        delete this.queue[this.front];
+        this.front += 1;
+        return value;
+    }
+
+    peek() {
+        return this.queue[this.front];
+    }
+
+    size() {
+        return this.rear - this.front;
+    }
+}
+```
+
+---
+
+##### `size` 메소드
+
+`queue` 배열의 크기를 반환하는 메소드이다.
+
+```js focus=23:25
+class Queue {
+    constructor() {
+        this.queue = [];
+        this.front = 0;
+        this.rear = 0;
+    }
+
+    enqueue(value) {
+        this.queue[this.rear++] = value;
+    }
+
+    dequeue() {
+        const value = this.queue[this.front];
+        delete this.queue[this.front];
+        this.front += 1;
+        return value;
+    }
+
+    peek() {
+        return this.queue[this.front];
+    }
+
+    size() {
+        return this.rear - this.front;
+    }
+}
+```
+
+</CH.Scrollycoding>
+
+<br/>
+
+위의 코드를 토대로 다음과 같이 실행해볼 수 있다.
+
+👉 **_각 코드 줄에 마우스 오버를 하여 출력값을 볼 수 있다._**
+
+```js
+const queue = new Queue();
+
+// label [1]
+queue.enqueue(1);
+// label [1, 2]
+queue.enqueue(2);
+// label [1, 2, 4]
+queue.enqueue(4);
+// label 1
+console.log(queue.dequeue()); // 맨 앞 요소 제거
+// label [2, 4, 8]
+queue.enqueue(8);
+// label 3
+console.log(queue.size());
+// label 2
+console.log(queue.peek());
+// label 2
+console.log(queue.dequeue()); // 다시 맨 앞 요소 제거
+// label 4
+console.log(queue.dequeue()); // 또다시 맨 앞 요소 제거
+```
+
+<br/>
+
+#### 연결 리스트 방식 (JS)
+
+앞서 살펴본 배열 방식으로 구현할 때 발생할 수 있는 시간복잡도가 증가하는 이슈를 연결 리스트 방식으로 구현해볼 수 있다.
+연결 리스트 방식에선 front가 head가 되고 rear가 tail이 되며 인덱스에 대한 고민은 하지 않아도 된다.
+
+<br/>
+
+<center>
+    <figure>
+        <img src="https://static.javatpoint.com/ds/images/linked-list-implementation-of-queue.png" alt="linear queue with array" />
+        <figcaption>출처: java T point</figcaption>
+    </figure>
+</center>
+
+<CH.Scrollycoding>
+
+##### `Node` 클래스 생성
+
+연결 리스트를 만들기 위한 `Node` 클래스를 생성해준다.
+
+```js focus=1:6
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class Queue {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
+
+    enqueue(newValue) {
+        const newNode = new Node(newValue);
+        if (this.head === null) {
+            this.head = this.tail = newNode;
+        } else {
+            this.tail.next = newNode;
+            this.tail = newNode
+        }
+        this.size += 1;
+    }
+
+    dequeue() {
+        const value = this.head.value;
+        this.head = this.head.next;
+        this.size -= 1;
+        return value;
+    }
+
+    peek() {
+        return this.head.value;
+    }
+}
+```
+
+---
+
+##### `Queue` 클래스 생성
+
+`Queue` 클래스를 생성 후, 생성자 함수를 만든다.
+생성자 함수 또한 연결 리스트를 만드는 것과 크게 다르지 않다.
+
+```js focus=9:13
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class Queue {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
+
+    enqueue(newValue) {
+        const newNode = new Node(newValue);
+        if (this.head === null) {
+            this.head = this.tail = newNode;
+        } else {
+            this.tail.next = newNode;
+            this.tail = newNode
+        }
+        this.size += 1;
+    }
+
+    dequeue() {
+        const value = this.head.value;
+        this.head = this.head.next;
+        this.size -= 1;
+        return value;
+    }
+
+    peek() {
+        return this.head.value;
+    }
+}
+```
+
+---
+
+##### `enqueue` 메소드
+
+배열 형식의 `enqueue` 메소드와 같은 메커니즘이다.
+
+1. 새 노드를 만들어준다.
+2. 만일 `head` 부분이 `null`라 한다면 현재 아무 노드도 없는 것이므로 새로운 노드인 `newNode`를 각각 `head`와 `tail`에 할당시켜 준다.
+3. 2번의 경우가 아니라면 `tail`의 다음 노드를 새 노드로 지정한 후, `tail`에는 해당 노드를 할당시켜 준다.
+4. 마지막으로 `queue` 배열 전체 사이즈를 1 증가시켜 준다.
+
+```js focus=15:24
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class Queue {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
+
+    enqueue(newValue) {
+        const newNode = new Node(newValue);
+        if (this.head === null) {
+            this.head = this.tail = newNode;
+        } else {
+            this.tail.next = newNode;
+            this.tail = newNode
+        }
+        this.size += 1;
+    }
+
+    dequeue() {
+        const value = this.head.value;
+        this.head = this.head.next;
+        this.size -= 1;
+        return value;
+    }
+
+    peek() {
+        return this.head.value;
+    }
+}
+```
+
+---
+
+##### `dequeue` 메소드
+
+스택에서의 `pop()`과 동일한 메커니즘이다.
+
+```js focus=26:31
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class Queue {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
+
+    enqueue(newValue) {
+        const newNode = new Node(newValue);
+        if (this.head === null) {
+            this.head = this.tail = newNode;
+        } else {
+            this.tail.next = newNode;
+            this.tail = newNode
+        }
+        this.size += 1;
+    }
+
+    dequeue() {
+        const value = this.head.value;
+        this.head = this.head.next;
+        this.size -= 1;
+        return value;
+    }
+
+    peek() {
+        return this.head.value;
+    }
+}
+```
+
+---
+
+##### `peek` 메소드
+
+`head`의 값을 그대로 반환해준다.
+
+```js focus=33:35
+class Node {
+    constructor(value) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class Queue {
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
+
+    enqueue(newValue) {
+        const newNode = new Node(newValue);
+        if (this.head === null) {
+            this.head = this.tail = newNode;
+        } else {
+            this.tail.next = newNode;
+            this.tail = newNode
+        }
+        this.size += 1;
+    }
+
+    dequeue() {
+        const value = this.head.value;
+        this.head = this.head.next;
+        this.size -= 1;
+        return value;
+    }
+
+    peek() {
+        return this.head.value;
+    }
+}
+```
+
+</CH.Scrollycoding>
+
+<Callout type="error" emoji="🚨">
+    큐를 구현할 시 `shift()`를 사용하지 않도록 한다. 이는 `shift()`가 선형 시간이 걸리기 때문에 애초부터 큐의 원래 취지와는 어긋나는 메소드이기 때문이다.
+
+    ```js
+    const queue = [1, 2, 3];
+    queue.push(4);
+    // label O(n)
+    const value = queue.shift();
+    // label 1
+    console.log(value);
+    ```
+
+</Callout>
+
+<br/>
+
+### 원형(환형) 큐
+
+`front`와 `rear`가 이어져 있는 큐이다.
+한정된 공간을 효율적으로 이용할 때 사용되는 자료구조이기 때문에 연결 리스트를 사용하여 구현을 해도 되긴 하지만 크게 이점은 없다.
+
+```js
+class Queue {
+    constructor(maxSize) {
+        this.maxSize = maxSize;
+        this.queue = [];
+        this.front = 0;
+        this.rear = 0;
+        this.size = 0;
+    }
+
+    enqueue(value) {
+        if (this.isFull()) {
+            console.log("Queue is full");
+            return;
+        }
+        this.queue[this.rear] = value;
+        this.rear = (this.rear + 1) % this.maxSize;
+        this.size += 1;
+    }
+
+    dequeue() {
+        const value = this.queue[this.front];
+        delete this.queue[this.front];
+        this.front = (this.front + 1) % this.maxSize;
+        this.size -= 1;
+        return value;
+    }
+
+    isFull() {
+        return this.size === this.maxSize;
+    }
+
+    peek() {
+        return this.queue[this.front];
+    }
+}
+```
+
+<br/>
+
+```js
+const queue = new Queue(4);
+
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(4);
+queue.enqueue(8);
+// label Queue is full
+queue.enqueue(16);
+// label 1
+console.log(queue.dequeue());
+// label 2
+console.log(queue.dequeue());
+// label 2
+console.log(queue.size);
+// label 4
+console.log(queue.peek());
+queue.enqueue(16);
+queue.enqueue(32);
+// label true
+onsole.log(queue.isFull());
+```
+
+## 그래프
+
+정점과 정점 사이를 연결하는 간선으로 이루어진 비선형 자료구조이다. 정점 집합과 간선 집합으로 표현이 가능하다.
+드라마의 인물 관계도, 지하철 노선도 등 다양한 예제에서 사용될 수 있다.
+
+<br/>
+
+<center>
+    <figure>
+        <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--Kv5ciqHz--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://cdn-images-1.medium.com/max/1600/1%2AbH2AHhFt9P_Tb8Opp6bhLQ.png" alt="graph example" />
+        <figcaption>출처: DEV.to</figcaption>
+    </figure>
+</center>
+
+1. 정점은 여러 개의 간선을 가질 수 있다.
+2. 크게 방향 그래프와 무방향 그래프로 나눌 수 있다.
+3. 간선은 가중치를 가질 수 있다.
+4. 사이클이 발생할 수 있다. 따라서, 무한 루프에 빠지지 않도록 사이클을 찾아야 할 필요가 있다.
+
+### 무방향 그래프
+
+간선으로 이어진 정점끼리 양방향으로 이동이 가능하여 방향성이 없는 그래프를 의미한다.
+표현하기에 (A, B) 및 (B, A)는 같은 간선으로 취급된다. 양방향 통행 도로가 대표적인 케이스이다.
+
+<br/>
+
+<center>
+    <figure>
+        <img src="https://miro.medium.com/max/700/1*P68VQPcnFXBo9XlA4pDNrg.png" alt="undirected graph" />
+        <figcaption>출처: medium.com</figcaption>
+    </figure>
+</center>
+
+<br/>
+
+### 방향 그래프
+
+간선에 방향성이 존재하는 그래프이다.
+양방향으로 갈 수 있더라도 (A, B)와 (B, A)는 다른 간선으로 취급된다.
+도로에선 일방 통행 도로가 대표적인 예라 할 수 있겠다.
+
+<br/>
+
+<center>
+    <figure>
+        <img src="https://www.researchgate.net/publication/342827332/figure/fig2/AS:911602127749121@1594354292391/Example-of-simple-directed-graph.jpg" alt="directed graph" />
+        <figcaption>출처: ResearchGate</figcaption>
+    </figure>
+</center>
+
+## 정렬
+
+정렬이란 요소들을 일정한 순서대로 열거하는 알고리즘을 의미한다.
+
+- 정렬 기준은 사용자가 정할 수 있다 (오름차순 혹은 내림차순)
+- 크게 비교식과 분산식 정렬로 나눌 수 있다.
+- 대부분의 언어가 built-in으로 제공해준다.
+- 삽입, 선택, 버블, 머지, 힙, 퀵 등 다양한 정렬 방식이 존재한다.
+
+정렬이 어떤 식으로 이루어지는지 시각적으로 알아보고 싶다면 <a href="https://www.toptal.com/developers/sorting-algorithms" target="_blank">여기</a>를 참조하도록 하자.
+
+<br/>
+## 비교식 정렬
+
+글자 그대로 다른 요소들과 비교를 하면서 정렬을 하는 방식을 말한다.
+
+### 거품 정렬
+
+서로 인접한 두 요소를 검사하여 정렬하는 알고리즘이다. 시간복잡도는 $O(n^2)$이다.
+
+<br/>
+
+<span class="logo"><SiJavascript/></span>
+
+### 선택 정렬
+
+선택한 요소와 가장 우선순위가 높은 요소를 교환하는 정렬 알고리즘이다. 시간복잡도 역시 $O(n^2)$이다.
+
+### 삽입 정렬
+
+선택한 요소를 삽입할 수 있는 위치를 찾아 삽입하는 방식의 정렬 알고리즘이다. 시간복잡도 역시 $O(n^2)$이다.
+
+## 분산식 정렬
+
+### 합병 정렬
+
+분할 정복 알고리즘을 이용한 최선과 최악이 같은 안정적인 정렬 알고리즘이다. 시간복잡도는 $O(n \log n)$이다.
+
+### 퀵 정렬
+
+분할 정복 알고리즘을 이용한 매우 빠르지만 최악의 경우가 존재하는 불안정한 정렬이다. 시간복잡도 역시 $O(n \log n)$이다.
+
+<br/>
+
+## 재귀 함수
+
+재귀 함수란 자기 자신을 호출하는 함수를 의미한다. 따라서, 자기 자신을 호출하는 것을 재귀 호출이라 부른다.
+함수 호출의 경우 콜 스택에 쌓이기 때문에 <ins>_스택 자료구조_</ins>와 유사하게 동작을 한다.
+함수형 프로그래밍에선 루프 구현을 재귀로 구현하는 경우가 많다.
+
+재귀 함수로 구현해야 편한 알고리즘에는
+
+1. Union-Find
+2. DFS
+3. 백트래킹
+
+등이 있다.
+
+<br/>
+
+### 무한 루프
+
+자바스크립트에선 콜 스택에 제한이 있기 때문에 재귀 함수를 잘못 작성하게 되면 무한 루프에 빠질 수 있다.
+따라서 재귀 함수를 작성할 때는 반드시 탈출할 수 있는 조건을 작성해야만 한다.
+
+```js
+// 재귀 호출
+function recursion(a) {
+    // 탈출 코드가 없다면 무한 루프에 빠지게 된다.
+    return recursion(a + 1);
+}
+```
