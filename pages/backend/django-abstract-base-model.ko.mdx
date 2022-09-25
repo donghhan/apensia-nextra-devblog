@@ -1,0 +1,192 @@
+---
+title: Django 모델 설계 (1)
+image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
+description: "추상화 베이스 모델에 대하여"
+date: August 19th, 2022
+---
+
+import Callout from 'nextra-theme-docs/callout'
+import Bleed from 'nextra-theme-docs/bleed'
+
+# Django 모델
+
+Django에서 <a href="https://docs.djangoproject.com/en/4.1/intro/tutorial02/#creating-models" target="_blank">모델</a>이란 한마디로 데이터의 생김새를 보여주는 것이다.
+복잡한 SQL문을 구성할 필요가 없이 Django에서 제공해주는 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.Field" target="_blank">필드</a>들만 적절히 사용하면
+손쉽게 데이터베이스를 설계할 수 있다.
+
+## 고찰
+
+백엔드 설계에 있어 가장 큰 골칫거리라 하면 바로 데이터의 모양인 모델을 설정해주는 일이 아닐까 싶다.
+필자가 공유경제 플랫폼 Let'sh 어플리케이션을 기획할 당시만 해도 다양한 종류의 데이터를 다뤄야만 할 것 같았다.
+서비스가 고도화되면 될수록 그 복잡도는 높아가겠지만 일단 제일 미니멀하게 필요로 하는 데이터엔 무엇이 있을지 간추려본 결과 다음과 같이 정리가 되었다.
+
+1. 유저: 서비스를 사용할 사용자
+2. 공유 아이템: 숙소, 이동수단 등 사용자들이 공유할 아이템 (숙소, 이동수단 등)
+3. 리뷰: 공유 아이템 사용 후 사용자들이 남긴 리뷰
+4. 예약: 공유 아이템을 사용하기 위해 만드는 예약
+5. 메세지: 사용자들끼리 나누는 대화 메세지
+6. 카테고리(🟨 고도화 작업 때 진행): 공유 아이템의 종류
+7. 미디어: 사용자들이 공유 아이템을 설명하기 위해 업로드한 사진, 동영상과 같은 시각적인 자료
+8. 찜하기: 사용자들이 추후에 공유 아이템을 사용하기 위해 임시로 저장해두는 기능
+9. 공용: 상기 모든 모델에 대하여 함께 공유되는 모델
+10. 기타 &rarr; 고도화 작업 때 진행될 기타 다른 모델들
+
+카테고리의 경우 서비스가 고도화될 때 공유 아이템을 어드민 유저들이 유동적으로 추가할 수 있게끔 하기 위해
+고안한 기능이므로 이 부분은 블로그에 소개되는 글에선 다루지 않을 예정이다.
+
+<br/>
+
+### 브레인스토밍
+
+필자가 만든 앱들은 다음과 같이 이름을 지었다.
+
+<br/>
+
+<center>
+|        설명         |       앱 이름        |
+| :--------------------: | :---------------: |
+|          유저          |      `users`      |
+|   공유 아이템 (숙소)   |  `accomodations`  |
+| 공유 아이템 (이동수단) | `transportations` |
+|          리뷰          |     `reviews`     |
+|          예약          |  `bookings`   |
+|         메세지         |    `direct_messages`     |
+|         카테고리         |    `categories`     |
+| 미디어 | `user_media` |
+| 찜하기 | `wishlists` |
+</center>
+
+숙소와 이동수단의 경우 똑같은 공유 아이템이지만 따로 앱을 설정해주기로 하였다.
+
+<br/>
+
+## 프로젝트 시작하기
+
+_준비 중_
+
+<br/>
+
+## 공통 모델
+
+공통 모델은 다른 모델에서도 함께 사용될 수 있는 정보들을 한 데 모아놓은 모델이 되겠다.
+공통적으로 모든 앱에서 사용될 수 있는 정보들 중 가장 대표적인 것이 바로 시간과 유저의 주소가 될 수 있다.
+
+### 추상화 베이스 모델
+
+하지만 이러한 데이터 필드를 일일히 모든 앱의 모델 클래스에 정의하는 것은 불필요한 코드의 반복일 뿐더러 추후에 DB 쓸데없이 너무 많은 데이터가 쌓일 수도 있다.
+그렇기 때문에 공통 모델은 <a href="https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes" target="_blank">추상화 베이스 모델</a>로 만들어 보았다.
+즉, 공통적으로 사용될 정보들에 대한 데이터 필드를 정의한 후, <a href="https://docs.python.org/3/tutorial/classes.html#inheritance" target="_blank">클래스의 상속</a>을 통해
+다른 앱의 모델에서도 공통 모델에 사용된 데이터들을 언제든지 사용할 수 있는 것이다.
+
+<br/>
+
+### 구현
+
+#### 앱 생성
+
+먼저 다음 명령어를 통해 `common`이라는 앱을 만들어보도록 하자. 이 앱 안에 우리의 공통 모델에 대하여 정의할 것이다.
+
+```bash
+django-admin startapp common
+```
+
+이후, `settings.py`에 우리가 만든 `common` 앱을 등록하도록 하자.
+필자는 추후에 앱이 좀 복잡해질 것을 우려하여 기존에 있던 <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#installed-apps" target="_blank"><code>INSTALLED_APPS</code></a>를 나누기로 하였다.
+
+1. `DJANGO_APPS`: 이미 기존에 설치되었던 Django 관련 앱들
+2. `THIRDPARTY_APPS`: 추후에 외부 라이브러리 패키지들을 설치하기 위한 용도
+3. `MANUALLY_INSTALLED_APPS`: 필자가 직접 설치한 앱들
+
+그리고 상기 3개를 모두 `INSTALLED_APPS`로 묶어주었다.
+
+```py config/settings.py
+DJANGO_APPS = [
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+]
+
+THIRDPARTY_APPS = []
+
+MANUALLY_INSTALLED_APPS = [
+    "common.apps.CommonConfig",
+]
+
+INSTALLED_APPS = DJANGO_APPS + THIRDPARTY_APPS + MANUALLY_INSTALLED_APPS
+```
+
+<br/>
+
+<CH.Scrollycoding>
+
+#### 모델 클래스 생성
+
+공통 모델에는 여러 가지 공통 데이터를 다루는 모델이 있을 것이다.
+그 중에서도 먼저 시간을 다뤄보는 모델부터 만들어보았다. `TimeStampModel`이라는 이름의 클래스로 만들어 주었다.
+
+```py focus=3:7
+from django.db import models
+
+class TimeStampModel(models.Model):
+
+    """TimeStamp Model Definition"""
+
+    pass
+```
+
+---
+
+#### `Meta` 클래스 설정
+
+<a href="https://docs.djangoproject.com/en/4.1/topics/db/models/#meta-options" target="_blank"><code>Meta</code> 클래스</a>는 해당 모델 클래스에 추가적인 설정을 해줄 수 있다.
+공통 모델은 추상화 베이스 모델이기 때문에 <a href="https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes" target="_blank">공식 문서</a>에서 설명한 것처럼 
+`abstract = True`를 설정해 주었다.
+
+이렇게 될 경우 DB 테이블을 생성하지 않는 대신 다른 앱의 모델에서 사용되었을 때 해당 필드들을 사용할 수 있다.
+
+```py focus=9:10
+from django.db import models
+
+class TimeStampModel(models.Model):
+
+    """TimeStamp Model Definition"""
+
+    pass
+
+    class Meta:
+        abstract = True
+```
+
+---
+
+#### `DateTimeField`
+
+마지막으로 필드들을 설정해 주었다.
+
+<a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DateTimeField" target="_blank"><code>DateTimeField</code></a>은 글자에서 그대로 알 수 있듯이 
+날짜와 시간을 관장하는 모델 필드이다. 그 중에서 생성된 날짜/시간을 `created_at`로, 업데이트된 날짜/시간을 `updated_at`라는 이름으로 필드를 설정해주었다.
+
+여기서 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DateField.auto_now_add" target="_blank"><code>auto_now_add</code></a> 속성은
+어떤 객체가 처음으로 <ins>생성될 떄</ins> 자동적으로 현재 시점으로 설정을 해준다.
+
+반면 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DateField.auto_now" target="_blank"><code>auto_now</code></a>의 경우
+어떤 객체가 처음으로 <ins>업데이트될 때</ins>자동적으로 현재 시점으로 설정을 해준다.
+
+```py focus=7:8
+from django.db import models
+
+class TimeStampModel(models.Model):
+
+    """TimeStamp Model Definition"""
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+```
+
+</CH.Scrollycoding>
