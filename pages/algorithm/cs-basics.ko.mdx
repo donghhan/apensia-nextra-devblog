@@ -1,5 +1,5 @@
 ---
-title: 구글을 들어가면 무슨 일이 벌어질까? 
+title: 기초 CS 상식 
 image: https://cxl.com/wp-content/uploads/2019/09/image3-1024x529.png
 description: '네크워크 기초에 대하여 알아보자.'
 date: September 2nd, 2022
@@ -7,25 +7,123 @@ date: September 2nd, 2022
 
 import Callout from 'nextra-theme-docs/callout'
 import Bleed from 'nextra-theme-docs/bleed'
+import { Mermaid } from 'mdx-mermaid/Mermaid';
 
-# 네트워크
+# CS 지식
 
-네이버나 구글에 들어갔을 때 과연 컴퓨터 내부에선 어떤 일이 벌어지고 있을까?
+이 포스트는 필자가 배운 CS 기초 및 심화 부분을 학습 정리한 것이다.
 
-## URL 해석
+## 브라우저에 URL을 입력할 경우
+
+네이버나 구글에 들어갔을 때 과연 컴퓨터 내부에선 어떤 일이 벌어지고 있을까? 단계별로 살펴보자.
+
+### URL 해석
 
 예컨대 구글을 검색창에 쳐서 들어갔다고 가정해보자.
 그 경우 맨 처음 컴퓨터가 하는 일은 바로 URL을 해석하는 일이다.
 
 `scheme://<user>:<password>@<host>:<port>/<url-path>`
 
-## DNS 해석
+위의 URL에서
 
-<a href="https://en.wikipedia.org/wiki/Domain_Name_System" target="_blank">DNS (Domain Name System)</a>이란 인간이 쉽게 읽을 수 있는 도메인 주소와 컴퓨터가 읽어들일 수 있는 IP 주소를 서로 변환해주는 시스템이다.
+`scheme`는 프로토콜이 들어가는 자리이다. 프로토콜이란 <ins>어떤 방식으로 웹 사이트에 접속해야 하는지 알려주는 일종의 규약</ins>이다.
+
+<a href="https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol" target="_blank">HTTP (HyperText Transfer Protocol)</a>가 가장 대표적이며 요즘엔 보안성을 좀 더 강화한 <a href="https://en.wikipedia.org/wiki/HTTPS" target="_blank">HTTPS (HyperText Transfer Protocol Secure)</a>을 사용한다.
+웹 사이트의 암호나 신용카드 정보를 입력받기 위해서는 반드시 HTTPS를 사용해야 하며, 구글에서는 <a href="https://developers.google.com/search/docs/fundamentals/seo-starter-guide#understandurls" target="_blank">SEO를 위해 가급적이면 HTTPS를 사용할 것을 권장하고 있다</a>.
+
+### DNS 조회
+
+하지만 컴퓨터는 우리가 입력한 도메인 주소가 아닌 <a href="https://en.wikipedia.org/wiki/IP_address" target="_blank">IP 주소</a>를 인식할 수 있다.
+그렇기 때문에 우리가 입력한 도메인 주소를 컴퓨터가 이해할 수 있는 IP 주소로 변환해주는 작업을 해야 하는데 이 때 이 작업을 도와주는 것이 바로 <a href="https://en.wikipedia.org/wiki/Domain_Name_System" target="_blank">DNS (Domain Name System)</a>이다.
+만일 도메인 이름과 결합된 IP 주소를 찾지 못하는 경우 컴퓨터는 대신 <a href="https://en.wikipedia.org/wiki/Internet_service_provider" target="_blank">ISP (Internet Service Provider)</a>를 통해 IP 주소를 알아내며, DNS는 보통 ISP에서 제공하는 것을 사용한다.
+
 브라우저가 서버로 요청을 보내기 전 브라우저 캐시와 호스트 파일을 참조한다.
-만일 있다면 IP를 반환하고, 그렇지 않을 경우 루트 서버, TLD 서버 그리고 인증 서버를 거쳐 IP를 반환하게 된다. 
-DNS를 운영하는 서버를 보통 네임서버(Name Server)라고 부른다.
+한번이라도 방문한 적이 있다면 컴퓨터는 로컬에 최근에 사용한 도메인 이름과 IP 주소를 조합하여 저장하는데, 브라우저 캐시에서 먼저 확인을 한다.
+만일 한 번도 방문한 적이 없는 사이트라면 호스트 파일을 검색하여 그 안에 기술되어 있는 내용을 보고 IP 주소를 반환하며, 이마저도 없을 경우엔 DNS를 운영하는 <a href="https://en.wikipedia.org/wiki/Name_server" target="_blank">네임 서버 (Name Server)</a>를 검색한다.
 
-## 해당 IP로 서버 이동
+### 해당 IP로 서버 이동
 
 해당 IP가 할당된 서버가 존재하는 대역으로 이동한다. 이 때, 네트워크 장비 라우터를 통해 이동을 하며 동적 라우팅을 통해 이동하게 된다.
+
+### ARP를 이용하여 MAC 주소 변환
+
+<a href="https://en.wikipedia.org/wiki/Address_Resolution_Protocol" target="_blank">ARP (Address Resolution Protocol)</a>은 논리 주소인 IP 주소를 물리 주소인 MAC 주소로 변환하는 프로토콜이다.
+여기서 <a href="https://en.wikipedia.org/wiki/MAC_address" target="_blank">MAC (Media Access Control) 주소</a>란 통신할 하드웨어 장비를 식별할 수 있는 고유 주소이다.
+기계의 실제 위치를 알아내기 위해서는 MAC 주소가 필요하다.
+
+그렇다면 왜 논리 주소인 IP 주소와 물리 주소인 MAC 주소를 나눈 것일까? 그 이유는 사용 용도가 다르기 때문이다.
+예를 들어 우리가 도로명 주소를 알고 있다고 가정해보자. 그런데 만일 주소 체계가 바뀌게 된다면 저 도로명 주소만으로 우리가 저 곳이 어디에 있는지 알기는 힘들 것이다.
+그렇기 때문에 실제 위치를 알기 위해서는 GPS 좌표 주소가 필요한 것이다. 여기서 도로명 주소는 IP 주소, GPS 좌표 주소는 MAC 주소가 되겠다.
+
+### TCP 통신을 통해 Socket 열기
+
+인터넷 상의 정보는 <a href="https://en.wikipedia.org/wiki/Transmission_Control_Protocol" target="_blank">TCP (Transmission Control Protocol)</a>와 IP를 통해 컴퓨터들 사이에서 오고 간다.
+인터넷 상의 정보는 방대해서 한 번에 다 보내기가 힘들기 때문에 다수의 패킷으로 소분류한 후 라벨을 붙인다.
+네트워크를 통해 해당 기기로 패킷이 전달이 되고 먼저 정확한 전송을 보장하기 위해 상대방 컴퓨터와 사전에 세션을 수립하는 과정인 <a href="https://www.guru99.com/tcp-3-way-handshake.html" target="_blank">3-way handshake</a>로 연결한다.
+예를 들면 집배원이 물건을 고객에게 전달하기 전에 초인종을 먼저 눌러서 허락을 받는 과정이라 보면 되겠다.
+
+### 서버 응답 반환
+
+위 과정에서 요청이 수락이 되면 HTTP 프로토콜로 들어온 패킷을 읽고 처리한다. 이 때, 요청에 따른 적절한 응답값을 반환한다.
+
+### 브라우저 렌더링
+
+마지막으로 HTML 문서를 파싱하여 읽어들여 DOM 트리를 구축하고, 만들어진 DOM 트리를 화면에 그린다.
+이 때 CSS나 자바스크립트를 만나게 되면 스크립트를 실행한다.
+
+<br/>
+
+## 컴퓨터 시간
+
+시간이라는 물리적인 자원을 컴퓨터에서 자원화하여 표현하게 된다.
+
+### 어떻게 결정될까?
+
+시간은 다음 3가지 물리적인 법칙에 의해 결정될 수 있다.
+
+1. **물리량**: 시간은 물리학 관점에서 봤을 때 시각과 시각 사이의 간격을 표현하는 단위이다.
+   - 예: 지금 현재 점심 식사를 한 지 얼마의 시간이 흘렀는가?
+2. **위치**: 시간은 위치에 따라 다르게 표현될 수 있다.
+   - 경도 0도(UTC)가 정오일 때 동경 135도의 시각은? (경도상 위치)
+   - 런던이 정오일 때 미국의 시각은? (국가, 지역)
+3. **천문 현상**: 지구 자전/공전 속도 등 천문 현상으로 인한 시간 보정이 될 수 있다.
+   - 윤달, 윤년 등
+
+<br/>
+
+한편으로 다음과 같이 다른 관점에서도 결정될 수 있다.
+
+1. **문화**: 문화에 따라 시간 표현이 달라질 수 있다.
+   - 태양력, 이슬람력 등
+2. **역사**: 역사적인 사건에 의해 시간 표현이 달라질 수 있다.
+   - 그레고리력 등
+3. **사회**: 사회적 제도에 의해 시간은 변할 수 있다.
+   - 서머 타임
+
+<br/>
+
+### 표준화
+
+물리적인 법칙에 의해 달라지는 시간의 경우 연산을 통해서 해결할 수 있지만 위와 같이 문화적, 역사적 그리고 사회적으로 달라질 수 있는 시간은 어떤 식으로 표현이 가능할까?
+이 때 필요한 것이 바로 <ins>**표준화**</ins>이다.
+
+#### 협정 세계시 (UTC)
+
+협정 세계시란 원자 시계와 윤초 보정을 기반으로 표준화한 시각이다. 모든 시간대는 UTC+0을 기준으로 환산이 된다.
+예를 들어 영국(UTC+0)이 오전 1시라면 대한민국(UTC+9)는 오전 10시가 된다.
+
+협정 세계시는 ISO 8601을 따르게 된다. 예를 들자면,
+
+- `2021-03-20T09:00:00.000Z`: UTC+0 기준 2021년 3월 20일 9시
+- `2021-03-20T09:00:00.000+09:00`: UTC+9 (대한민국 시간) 기준 2021년 3월 20일 9시
+
+여기서 가운데 `T`는 Time을, `Z`는 Zulu Time을 뜻한다.
+
+<br/>
+
+### 컴퓨터가 시간을 표현하는 방법
+
+컴퓨터는 하드웨어의 시스템 클럭을 이용하며 특정 시각(epoch)를 기준으로 시스템 클럭의 틱을 세는 것으로 구현되는데 이를 <ins>**시스템 시간**</ins>이라 부르고,
+시스템 시간을 값으로 표현한 것을 <ins>**타임 스탬프 (Time Stamp)**</ins>라 부른다.
+
+타임 스탬프의 경우 운영체제마다 기준 시간과 단위가 다를 수 있는데, 유닉스 계열 운영체제에서는 Unix Time이란 방법을 사용하여 시간을 표시한다.

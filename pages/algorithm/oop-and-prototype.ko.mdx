@@ -1,0 +1,204 @@
+---
+title: 객체지향과 프로토타입
+image: https://cxl.com/wp-content/uploads/2019/09/image3-1024x529.png
+description: '객체지향이란 무엇인지 알아보자'
+date: September 28th, 2022
+---
+
+import Callout from 'nextra-theme-docs/callout'
+import Bleed from 'nextra-theme-docs/bleed'
+import { Mermaid } from 'mdx-mermaid/Mermaid';
+
+# 객체지향과 프로토타입
+
+## 객체란 무엇인가?
+
+현실 세계에서의 버튼을 떠올려보자. 버튼이라고 한다면 튀어나와 있고 무언가를 누를 수 있으며 기계에 사용될 경우 고장날 경우도 존재하고 동작하기 위해 여러 세부 부품들이 필요할 수도 있다.
+반면, 웹 사이트 내에서의 버튼은 단순히 누를 수가 있고 색은 입힐 수 있으나, 현실 세계에서의 버튼처럼 고장이 난다든지 세부 부품들이 필요한다든지 등은 따로 고려 대상이 아니다.
+
+이처럼 객체지향에서의 **_객체_**란 <ins>**현실**</ins>에 있는 것을 <ins>**추상화**</ins>한 것이라 할 수 있다.
+
+<br/>
+
+## 추상화란?
+
+메르카토르 지도와 지구본의 차이점은 무엇일까?
+
+<br/>
+
+<center>
+    <figure>
+        <img width="400" src="https://mblogthumb-phinf.pstatic.net/MjAxNzAzMjFfMTEw/MDAxNDkwMDcyNjg3OTkx.30SP5GZkdwbHSjCTyK0QFEk3wFBXyESpEBzfo9g5zW8g.alNR74Agmo6sHbqwx9vnSh3N5jrIA7khYK0lEYNvhzAg.JPEG.thirdbad/theworld-jise-M.jpg?type=w2" alt=" World Map" />
+        <figcaption>출처: 네이버 블로그</figcaption>
+    </figure>
+</center>
+
+<br/>
+
+<center>
+    <figure>
+        <img src="http://puzzlecafe.co.kr/data/item/WI006_m" alt="3D World Map" />
+        <figcaption>출처: 퍼즐 카페</figcaption>
+    </figure>
+</center>
+
+메르카토르 지도는 평평한 2D 종이에 위도와 경도를 모두 포함한 채로 한눈에 모든 나라들을 볼 수 있는 유용한 지도이지만 실제 각 나라별 크기는 왜곡된 채 표현되고 있다.
+반면 지구본의 경우 한 눈에 알아보기는 쉽진 않지만 각 나라별 크기의 비율이 제대로 나타나 있다.
+그렇기 때문에 메르카토르 지도는 항해용으로는 적합하며, 지구본은 연구용으로 적합할 수도 있겠다.
+
+추상화란 글자 그대로에서 알 수 있듯이 사물이 지니고 있는 여러 측면 중 <ins>**특정한 부분**</ins>만 보는 것을 의미한다.
+즉, *현실에 있는 것을 특정 관점에서 바라보아 객체로 만드는 것*을 의미한다.
+특정 관점에서 바라봤을 때 몇 가지 기능들은 필요없는 기능들일 수도 있다. 이렇게 필요없는 기능들의 경우 과감하게 무시되기도 한다.
+
+<br/>
+
+## 객체지향 프로그래밍
+
+위에서 살펴본 두 가지 개념들을 종합하자면 객체지향 프로그래밍이란 <ins>_객체 위주로 설계하고 프로그래밍하는 패러다임_</ins>이다.
+그렇기 때문에 객체지향 언어에선 추상화의 최소 단위가 객체가 된다.
+
+<br/>
+
+<center>
+    <figure>
+        <img src="https://csharpcorner-mindcrackerinc.netdna-ssl.com/UploadFile/8a67c0/oops-vs-procedural-programming/Images/OOPs%20Vs%20Procedural%20Programming.jpg" alt="procedural and oop" />
+        <figcaption>출처: C-sharp Corner</figcaption>
+    </figure>
+</center>
+
+<br/>
+
+위의 그림은 절차지향 프로그래밍과 객체지향 프로그래밍의 차이점을 보여주고 있다.
+절차지향 프로그래밍은 메인 프로그램에 대해 각각의 함수들이 절차적으로 직접 통제를 했다면,
+객체지향 프로그래밍에선 객체가 스스로 데이터를 통제하고 메세지들을 통해 절차를 간접적으로 통제한다.
+
+### 오해
+
+1. C언어는 절차지향적이고, C++언어는 객체지향적이기 때문에 C언어로는 객체지향 프로그래밍이 불가능하다.
+   - 객체지향은 패러다임일 뿐 언어와는 관계가 없다.
+   - 언어는 지향하는 것을 조금 더 편하게 구현할 수 있게 도와줄 뿐이다.
+   - 자바스크립트는 프로토타입을 통해 객체지향을 표현한다.
+2. 객체지향이 절차지향보다 훨씬 좋다.
+   - 만들어야 하는 프로그램에 따라 적절한 패러다임은 언제든지 바뀔 수 있다. 비교적 간단한 프로그램일수록 절차지향이 더 만들기 쉽고 직관적이다.
+   - 반면 객체지향은 객체 간 통신을 하기 때문에 흐름이 더 직관적이어서 복잡한 프로그램을 만들 때 유용하다.
+
+<br/>
+
+## 프로토타입
+
+### 자바스크립트에서의 객체
+
+자바스크립트의 객체는 클래스 기반의 언어처럼 속성과 행위를 정의할 수 있다.
+자바스크립트에서 객체는 <a href="https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/Object_initializer#%EC%84%A4%EB%AA%85" target="_blank">객체 리터럴</a>과 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/Object" target="_blank"><code>Object()</code> 생성자</a>
+그리고 생성자 함수를 이용하여 생성될 수 있다.
+
+```js
+// 객체 리터럴 방식
+const person = {
+   name: "apensia",
+   company: "apensiadev",
+   move: (destination) => console.log(`Moving to ${destination}`);
+};
+
+// Object 생성자 함수
+const person = new Object();
+person.name = "apensia";
+person.company = "apensiadev";
+person.move = (destination) => console.log(`Moving to ${destination}`);
+
+// 생성자 함수
+function Person(name, company, move) {
+   this.name = name;
+   this.company = company;
+   this.move = (destination) => console.log(`Moving to ${destination}`);
+}
+
+// label apensia
+console.log(person.name);
+// label apensiadev
+console.log(person.company);
+// label Moving to US
+person.move("US")
+```
+
+그런데 이렇게 객체를 생성하게 될 경우 메모리 낭비가 일어날 수 있다. 다음 코드를 살펴보자.
+
+```js
+function Person(name, company, move) {
+   this.name = name;
+   this.company = company;
+
+   this.getName = () => {
+      return this.name;
+   }
+
+   this.setName = (name) => {
+      this.name = name;
+   }
+}
+
+const foo = new Person("foo", "FOO");
+const bar = new Person("bar", "BAR");
+console.log(foo);
+console.log(bar);
+
+/* 결과값
+Person {
+   name: "foo",
+   company: "FOO",
+// mark
+   getName: [Function],
+// mark
+   setName: [Function]
+}
+
+Person {
+   name: "bar",
+   company: "BAR",
+   // mark
+   getName: [Function],
+   // mark
+   setName: [Function]
+}
+*/
+```
+
+`Person`이라는 객체를 생성하였고 그 안에 이름을 리턴하는 `getName()` 메소드와 새 이름을 설정하는 `setName()` 메소드를 생성해주었다.
+그리고 각각 `foo`와 `bar`라는 이름으로 인스턴스를 생성해주었다.
+생성된 각각의 인스턴스를 출력해보면 위와 같이 똑같은 메소드임에도 불구하고 각각 따로 정의가 되었음을 알 수 있다.
+
+<br/>
+
+### 프로토타입 활용해보기
+
+이러한 현상을 방지하기 위하여 프로토타입을 활용해볼 수 있다. 프로토타입이란 <ins>**기존의 객체를 복사하여 새로운 객체를 생성하는 방식**</ins>을 일컫는다.
+프로토타입을 활용하여 위의 코드를 수정해보도록 하자.
+
+```js
+function Person(name, company, move) {
+   this.name = name;
+   this.company = company;
+
+   Person.prototype.getName = () => {
+      return this.name;
+   }
+
+   Person.prototype.setName = (name) => {
+      this.name = name;
+   }
+}
+const foo = new Person("foo", "FOO");
+const bar = new Person("bar", "BAR");
+// label Person { name: "foo", company: "FOO" };
+console.log(foo);
+// label Person { name: "bar", company: "BAR" };
+console.log(bar);
+// label [Function: Function]
+console.log(Person.constructor);
+// label [Fuction]
+console.log(Person.__proto__);
+// label [Function: Person]
+console.log(foo.constructor);
+// label Person { getName: [Function], setName: [Function] }
+console.log(foo.__proto__);
+```
