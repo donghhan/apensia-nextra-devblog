@@ -2,5 +2,6 @@
     "custom django validator": "custom django validator",
     "user modeling": "Customizing User Model",
     "django i18n": "장고 다국어 지원",
-    "django abstract base model": "Django abstract base model"
+    "django abstract base model": "Django abstract base model",
+    "connecting postgresql with django": "Django와 PostgreSQL 연동하기"
 }
