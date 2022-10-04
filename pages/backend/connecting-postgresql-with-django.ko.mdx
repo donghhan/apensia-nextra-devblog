@@ -12,7 +12,7 @@ import Bleed from 'nextra-theme-docs/bleed'
 
 Django를 맨 처음 설치를 했을 때 기본 DB가 Sqlite3로 연결이 되어 있다.
 하지만 Django의 공식 문서에 따르면 수많은 DB 중 <a href="https://docs.djangoproject.com/en/4.1/ref/contrib/postgres/#module-django.contrib.postgres" target="_blank">PostgreSQL를 강력히 추천하고 있다</a>.
-이유는 Django가 오직 PostgreSQL와만 연동될 수 있는 다양한 데이터 타입들을 제공해주고 있기 때문이라 한다.[^1] 실제로 <a href="https://github.com/django/django/tree/main/django/contrib/postgres" target="_blank"><code>django.contrib.postgres</code></a>
+이유는 Django가 오직 PostgreSQL와만 연동될 수 있는 다양한 데이터 타입들을 제공해주고 있기 때문이라 한다[^1]. 실제로 <a href="https://github.com/django/django/tree/main/django/contrib/postgres" target="_blank"><code>django.contrib.postgres</code></a>
 모듈을 보면 Django가 PostgreSQL에 대한 지원을 전폭적으로 해주고 있는 모습을 보이고 있다.
 
 [^1]:
@@ -145,7 +145,7 @@ pipenv install django-dotenv
 poetry add django-dotenv
 ```
 
-이후 Django 프로젝트의 루트 경로에 있는 `manage.py` 파일을 다음과 같이 바꾼다.
+이후 Django 프로젝트의 루트 경로에 있는 `manage.py` 파일을 다음과 같이 바꾼다. 코드는 <a href="https://github.com/jpadilla/django-dotenv#usage" target="_blank">여기</a>를 참조한다.
 
 ```py manage.py
 #!/usr/bin/env python

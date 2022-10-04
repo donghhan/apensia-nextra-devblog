@@ -12,7 +12,7 @@ import Bleed from 'nextra-theme-docs/bleed'
 
 Whenever you start Django project, DB is basically set to Sqlite3.
 According to the Django's documentation, however, they are <a href="https://docs.djangoproject.com/en/4.1/ref/contrib/postgres/#module-django.contrib.postgres" target="_blank">highly recommending PostgreSQL</a>.
-This is because Django supports a number of data types that only workable with PostgreSQL.[^1]
+This is because Django supports a number of data types that only workable with PostgreSQL[^1].
 When you see <a href="https://github.com/django/django/tree/main/django/contrib/postgres" target="_blank"><code>django.contrib.postgres</code></a> module, it can be inferred that Django supports quite well with PostgreSQL.
 
 [^1]:
@@ -49,7 +49,7 @@ Let's install PostgreSQL with Homebrew. Based on October 3rd, 2022 version 14 is
 brew install postgresql@14
 ```
 
-You may install manually with install files availae at <a href="https://www.enterprisedb.com/downloads/postgres-postgresql-downloads" target="_blank">here</a>.
+You may install manually with install files available at <a href="https://www.enterprisedb.com/downloads/postgres-postgresql-downloads" target="_blank">here</a>.
 
 <br/>
 
@@ -57,23 +57,23 @@ You may install manually with install files availae at <a href="https://www.ente
 
 After installed PostgresQL, let's move on to pgAdmin4 to manage PostgreSQL more intuitively and easily. Download installation files available at <a href="https://www.pgadmin.org/download/pgadmin-4-macos/" target="_blank">here</a>.
 
-맨 처음 설치를 하게 되면 <a href="https://www.pgadmin.org/docs/pgadmin4/latest/master_password.html#master-password" target="_blank">마스터 비밀번호</a>를 설정하게끔 되어 있다.
-아래 그림의 설명대로 pgAdmin4를 추후에 접속할 때마다 해당 비밀번호를 입력해야 엑세스가 가능하다.
+For the first time of installation, we need to set <a href="https://www.pgadmin.org/docs/pgadmin4/latest/master_password.html#master-password" target="_blank">master password</a>.
+If we add pgAdmin4 master password as shown below picture, we can access to our DB.
 
 <br/>
 
 <center>
     <figure>
         <img src="https://www.pgadmin.org/static/docs/pgadmin4-6.14-docs/_images/master_password_set.png" alt="pgadmin4 master password" />
-        <figcaption>출처: pgAdmin4</figcaption>
+        <figcaption>Source: pgAdmin4</figcaption>
     </figure>
 </center>
 
 <br/>
 
-### 서버 만들기
+### Creating server
 
-브라우저의 좌측 패널에 Servers를 마우스 우클릭 후 새로운 서버를 생성한다.
+Right click Servers on left panel and create new server.
 
 <br/>
 
@@ -81,71 +81,72 @@ After installed PostgresQL, let's move on to pgAdmin4 to manage PostgreSQL more 
 
 <br/>
 
-이후 생성하고자 하는 서버의 이름을 설정한다. 필자의 경우 만들고자 하는 서비스의 이름을 그대로 집어넣었다.
+Then, create name for the new server. I put service name for my server name.
 
 <br/>
 
 <center>
     <figure>
         <img src="https://www.pgadmin.org/static/docs/pgadmin4-6.14-docs/_images/server_general.png" alt="registering server" />
-        <figcaption>출처: pgAdmin4</figcaption>
+        <figcaption>Source: pgAdmin4</figcaption>
     </figure>
 </center>
 
 <br/>
 
-다음으로 생성된 서버의 연결 설정을 해주는 부분이다. 현재에는 개발용으로 사용할 것이기 때문에 `localhost`라는 이름을 적어둔다.
-그리고 Password 부분에 우리가 만들어준 데이터베이스에 대한 비밀번호를 설정해준다.
+Next thing to do is to configuring server connection. As I will be using as development server, I put `localhost`.
+And put password for our newly created server.
 
 <br/>
 
 <center>
     <figure>
         <img src="https://www.pgadmin.org/static/docs/pgadmin4-6.14-docs/_images/server_connection.png" alt="server connection" />
-        <figcaption>출처: pgAdmin4</figcaption>
+        <figcaption>Source: pgAdmin4</figcaption>
     </figure>
 </center>
 
 <br/>
 
-## Django와 연결
+## Connecting to Django
 
-### `psycopg2-binary` 패키지 설치
+### Installing `psycopg2-binary` package
 
-<a href="https://pypi.org/project/psycopg2-binary/" target="_blank"><code>psycopg2-binary</code></a>는 PostgreSQL이 Django 내에서 동작할 수 있도록 도와주는 패키지이다. 
-`psycopg2` 일반 버전도 있으나 공식 문서에서 설명한대로 개발 단계에선 좀 더 가벼운 버전인 `psycopg2-binary` 패키지를 사용하겠다.
-가상 환경이 활성화 된 상태에서 패키지를 설치한다.
+<a href="https://pypi.org/project/psycopg2-binary/" target="_blank"><code>psycopg2-binary</code></a> is a package that allows Django to use PostgreSQL.
+Although we have normal version of `psycopg2`, we will be using `psycopg2-binary` package which is lighter enough for using during development stage.
+Install the package when virtual environment is enabled.
 
 ```bash
-# pip 사용 시
+# Using pip
 pip install psycopg2-binary
 
-# pipenv 사용 시
+# Using pipenv
 pipenv install psycopg2-binary
 
-# poetry 사용 시
+# Using poetry
 poetry add psycopg2-binary
 ```
 
 <br/>
 
-### `django-dotenv` 패키지 설치
+### Installing `django-dotenv` package
 
-<a href="https://github.com/jpadilla/django-dotenv#installation" target="_blank"><code>django-dotenv</code></a> 패키지는 반드시 숨겨져야 하는 중요한 정보들이 저장된 `.env` 환경변수에서 해당 변수들을 가져올 수 있도록
-도와주는 패키지이다. 이 또한 가상 환경이 활성화된 상태에서 패키지를 설치한다.
+<a href="https://github.com/jpadilla/django-dotenv#installation" target="_blank"><code>django-dotenv</code></a> package allows to use variables from `.env` file that should not be revealed to the public.
+Again, install the package with virtual environment enabled.
 
 ```bash
-# pip 사용 시
+# Using pip
 pip install django-dotenv
 
-# pipenv 사용 시
+# Using pipenv
 pipenv install django-dotenv
 
-# poetry 사용 시
+# Using poetry
 poetry add django-dotenv
 ```
 
-이후 Django 프로젝트의 루트 경로에 있는 `manage.py` 파일을 다음과 같이 바꾼다.
+Then, let's modify our `settings.py` file in our Djagno root directory as follows.
+I referred codes available at <a href="https://github.com/jpadilla/django-dotenv#usage" target="_blank">here</a>.
 
 ```py manage.py
 #!/usr/bin/env python
@@ -176,25 +177,26 @@ if __name__ == "__main__":
 
 <br/>
 
-### `.env` 변수 설정
+### `.env` variables configuration
 
-프로젝트 루트 경로에 `.env` 파일을 만든 후 PostgreSQL 서버와 관련된 변수들을 추가해준다. 변수들은 `""` 안에 정의하도록 한다.
+Now, let's create `.env` file in our project root directory and include variables regarding PostgreSQL server configuration.
+Variables can be defined within `""`.
 
 ```txt .env
-DB_NAME="DB 이름"
-DB_USER="DB를 관리하는 유저"
-DB_PASSWORD="DB 비밀번호"
-DB_HOST="DB 호스트"
-DB_PORT="DB 포트"
+DB_NAME="DB Name"
+DB_USER="Username for managing DB"
+DB_PASSWORD="DB Password"
+DB_HOST="DB Host"
+DB_PORT="DB Port"
 ```
 
-1. `DB_NAME`은 서버를 만들었을 때 생성했던 그 이름을 적으면 된다.
-2. `DB_USER`는 어드민 권한을 가지고 있는 유저 이름을 넣는다.
-3. `DB_PASSWORD`는 서버에 설정해둔 비밀번호를 넣는다.
-4. `DB_HOST`는 연결 설정을 해줄 때 설정해주었던 Host name/address를 넣는다. 우리의 경우 `localhost`를 넣는다.
-5. `DB_PORT`는 연결 설정을 해줄 때 적은 Port를 넣는다.
+1. You can put your DB name for `DB_NAME`.
+2. Put your username for `DB_USER`.
+3. Put your password for `DB_PASSWORD`.
+4. Put Host name/address that we put during configuration stage for `DB_HOST`. In our case, we can put `localhost`.
+5. Put your port that we put during configuration stage.
 
-이후 `.gitignore` 파일에 `.env`를 추가시켜주어 깃 커밋에 올라가지 않도록 한다.
+Next, put our `.env` file in `.gitignore` so that it can be ignored from Git commit.
 
 ```txt .gitignore
 .env
@@ -202,13 +204,13 @@ DB_PORT="DB 포트"
 
 <br/>
 
-### `settings.py` 설정
+### `settings.py` configuration
 
 <CH.Scrollycoding>
 
-#### `django-dotenv` 사용할 수 있도록 불러오기
+#### Using `django-dotenv`
 
-`settings.py` 파일의 최상단에 다음 모듈을 불러온다.
+Import the following modules at the top of `settings.py`.
 
 ```py settings.py
 import os
@@ -217,10 +219,10 @@ import dotenv
 
 ---
 
-#### 기본 세팅
+#### Basic configuration
 
-맨 처음 프로젝트를 시작할 당시에는 <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#databases" target="_blank"><code>DATABASE</code></a>가 `sqlite3`로 설정되어 있는 것을 볼 수 있다.
-이 부분을 우리가 바꿔볼 것이다.
+By the time we started our first Django project, you will be able to see that <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#databases" target="_blank"><code>DATABASE</code></a> is set to be `sqlite3` as default.
+This is where the main game starts.
 
 ```py
 DATABASES = {
@@ -233,13 +235,13 @@ DATABASES = {
 
 ---
 
-#### `DATABASE` 설정 변경
+#### Changing `DATABASE` configuration
 
-<a href="https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-DATABASE-ENGINE" target="_blank"><code>ENGINE</code></a> 부분에 PostgreSQL을 사용하게 될 것이므로
-`django.db.backends.postgresql`로 적어준다.
+We will be putting `django.db.backends.postgresql` for <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-DATABASE-ENGINE" target="_blank"><code>ENGINE</code></a>
+as we will be using PostgreSQL.
 
-이후, <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-TEST_NAME" target="_blank"><code>NAME</code></a>, <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#user" target="_blank"><code>USER</code></a>, <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#password" target="_blank"><code>PASSWORD</code></a>, <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#host" target="_blank"><code>HOST</code></a> 그리고 <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#port" target="_blank"><code>PORT</code></a>에
-앞서 우리가 `.env`에서 설정한 필드들을 `os.environ.get()`을 통해 연결시켜준다.
+After that, we replace value for <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-TEST_NAME" target="_blank"><code>NAME</code></a>, <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#user" target="_blank"><code>USER</code></a>, <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#password" target="_blank"><code>PASSWORD</code></a>, <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#host" target="_blank"><code>HOST</code></a> and <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#port" target="_blank"><code>PORT</code></a>
+variables that we already defined in `.env` file with using `os.environ.get()`.
 
 ```py focus=3:8
 DATABASES = {
@@ -258,7 +260,7 @@ DATABASES = {
 
 <br/>
 
-이후 마이그레이션을 진행해주고 `python manage.py createsuperuser` 명령어를 통해 `superuser` 계정도 생성해준다.
+After migrate, we will also be creating superuser account with `python manage.py createsuperuser` command.
 
 ```bash
 python manage.py migrate
@@ -267,11 +269,11 @@ python manage.py createsuperuser
 
 <br/>
 
-## 결과
+## Result
 
-pgAdmin4에서 우리가 생성한 서버 &rarr; Schemas &rarr; public &rarr; Tables을 펼쳐보면
-마이그레이션 이후 설정된 여러 테이블들을 볼 수 있게 된다.
-테이블 내부의 정보를 열람하고 싶을 경우 열람하고자 하는 테이블을 마우스 우클릭 후 View/Edit Data 및 All Rows를 선택하면 전체를 열람할 수 있다.
+If we take a look in the order of Servers &rarr; Schemas &rarr; public &rarr; Tables at pgAdmin4,
+we can see many tables applied in our database after migration.
+If you would like to view data inside of tables, mouse right click on tables that you would like to view and click "View/Edit Data" and "All Rows".
 
 <br/>
 
