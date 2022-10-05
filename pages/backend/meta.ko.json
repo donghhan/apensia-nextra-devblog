@@ -3,6 +3,6 @@
     "custom django validator": "장고 커스텀 비밀번호 검사기",
     "user modeling": "Django User 모델 커스터마이징하기",
     "django i18n": "장고 다국어 지원",
-    "drf serializers": "Django serializers",
+    "drf-serializers": "DRF로 Rest API 만들어보기",
     "connecting postgresql with django": "Django와 PostgreSQL 연동하기"
 }
