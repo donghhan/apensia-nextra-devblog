@@ -19,7 +19,9 @@ export default function BackendIndex({ more = "Read more" }) {
           <Link href={page.route}>{more + " →"}</Link>
         </p>
         {page.frontMatter?.date ? (
-          <p className="opacity-50 text-sm">{page.frontMatter.date}</p>
+          <p className="opacity-50 text-sm">
+            Last updated: {page.frontMatter.date}
+          </p>
         ) : null}
       </div>
     );

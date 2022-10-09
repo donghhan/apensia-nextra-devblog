@@ -317,3 +317,7 @@ def wishlists(request):
     serializer = WishlistSerializer(wishlists, many=True)
     return Response({"ok": True, "wishlists": serializer.data})
 ```
+
+<br/>
+
+## POST 요청

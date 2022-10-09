@@ -1,8 +1,8 @@
 {
-    "django abstract base model": "Django 추상화 베이스 모델",
-    "custom django validator": "장고 커스텀 비밀번호 검사기",
-    "user modeling": "Django User 모델 커스터마이징하기",
-    "django i18n": "장고 다국어 지원",
-    "drf-serializers": "DRF로 Rest API 만들어보기",
-    "connecting postgresql with django": "Django와 PostgreSQL 연동하기"
+    "django-internationalization": "Django 다국어 지원",
+    "djangorestframework-serializers": "DRF로 Rest API 만들어보기",
+    "django-with-postgresql": "Django와 PostgreSQL 연동하기",
+    "django-custom-password-validator": "Django 커스텀 비밀번호 검사기",
+    "django-custom-user-model": "Django 모델 설계 (2)",
+    "django-abstract-model": "Django 모델 설계 (1)"
 }
