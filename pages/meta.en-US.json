@@ -34,11 +34,8 @@
     }
   },
   "algorithm": {
-    "title": "Algorithm",
-    "type": "page",
-    "theme": {
-      "sidebar": false
-    }
+    "title": "CS&Algorithm",
+    "type": "page"
   },
   "errors": {
     "title": "Error",

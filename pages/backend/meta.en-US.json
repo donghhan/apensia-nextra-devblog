@@ -1,7 +1,8 @@
 {
-    "custom django validator": "custom django validator",
-    "user modeling": "Customizing User Model",
-    "django i18n": "장고 다국어 지원",
-    "django abstract base model": "Django abstract base model",
-    "connecting postgresql with django": "Django와 PostgreSQL 연동하기"
+    "django-internationalization": "Django Internationalization",
+    "djangorestframework-serializers": "DRF serializers",
+    "django-with-postgresql": "Connecitng PostgresSQL with Django",
+    "django-custom-password-validator": "Building custom password validator in Django",
+    "django-custom-user-model": "Django modeling (2)",
+    "django-abstract-model": "Django modeling (1)"
 }

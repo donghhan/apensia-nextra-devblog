@@ -1,7 +1,8 @@
 {
-    "input method": "여러 입력값 받기",
     "array": "배열", 
     "stack": "스택",
+    "queue": "큐",
+    "input method": "여러 입력값 받기",
     "string": "문자열에 대한 모든 것",
     "basic cs": "CS 기초 상식",
     "baekjoon 2675": "백준 2675번 풀이",

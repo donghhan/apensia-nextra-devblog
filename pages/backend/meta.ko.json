@@ -1,6 +1,6 @@
 {
     "django-internationalization": "Django 다국어 지원",
-    "djangorestframework-serializers": "DRF로 Rest API 만들어보기",
+    "djangorestframework-serializers": "DRF 직렬화",
     "django-with-postgresql": "Django와 PostgreSQL 연동하기",
     "django-custom-password-validator": "Django 커스텀 비밀번호 검사기",
     "django-custom-user-model": "Django 모델 설계 (2)",
