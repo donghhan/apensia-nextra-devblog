@@ -1,0 +1,33 @@
+---
+title: 연결 리스트
+image: https://www.tabnine.com/academy/wp-content/uploads/2020/10/academy_1.png
+description: '연결 리스트에 대하여'
+---
+
+import Callout from 'nextra-theme-docs/callout'
+import Bleed from 'nextra-theme-docs/bleed'
+import { SiJavascript, SiPython } from 'react-icons/si'
+
+## 정의
+
+각 요소를 포인터로 연결하여 관리하는 선형 자료구조이다. 여기서 각 요소는 노드라 부르며 데이터 영역과 포인터 영역으로 구성된다.
+아래 그림에서 첫 번째 노드를 Head라고 하며, 각각의 알파벳들은 데이터 영역을 의미한다. 그리고 Next라고 표기된 곳은 포인터 영역을 의미하여 다른 연결 리스트를 연결해주는 포인터이다.
+
+<br/>
+
+<center>
+    <figure>
+        <img src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/gq/2013/03/Linkedlist.png" alt="linked list" />
+        <figcaption>출처: GeeksforGeeks</figcaption>
+    </figure>
+</center>
+
+연결 리스트의 경우
+
+1. 메모리가 허용하는 한 요소를 제한없이 추가할 수 있다.
+2. 탐색에는 $O(n)$의 선형 시간이 소요된다.
+3. 요소를 추가하거나 제거할 때에는 $O(1)$이 소요된다.
+
+### 단일 연결 리스트
+
+Head에서 Tail까지 단방향으로 이어지는 연결 리스트이다. 가장 단순한 형태의 연결 리스트라 볼 수 있다.

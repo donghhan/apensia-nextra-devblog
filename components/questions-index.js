@@ -1,8 +1,8 @@
 import { getPagesUnderRoute } from "nextra/context";
 import Link from "next/link";
 
-export default function AlgorithmIndex({ more = "Read more" }) {
-  return getPagesUnderRoute("/algorithm").map((page) => {
+export default function QuestionsIndex({ more = "Read more" }) {
+  return getPagesUnderRoute("/ai").map((page) => {
     // Alias `<a>` to avoid it being replaced by MDX components.
     const A = "a";
     return (
@@ -19,7 +19,9 @@ export default function AlgorithmIndex({ more = "Read more" }) {
           <Link href={page.route}>{more + " →"}</Link>
         </p>
         {page.frontMatter?.date ? (
-          <p className="opacity-50 text-sm">{page.frontMatter.date}</p>
+          <p className="opacity-50 text-sm">
+            Last updated on {page.frontMatter.date}
+          </p>
         ) : null}
       </div>
     );

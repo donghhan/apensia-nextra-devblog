@@ -43,5 +43,12 @@
     "theme": {
       "sidebar": false
     }
+  },
+  "questions": {
+    "title": "Questions",
+    "type": "page",
+    "theme": {
+      "sidebar": false
+    }
   }
 }

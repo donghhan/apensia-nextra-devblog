@@ -43,5 +43,12 @@
     "theme": {
       "sidebar": false
     }
+  },
+  "questions": {
+    "title": "문제풀이",
+    "type": "page",
+    "theme": {
+      "sidebar": false
+    }
   }
 }
