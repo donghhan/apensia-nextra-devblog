@@ -37,15 +37,15 @@
     "title": "CS&알고리즘",
     "type": "page"
   },
-  "errors": {
-    "title": "디버깅",
+  "questions": {
+    "title": "문제풀이",
     "type": "page",
     "theme": {
       "sidebar": false
     }
   },
-  "questions": {
-    "title": "문제풀이",
+  "errors": {
+    "title": "디버깅",
     "type": "page",
     "theme": {
       "sidebar": false

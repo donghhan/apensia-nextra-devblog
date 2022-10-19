@@ -37,15 +37,15 @@
     "title": "CS&Algorithm",
     "type": "page"
   },
-  "errors": {
-    "title": "Error",
+  "questions": {
+    "title": "Questions",
     "type": "page",
     "theme": {
       "sidebar": false
     }
   },
-  "questions": {
-    "title": "Questions",
+  "errors": {
+    "title": "Error",
     "type": "page",
     "theme": {
       "sidebar": false
