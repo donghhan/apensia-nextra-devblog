@@ -1,4 +1,5 @@
 {
+    "psycopg2-intall-error": "psycopg2 설치 에러",
     "django-internationalization": "Django 다국어 지원",
     "djangorestframework-serializers": "DRF 직렬화",
     "django-with-postgresql": "Django와 PostgreSQL 연동하기",

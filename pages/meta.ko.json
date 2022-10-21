@@ -33,22 +33,22 @@
       "sidebar": false
     }
   },
-  "algorithm": {
-    "title": "CS&알고리즘",
-    "type": "page"
-  },
-  "questions": {
+  "problems": {
     "title": "문제풀이",
     "type": "page",
     "theme": {
       "sidebar": false
     }
   },
-  "errors": {
-    "title": "디버깅",
+  "etc": {
+    "title": "기타",
     "type": "page",
     "theme": {
       "sidebar": false
     }
+  },
+  "algorithm": {
+    "title": "CS&알고리즘",
+    "type": "page"
   }
 }
