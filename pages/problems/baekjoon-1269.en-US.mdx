@@ -111,3 +111,34 @@ console.log([...onlyA].length + [...onlyB].length);
 ```
 
 <br/>
+
+## Other Solutions
+
+<details>
+  <summary>See More</summary>
+  <p>
+    We could also use intersection and calculate back the symmetric difference. 
+    After putting all elements in set B, check all elements for set A if they are within set B. If so, increase the count of intersection by 1. 
+    Then, add up set A's size of `N` and set B's size of `M` and subtract the intersection size.
+
+    But this case would only work if set A size is always smaller than set B size, so it would be better to edit furthermore.
+
+    <h3>JavaScript</h3>
+
+    ```js
+    const input = require('fs').readFileSync('/dev/stdin', 'utf-8').trim().split('\n');
+
+    const [ N, M ] = input[0].split(' ').map(Number);
+    const a = input[1].split(' ');
+    const b = new Set([...input[2].split(' ')]);
+
+    let kyoCnt = 0;
+    for (let i=0; i<N; i++) {
+        if (b.has(a[i])) kyoCnt++;
+    }
+
+    console.log(N + M - (2 * kyoCnt));
+    ```
+
+  </p>
+</details>

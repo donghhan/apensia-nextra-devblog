@@ -105,3 +105,36 @@ const onlyA = new Set([...A].filter((el) => !B.has(el)));
 const onlyB = new Set([...B].filter((el) => !A.has(el)));
 console.log([...onlyA].length + [...onlyB].length);
 ```
+
+<br/>
+
+## 다른 사람 풀이
+
+<details>
+  <summary>펼쳐보기</summary>
+  <p>
+    교집합을 이용하여 역으로 계산하는 방법이 있었다. 
+    집합 B를 `Set()`에 넣은 후 집합 A의 모든 원소에 대하여 집합 B에 집합 A의 원소가 있는지 판별 후 만일 있다면 교집합 개수를 1개씩 늘린다.
+    이후 집합 A의 크기인 `N`, 집합 B의 크기인 `M`를 더한 후 교집합 개수값을 빼주면 대칭 차집합이 나오게 된다.
+
+    하지만 이 경우에는 집합 A의 크기가 항상 집합 B의 크기보다 작을 경우에만 해당되기 때문에 로직을 좀 더 손봐야 하지 않을까 싶다.
+
+    <h3>자바스크립트</h3>
+
+    ```js
+    const input = require('fs').readFileSync('/dev/stdin', 'utf-8').trim().split('\n');
+
+    const [ N, M ] = input[0].split(' ').map(Number);
+    const a = input[1].split(' ');
+    const b = new Set([...input[2].split(' ')]);
+
+    let kyoCnt = 0;
+    for (let i=0; i<N; i++) {
+        if (b.has(a[i])) kyoCnt++;
+    }
+
+    console.log(N + M - (2 * kyoCnt));
+    ```
+
+  </p>
+</details>
