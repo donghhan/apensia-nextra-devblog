@@ -69,7 +69,7 @@ const onlyA = A.filter((el) => !B.includes(el));
 // 반대의 케이스
 const onlyB = B.filter((el) => !A.includes(el));
 
-console.log(onlyA.length + onlyB.length); // 각각의 두 집합의 차집합 원소의 개수들
+console.log(onlyA.length + onlyB.length); // 각각의 두 집합의 차집합 원소의 개수들 더해준다.
 ```
 
 <br/>
@@ -97,27 +97,11 @@ const input = require("fs")
 const [length, ...nums] = input;
 const numA = +length.split(" ")[0];
 const numB = +length.split(" ")[1];
-// nums로 따로 빼내온 원소들을
+// nums로 따로 빼내온 원소들을 Set에 담아준다.
 const A = new Set(nums[0].split(" ").map(Number));
 const B = new Set(nums[1].split(" ").map(Number));
 
 const onlyA = new Set([...A].filter((el) => !B.has(el)));
 const onlyB = new Set([...B].filter((el) => !A.has(el)));
 console.log([...onlyA].length + [...onlyB].length);
-```
-
-<br/>
-
-하지만 시간 초과가 나고 말았다.
-그도 그럴 것이 집합의 원소의 개수는 200,000개가 넘어가기 때문에 `.filter()`는 선형시간 $O(n)$이 소요되기 때문에 시간 복잡도 측면에서는 그리 바람직해 보이지 않았다.
-
-### 파이썬
-
-`map()` 메소드를 이용하여 모든 입력값들을 숫자형으로 변환해준 후, 이를 `sum()` 메소드를 이용하여 합을 구해준다.
-
-```py
-import sys
-
-N = int(sys.stdin.readline())
-print(sum(map(int, sys.stdin.readline().rstrip())))
 ```
