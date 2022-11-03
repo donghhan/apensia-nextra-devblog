@@ -1,5 +1,5 @@
 ---
-title: Django Modeling (1)
+title: Using one model into another model without saving in DB in Django
 image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
 description: "What is abstract base class"
 date: October 10th, 2022
@@ -8,81 +8,28 @@ date: October 10th, 2022
 import Callout from 'nextra-theme-docs/callout'
 import Bleed from 'nextra-theme-docs/bleed'
 
-# Django Model
+# Using one model into another model without saving in DB in Django
 
-In Django, <a href="https://docs.djangoproject.com/en/4.1/intro/tutorial02/#creating-models" target="_blank">model</a> is a shape of data.
-We can easily set up our own database with <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.Field" target="_blank">fields</a> that Django provides to us
-so that we don't need to jot down all complex SQL queries.
-
-## Let's think about this...
-
-When it comes to structuring backend, modeling would be the most difficult part.
-I also thought of many different data fields while structuring Let'sh share-commerce platform.
-As applicaiton service will getting bigger, it would require more complex data structure, but I ended up deciding to build up with minimalism.
-
-1. User: Users that will be using my application
-2. Share items: Sharable items of users such as accomodations and transportations
-3. Reviews: Reviews that users left after using share items
-4. Bookings: Bookings that users do before using share items
-5. Direct messages: Messages that users share sent back and forth
-6. Categories(🟨 Done after a while): Types of share items
-7. Media: Any visual media that users share
-8. Wishlists: Marking system for future use
-9. Common: Common data models that can be shared throughout the other apps
-10. ETC &rarr; Other things that will be done after all these things...
-
-I thought of categories so that admin users can easily add up the type of sharable items when they needed.
-However, I am not going to talk about it as it is beyond my MVP schedule.
+While I was creating letsh application, I thought that there must be some data that could be <ins>shared</ins> throughout data no matter what they are.
+The best example for this could be time that data was newly created or updated.
+If I include these data, then admin users later will be able to easily control over those data based on those time data.
 
 <br/>
 
-### Brainstorming
-
-I named each apps' app labels as below.
-
-<br/>
-
-<center>
-|        Description         |       Name        |
-| :--------------------: | :---------------: |
-|          Users          |      `users`      |
-|   Share item (Accomodation)   |  `accomodations`  |
-| Share item (Transportation) | `transportations` |
-|          Reviews          |     `reviews`     |
-|          Bookings       |  `bookings`   |
-|         Direct Messages      |    `direct_messages`     |
-|        Categories         |    `categories`     |
-| Media | `user_media` |
-| Wishlists | `wishlists` |
-</center>
-
-I separated accomodations and transportations although they are same sharable items.
-
-<br/>
-
-## Initializing project
-
-_Coming soon_
-
-<br/>
-
-## Common model
-
-Common model is a model that includes data that could be shared throughout other apps.
-Time and users' address could be the best data type that can be used in this model.
-
-### Abstract base model
+## Abstract base model
 
 However, including all these common data into all other apps' models is just repeating codes ourselves and it could waste our DB.
-Therefore, I set this model as <a href="https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes" target="_blank">abstract base model</a>.
-What that means is after I defined the common data fields, with using <a href="https://docs.python.org/3/tutorial/classes.html#inheritance" target="_blank">class inheritance</a>
+So it would be very effective to make these types of models that <ins>**_do not wasting too much DB space and can be used in other models_**</ins>.
+
+This is where <a href="https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes" target="_blank">abstract base model</a> is used.
+After I defined the common data fields, with using <a href="https://docs.python.org/3/tutorial/classes.html#inheritance" target="_blank">class inheritance</a>
 other apps' models can also use Common model's data fields.
 
 <br/>
 
-### Coding
+## Coding
 
-#### Creating app
+### Creating app
 
 Let's create `common` app with the following command. This is where we are going to define our common models.
 
@@ -90,12 +37,16 @@ Let's create `common` app with the following command. This is where we are going
 django-admin startapp common
 ```
 
+<br/>
+
 After that, let's include `common` app in our `settings.py`.
 I separated <a href="https://docs.djangoproject.com/en/4.1/ref/settings/#installed-apps" target="_blank"><code>INSTALLED_APPS</code></a> in certain ways before my application gets too complicated.
 
 1. `DJANGO_APPS`: Pre-installed Django apps
 2. `THIRDPARTY_APPS`: Any third-party libraries
 3. `MANUALLY_INSTALLED_APPS`: Apps that I installed by myself
+
+<br/>
 
 and bundled them all up with `INSTALLED_APPS`.
 
@@ -120,13 +71,15 @@ INSTALLED_APPS = DJANGO_APPS + THIRDPARTY_APPS + MANUALLY_INSTALLED_APPS
 
 <br/>
 
+### Creating model
+
+Let's edit `models.py` file inside of `common/` app folder.
+
 <CH.Scrollycoding>
 
 #### Creating model class
 
-There could be multiple models depending on data.
-To begin with, we are going to make model that deals with time.
-I created class named `TimeStampModel`
+I created class named `TimeStampModel` that controls over time of data has been created/updated.
 
 ```py focus=3:7
 from django.db import models
@@ -191,3 +144,9 @@ class TimeStampModel(models.Model):
 ```
 
 </CH.Scrollycoding>
+
+<br/>
+
+## Reference
+
+- <a href="https://dev.to/sankalpjonna/using-abstract-models-in-django-1igi" target="_blank">Using abstract models in Django</a>

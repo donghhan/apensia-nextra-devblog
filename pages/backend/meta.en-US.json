@@ -1,9 +1,10 @@
 {
-    "psycopg2-intall-error": "psycopg2 install error",
-    "django-internationalization": "Django Internationalization",
-    "djangorestframework-serializers": "DRF serializers",
     "django-with-postgresql": "Connecitng PostgresSQL with Django",
-    "django-custom-password-validator": "Building custom password validator in Django",
+    "psycopg2-install-error": "[Error] psycopg2 install error",
+    "django-abstract-base-model": "Using one model into another apps model in Django",
     "django-custom-user-model": "Django modeling (2)",
-    "django-abstract-model": "Django modeling (1)"
+    "attributeerror-cannot-set-attribute": "AttributeError: can't set attribute",
+    "django-custom-password-validator": "Building custom password validator in Django",
+    "djangorestframework-serializers": "DRF serializers",
+    "django-internationalization": "Django Internationalization"
 }

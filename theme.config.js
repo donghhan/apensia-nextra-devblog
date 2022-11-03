@@ -23,12 +23,6 @@ const TITLE_WITH_TRANSLATIONS = {
   ko: "Apensia 개발 블로그",
 };
 
-const FEEDBACK_LINK_WITH_TRANSLATIONS = {
-  "en-US": "Question? Give us feedback →",
-  "zh-CN": "有疑问？给我们反馈 →",
-  "pt-BR": "Dúvidas? Nos dê feedback →",
-};
-
 export default {
   projectLink: "https://github.com/donghhan",
   docsRepositoryBase: "https://github.com/vercel/swr-site/blob/master/pages",
@@ -36,13 +30,6 @@ export default {
   search: true,
   unstable_flexsearch: true,
   floatTOC: true,
-  feedbackLink: () => {
-    const { locale } = useRouter();
-    return (
-      FEEDBACK_LINK_WITH_TRANSLATIONS[locale] ||
-      FEEDBACK_LINK_WITH_TRANSLATIONS["en-US"]
-    );
-  },
   feedbackLabels: "feedback",
   logo: () => {
     const { locale } = useRouter();

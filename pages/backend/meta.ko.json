@@ -1,9 +1,10 @@
 {
-    "psycopg2-intall-error": "psycopg2 설치 에러",
-    "django-internationalization": "Django 다국어 지원",
-    "djangorestframework-serializers": "DRF 직렬화",
-    "django-with-postgresql": "Django와 PostgreSQL 연동하기",
+    "django-with-postgresql": "Django DB를 PostgreSQL로 바꾸기",
+    "psycopg2-install-error": "[Error] xcode-select Failed to locate 'clang', requesting installation of command line developer tools",
+    "django-abstract-base-model": "Django에서 한 모델을 DB에 따로 저장하지 않고 다른 모델에서 사용하기",
+    "django-custom-user-model": "커스터마이징된 User 모델 만들기",
+    "attributeerror-cannot-set-attribute": "AttributeError: can't set attribute 'is_staff'",
     "django-custom-password-validator": "Django 커스텀 비밀번호 검사기",
-    "django-custom-user-model": "Django 모델 설계 (2)",
-    "django-abstract-model": "Django 모델 설계 (1)"
+    "djangorestframework-serializers": "DRF 직렬화",
+    "django-internationalization": "Django 다국어 지원"
 }

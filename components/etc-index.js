@@ -2,7 +2,7 @@ import { getPagesUnderRoute } from "nextra/context";
 import Link from "next/link";
 
 export default function ETCIndex({ more = "Read more" }) {
-  return getPagesUnderRoute("/ai").map((page) => {
+  return getPagesUnderRoute("/etc").map((page) => {
     // Alias `<a>` to avoid it being replaced by MDX components.
     const A = "a";
     return (
