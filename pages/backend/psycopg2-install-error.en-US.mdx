@@ -1,7 +1,7 @@
 ---
 title: Error happened while installing psycopg2 package within poetry virtual environment
 image: https://www.tabnine.com/academy/wp-content/uploads/2020/10/academy_1.png
-description: "xcode-select Failed to locate 'clang', requesting installation of command line developer tools."
+description: Error happened while installing psycopg2 package through poetry
 ---
 
 import Callout from 'nextra-theme-docs/callout'
@@ -187,8 +187,6 @@ The following error occurred when trying to handle this error:
 The core part seemed to be Clang, which is one of the macOS's Command Line Tools Packages.
 Command Line Tools Package is the small package that can be downloaded separately from Xcode that allows us to do development with command line.[^1]
 
-[^1]: Reference: <a href="https://developer.apple.com/library/archive/technotes/tn2339/_index.html" target="_blank">What is the Command Line Tools Package?</a>
-
 `xcode-select: Failed to locate 'clang', requesting installation of command line developer tools.`
 
 ## Solutions
@@ -218,3 +216,10 @@ And I could find another thing <a href="https://apple.stackexchange.com/a/446624
 This macOS updates always make me tired...
 
 ~~Then how could I have been able to install other packages such as Django and Pillow?~~
+
+<br/>
+
+## References
+
+[^1]:
+    <a href="https://developer.apple.com/library/archive/technotes/tn2339/_index.html" target="_blank">What is the Command Line Tools Package?</a>
