@@ -25,12 +25,14 @@ const TITLE_WITH_TRANSLATIONS = {
 
 export default {
   projectLink: "https://github.com/donghhan",
-  docsRepositoryBase: "https://github.com/vercel/swr-site/blob/master/pages",
   titleSuffix: " – Apensia",
+  nextLinks: true,
+  prevLinks: true,
   search: true,
   unstable_flexsearch: true,
   floatTOC: true,
   feedbackLabels: "feedback",
+  footerEditLink: false,
   logo: () => {
     const { locale } = useRouter();
     return (
