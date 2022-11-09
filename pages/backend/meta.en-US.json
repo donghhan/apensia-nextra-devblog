@@ -1,11 +1,11 @@
 {
-    "django-with-postgresql": "Connecitng PostgresSQL with Django",
+    "django-with-postgresql": "Connecting PostgresSQL with Django",
     "psycopg2-install-error": "[Error] xcode-select Failed to locate 'clang', requesting installation of command line developer tools",
     "django-abstract-base-model": "Using one model into another apps model in Django without saving in DB",
     "django-custom-user-model": "Customizing User model",
     "attributeerror-cannot-set-attribute": "AttributeError: can't set attribute: 'is_staff'",
     "password-not-being-hashed-in-django-admin": "[Error] Errors in hashing password in Django admin",
     "django-custom-password-validator": "Building custom password validator in Django",
-    "djangorestframework-serializers": "DRF serializers",
+    "drf-serializers-get-and-post": "DRF serialization and functional view",
     "django-internationalization": "Django Internationalization"
 }

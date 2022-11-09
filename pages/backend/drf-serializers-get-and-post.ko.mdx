@@ -1,14 +1,14 @@
 ---
-title: DRF로 Rest API 만들기(1)
+title: 직렬화 및 DRF 함수형 View
 image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
-description: Django JSONResponse 및 ModelSerializer
-date: November 8th, 2022
+description: JSONResponse, ModelSerializer 및 함수형 GET, POST View 작성해보기
+date: November 9th, 2022
 ---
 
 import Callout from 'nextra-theme-docs/callout'
 import Bleed from 'nextra-theme-docs/bleed'
 
-# 직렬화
+# 직렬화 및 DRF 함수형 View
 
 ## Rest API란?
 
@@ -141,7 +141,7 @@ def wishlists(request):
 
 <br/>
 
-<center>![typeerror_notjsonserializable](../../media/drf-serializers/typeerror_notjsonserializable.png)</center>
+<center>![typeerror_notjsonserializable](../../media/backend/drf-serializers-get-and-post/typeerror_notjsonserializable.png)</center>
 
 이는 단순히 얘기해서 우리의 브라우저가 QuerySet을 읽어들이지 못하고 있으며, 그 이유는 QuerySet을 무슨 이유에선지 JSON 형태의 파일로 변환하지 못하고 있기 때문이다.
 그렇기 때문에 QuerySet을 JSON 형태로 한 번 더 바꿔주는 작업을 해야 한다.
@@ -191,16 +191,18 @@ def categories(request):
 
 그럼 아래와 같이 결괏값이 제대로 찍히는 것을 볼 수 있다.
 
-<center>![result](../../media/drf-serializers/result.png)</center>
+<center>![result](../../media/backend/drf-serializers-get-and-post/result.png)</center>
 
 <br/>
-
-## DRF 도입
 
 ### 한계
 
 다만, 이러한 방식의 문제점은 각 View 별로 매번 이런 작업들을 수동적으로 해줘야 한다는 뜻이고 가끔씩 우리가 숨기고 싶은 불필요한 정보들을 손쉽게 제어할 수 없다는 점이다.
 따라서 Django에 내장되어 있는 직렬화 프레임워크는 아무래도 사용하는데에는 힘든 구석이 꽤 있다.
+
+<br/>
+
+## DRF 직렬화 및 함수형 GET View
 
 <a href="https://www.django-rest-framework.org/" target="_blank">Django Rest Framework (이하 DRF)</a>는 이러한 문제점을 해결해줄 수 있는 유명한 프레임워크다.
 단순히 직렬화 뿐만이 아니라 인증/인가 절차, 허용 범위 등 Rest API에 다양한 기능들을 추가해줄 수 있는 유용한 유틸리티들을 제공한다.
@@ -232,7 +234,7 @@ THIRDPARTY_APPS = ["rest_framework"]
 
 <CH.Scrollycoding>
 
-### View 수정
+### View 수정 (1차)
 
 DRF를 도입하였으니 이제 본격적으로 View를 수정해보도록 하자.
 
@@ -286,12 +288,12 @@ def categories(request):
 
 <br/>
 
-## 직렬화
+### View 수정 (2차)
 
 이 문제를 해결하기 위해 앞서 우리가 했었던 직렬화 작업을 한 번 더 해보도록 하자.
 이번에는 Django가 아닌 DRF가 제공해주는 방법을 활용해 볼 것이다.
 
-### 직렬화 파일 생성
+#### 직렬화 파일 생성
 
 DRF의 직렬화를 사용하기 위해 `categories/` 폴더 내부에 `serializers.py` 파일을 생성한다.
 
@@ -303,7 +305,7 @@ touch categories/serializers.py
 
 <CH.Scrollycoding>
 
-### `ModelSerializer`
+#### `ModelSerializer`
 
 <a href="https://www.django-rest-framework.org/api-guide/serializers/#modelserializer" target="_blank"><code>ModelSerializer</code></a>를 통해 일일히 필드를 구성할 필요 없이 모델을 손쉽게 직렬화해줄 수 있다.
 
@@ -324,7 +326,7 @@ class CategorySerializer(ModelSerializer):
 
 ---
 
-### QuerySet 직렬화하기
+#### QuerySet 직렬화하기
 
 앞서 만든 직렬화를 사용할 수 있도록 `serializers.py` 파일을 불러와준다.
 
@@ -352,11 +354,11 @@ def categories(request):
 
 <br/>
 
-<center>![properties](../../media/drf-serializers/properties.png)</center>
+<center>![properties](../../media/backend/drf-serializers-get-and-post/properties.png)</center>
 
 <CH.Scrollycoding>
 
-### `Response` 반환하기
+#### `Response` 반환하기
 
 마지막으로 직렬화된 QuerySet을 접근할 수 있도록 <a href="https://www.django-rest-framework.org/api-guide/responses/#response" target="_blank"><code>Response()</code></a>를 이용한다.
 위의 이미지에서 `serializer` 객체는 `data`에 접근할 수 있음을 알 수 있다. 따라서, `Response()`의 인자로 `serializer.data`를 넘겨준다.
@@ -381,7 +383,7 @@ def categories(request):
 
 <br/>
 
-<center>![attributeerror](../../media/drf-serializers/attributeerror.png)</center>
+<center>![attributeerror](../../media/backend/drf-serializers-get-and-post/attributeerror.png)</center>
 
 이 긴 내용의 에러의 한가지 핵심은 직렬기가 처리할 수 있는 데이터와 QuerySet 수의 차이이다.
 `WishlistSerializer`는 `user`라는 필드가 있는 찜하기 QuerySet을 오직 하나를 바꾸기 위해 만들어졌다.
@@ -408,10 +410,169 @@ def categories(request):
 
 <br/>
 
-## 결과
+### 결과
 
 아래와 같이 성공적으로 JSON 형태로 데이터들이 불러와지는 것을 볼 수 있다.
 
 <br/>
 
-<center>![result2](../../media/drf-serializers/result2.png)</center>
+<center>![result2](../../media/backend/drf-serializers-get-and-post/result2.png)</center>
+
+함수형 View에서의 POST 요청
+
+저번 포스트에선 `GET` 요청에 대한 부분을 다뤄보았다.
+이번엔 소분류 카테고리에 대해서 조회하고 새로운 소분류 카테고리를 생성할 수 있는 View를 만들어보자.
+
+## 함수형 `POST` View
+
+`POST` 요청은 <ins>**무언가를 새롭게 만들 때**</ins> 사용된다.
+
+### View 수정 (3차)
+
+<CH.Scrollycoding style={{ height: 400 }}>
+
+#### URL 설정
+
+`urls.py` 파일에서 이번엔 소분류 카테고리 하나만을 다루는 URL을 설정해보자.
+고유 `id` 별로 소분류 카테고리를 가져오기 위해 <a href="https://docs.djangoproject.com/en/4.1/topics/http/urls/#path-converters" target="_blank">Path converter</a>를 사용해준다.
+`id`는 `int` 형으로 가져왔다.
+
+```py categories/urls.py
+from django.urls import path
+from .views import *
+
+# mark[38:70]
+urlpatterns = [path("", categories), path("<int:pk>", category_detail)]
+```
+
+---
+
+#### HTTP Request 메소드 및 `GET` View 설정
+
+특정 View에 대해서 특정 HTTP Request를 허용시키기 위해선 <a href="https://www.django-rest-framework.org/api-guide/views/#api_view" target="_blank">`@api_view()` 데코레이터에 본인이 원하는 요청을 넣어주면 된다</a>.
+`GET` 요청의 경우 기본값으로 들어가게 된다.
+
+`GET` 방식은 이전 포스트에서 했던 것과 동일하다. 다만, 소분류 카테고리 하나에 대한 부분을 다루므로 `pk`라는 파라미터를 추가적으로 전달한다.
+`pk`는 앞서 위에서 적었던 `<int:pk>` 부분의 `pk`와 동일하게 이름을 적어야 한다.
+
+`request.method`를 콘솔에 `print`를 해보면 해당 View가 현재 어떤 HTTP Request 메소드로 받고 있는지 `str` 값으로 알려준다.
+
+```py categories/views.py focus=1,3,4:8
+# mark[11:25]
+@api_view(["GET", "POST"])
+def categories(request):
+    print(request.method) # GET
+    if request.method == "GET":
+        category = Category.objects.get(pk=pk)
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+```
+
+---
+
+#### `POST` View 설정
+
+`POST` 요청도 마찬가지로 작성해준다.
+여기서 `request.data`를 `print` 해보면 우리가 전송한 데이터가 JSON 형태로 보이게 된다.
+
+```py categories/views.py focus=7:10
+@api_view(["GET", "POST"])
+def categories(request):
+    if request.method == "GET":
+        category = Category.objects.get(pk=pk)
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+    elif request.method == "POST":
+        print(request.data) # {'name': 'Bed and Breakfast', 'kind': 'room'}
+        return Response({"ok": True})
+```
+
+</CH.Scrollycoding>
+
+그럼 다음과 같이 새롭게 데이터를 집어넣을 수 있는 란이 생기게 된다.
+
+<br/>
+
+<center>![result3](../../media/backend/drf-serializers-get-and-post/result3.png)</center>
+
+<br/>
+
+### 유효성 검사 및 저장
+
+Serializer는 자체적인 유효성 검사도 실시한다. 예를 들어, 다음과 같이 길이가 20자가 넘어가는 `name`을 넘겨줬다고 가정해보자.
+
+<br/>
+
+<center>![result3](../../media/backend/drf-serializers-get-and-post/invalid.png)</center>
+
+<br/>
+
+<CH.Scrollycoding>
+
+#### `is_valid()`
+
+<a href="https://www.django-rest-framework.org/api-guide/serializers/#validation" target="_blank">`is_valid()`</a> 메소드를 통해서 유저가 보내준 데이터가 유효한지 확인할 수 있다.
+만일 유효하지 않다면 <a href="https://www.django-rest-framework.org/api-guide/serializers/#writable-nested-representations" target="_blank">`serializer.errors`</a>를 통해 해당 에러가 무엇인지 알 수 있다.
+
+```py categories/models.py focus=9:10
+@api_view(["GET", "POST"])
+def categories(request):
+    if request.method == "GET":
+        all_categories = Category.objects.all()
+        serializer = CategorySerializer(all_categories, many=True)
+        return Response(serializer.data)
+    elif request.method == "POST":
+        serializer = CategorySerializer(data=request.data)
+        print(serializer.is_valid()) # False
+        print(serializer.errors) # {'name': [ErrorDetail(string='Ensure this field has no more than 20 characters.', code='max_length')]}
+        return Response(serializer.data)
+```
+
+---
+
+#### 데이터 유효성 검사에 따른 분기처리
+
+따라서 만일 데이터가 유효할 경우에만 직렬화를 마친 데이터를 응답해주고, 그렇지 않을 경우 에러를 반환하도록 한다.
+
+```py categories/models.py focus=9:12
+@api_view(["GET", "POST"])
+def categories(request):
+    if request.method == "GET":
+        all_categories = Category.objects.all()
+        serializer = CategorySerializer(all_categories, many=True)
+        return Response(serializer.data)
+    elif request.method == "POST":
+        serializer = CategorySerializer(data=request.data)
+        if serializer.is_valid():
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+```
+
+---
+
+#### 데이터 저장하기
+
+유효성 검사가 끝나고 나게 되면 Serializer에 담긴 정보를 저장해보도록 하자. 이는 `.save()` 메소드를 통해 이루어진다.
+만일 Serializer가 유저가 전달한 데이터로만 이루어져 있을 경우, `.save()` 메소드가 호출되는 순간 Serializer는 <a href="https://www.django-rest-framework.org/api-guide/serializers/#saving-instances" target="_blank">`create()` 메소드를 자동적으로 호출된다</a>.
+그럼 `.create()` 메소드는 유효한 데이터를 가지고 새로운 객체를 생성하게 된다.
+
+```py categories/models.py focus=10:11
+@api_view(["GET", "POST"])
+def categories(request):
+    if request.method == "GET":
+        all_categories = Category.objects.all()
+        serializer = CategorySerializer(all_categories, many=True)
+        return Response(serializer.data)
+    elif request.method == "POST":
+        serializer = CategorySerializer(data=request.data)
+        if serializer.is_valid():
+            new_category = serializer.save()
+            return Response(CategorySerializer(new_category))
+        else:
+            return Response(serializer.errors)
+```
+
+</CH.Scrollycoding>
+
+<br/>

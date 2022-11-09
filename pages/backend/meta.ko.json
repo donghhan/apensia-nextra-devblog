@@ -6,6 +6,6 @@
     "attributeerror-cannot-set-attribute": "AttributeError: can't set attribute 'is_staff'",
     "password-not-being-hashed-in-django-admin": "[Error] Django 어드민 비밀번호 해싱 에러",
     "django-custom-password-validator": "Django 커스텀 비밀번호 검사기",
-    "djangorestframework-serializers": "DRF 직렬화",
+    "drf-serializers-get-and-post": "DRF 직렬화 및 함수형 View",
     "django-internationalization": "Django 다국어 지원"
 }

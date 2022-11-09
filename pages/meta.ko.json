@@ -33,13 +33,6 @@
       "sidebar": false
     }
   },
-  "problems": {
-    "title": "문제풀이",
-    "type": "page",
-    "theme": {
-      "sidebar": false
-    }
-  },
   "etc": {
     "title": "기타",
     "type": "page",

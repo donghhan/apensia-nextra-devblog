@@ -33,13 +33,6 @@
       "sidebar": false
     }
   },
-  "problems": {
-    "title": "Questions",
-    "type": "page",
-    "theme": {
-      "sidebar": false
-    }
-  },
   "etc": {
     "title": "ETC",
     "type": "page",
