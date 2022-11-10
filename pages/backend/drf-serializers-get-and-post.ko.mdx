@@ -576,3 +576,169 @@ def categories(request):
 </CH.Scrollycoding>
 
 <br/>
+
+## 함수형 `PUT` View
+
+`PUT` Request는 무언가를 변경할 때 쓰인다.
+
+<br/>
+
+<CH.Scrollycoding>
+
+### `PUT` Request 허용해주기
+
+`@api_view()` 데코레이터 안에 `PUT` request를 허용해주도록 한다.
+
+```py categories/views.py focus=1
+# mark[19:23]
+@api_view(["GET", "PUT"])
+def category_detail(request, pk):
+    try:
+        category = Category.objects.get(pk=pk)
+    except Category.DoesNotExist:
+        raise NotFound
+
+    if request.method == "GET":
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+    elif request.method == "PUT":
+        serializer = CategorySerializer(category, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_category = serializer.save()
+            return Response(CategorySerializer(updated_category).data)
+        else:
+            return Response(serializer.errors)
+```
+
+---
+
+### 예외 처리
+
+특정 카테고리를 수정하기 위해서는 먼저 해당 카테고리가 있는지부터 확인해야 한다.
+만일 존재한다면 해당 카테고리 QuerySet을 <a href="https://docs.djangoproject.com/en/4.1/ref/models/querysets/#django.db.models.query.QuerySet.get" target="_blank">`.get()`</a>으로 가져오고,
+존재하지 않는다면 <a href="https://www.django-rest-framework.org/api-guide/exceptions/#notfound" target="_blank">NotFound</a> 예외를 발생시킨다.
+
+```py categories/views.py focus=3:7
+# mark[19:23]
+@api_view(["GET", "PUT"])
+def category_detail(request, pk):
+    try:
+        category = Category.objects.get(pk=pk)
+    except Category.DoesNotExist:
+        raise NotFound
+
+    if request.method == "GET":
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+    elif request.method == "PUT":
+        serializer = CategorySerializer(category, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_category = serializer.save()
+            return Response(CategorySerializer(updated_category).data)
+        else:
+            return Response(serializer.errors)
+```
+
+---
+
+### `PUT` View 작성하기
+
+#### `partial=True`
+
+`serializer`는 크게 두 가지 데이터를 받는다.
+하나는 앞서 `try` 문을 통해 DB에서 성공적으로 가져온 카테고리 QuerySet(`category`),
+다른 하나는 유저가 보내준 데이터(`data=request.data`)이다.
+
+하지만 가끔씩 유저가 보내주는 데이터는 항상 완전하다고 볼 수 없다 (예를 들어 필수적으로 포함되어야 하는 필드를 빠뜨렸다든지 등).
+이를 위해 <ins>부분적으로만 업데이트</ins>가 되도록 <a href="https://www.django-rest-framework.org/api-guide/serializers/#partial-updates" target="_blank">`partial=True`</a>를 넣어주면 부분적 업데이트가 이루어진다.
+
+```py categories/views.py focus=12
+# mark[19:23]
+@api_view(["GET", "PUT"])
+def category_detail(request, pk):
+    try:
+        category = Category.objects.get(pk=pk)
+    except Category.DoesNotExist:
+        raise NotFound
+
+    if request.method == "GET":
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+    elif request.method == "PUT":
+        # mark[70:81]
+        serializer = CategorySerializer(category, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_category = serializer.save()
+            return Response(CategorySerializer(updated_category).data)
+        else:
+            return Response(serializer.errors)
+```
+
+---
+
+#### 유효성 검사 및 저장
+
+앞서 `POST` View 때와 마찬가지로 데이터가 유효하다는 것이 검증이 되었다면
+해당 데이터를 직렬화하여 저장한다.
+
+```py categories/views.py focus=13:15
+# mark[19:23]
+@api_view(["GET", "PUT"])
+def category_detail(request, pk):
+    try:
+        category = Category.objects.get(pk=pk)
+    except Category.DoesNotExist:
+        raise NotFound
+
+    if request.method == "GET":
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+    elif request.method == "PUT":
+        # mark[70:81]
+        serializer = CategorySerializer(category, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_category = serializer.save()
+            return Response(CategorySerializer(updated_category).data)
+        else:
+            return Response(serializer.errors)
+```
+
+---
+
+### `.update()` 메소드 수정
+
+`.save()` 메소드가 실행될 경우 `POST` View와 같이 이번에는 <a href="https://www.django-rest-framework.org/api-guide/serializers/#saving-instances" target="_blank">`.update()` 메소드가 자동 실행</a>된다.
+
+View에서 생성된 인스턴스의 각각의 필드에 대한 정보는 유효성 검증을 마친 `validated_data` 객체 내부의 필드이므로, 이를 연결해준 후 인스턴스를 저장하고 해당 인스턴스를 반환한다.
+
+```py categories/serializers.py focus=9:13
+class CategorySerializer(ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
+
+    def create(self, validated_data):
+        return Category.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get("name", instance.name)
+        instance.kind = validated_data.get("kind", instance.kind)
+        instance.save()
+        return instance
+```
+
+</CH.Scrollycoding>
+
+<br/>
+
+### 결과
+
+다음과 같이 성공적으로 `name`이 업데이트 되는 것을 확인할 수 있다.
+
+<br/>
+
+<center>![attempt](../../media/backend/drf-serializers-get-and-post/attempt.png)</center>
+
+<br/>
+
+<center>![success](../../media/backend/drf-serializers-get-and-post/success.png)</center>
