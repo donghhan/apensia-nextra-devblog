@@ -509,9 +509,15 @@ Serializer는 자체적인 유효성 검사도 실시한다. 예를 들어, 다�
 
 <br/>
 
-<center>![result3](../../media/backend/drf-serializers-get-and-post/invalid.png)</center>
+<center>![invalid_attempt](../../media/backend/drf-serializers-get-and-post/invalid_attempt.png)</center>
 
 <br/>
+
+이는 잘못된 유형의 데이터이므로 DB에 업데이트가 되어서는 안된다.
+
+<br/>
+
+<center>![update_error](../../media/backend/drf-serializers-get-and-post/update_error.png)</center>
 
 <CH.Scrollycoding>
 
@@ -748,3 +754,89 @@ class CategorySerializer(ModelSerializer):
 <br/>
 
 <center>![success](../../media/backend/drf-serializers-get-and-post/success.png)</center>
+
+<br/>
+
+## 함수형 `DELETE` View
+
+`DELETE` View는 굉장히 단순하다.
+
+<br/>
+
+<CH.Scrollycoding>
+
+#### `DELETE` Request 허용해주기
+
+`DELETE` Request를 허용해준다.
+
+```py categories/views.py focus=20
+from rest_framework.status import HTTP_204_NO_CONTENT
+
+@api_view(["GET", "PUT", "DELETE"])
+def category_detail(request, pk):
+    try:
+        category = Category.objects.get(pk=pk)
+    except Category.DoesNotExist:
+        raise NotFound
+
+    if request.method == "GET":
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+    elif request.method == "PUT":
+        serializer = CategorySerializer(category, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_category = serializer.save()
+            return Response(CategorySerializer(updated_category).data)
+        else:
+            return Response(serializer.errors)
+    elif request.method == "DELETE":
+        category.delete()
+        return Response(HTTP_204_NO_CONTENT)
+```
+
+---
+
+#### 삭제 후 결과값 반환
+
+카테고리 삭제 이후 성공적으로 삭제되었음을 알리는 <a href="https://www.django-rest-framework.org/api-guide/status-codes/#successful-2xx" target="_blank">`HTTP_204_NO_CONTENT`</a>를 반환한다.
+
+```py categories/views.py focus=1,21:22
+from rest_framework.status import HTTP_204_NO_CONTENT
+
+@api_view(["GET", "PUT", "DELETE"])
+def category_detail(request, pk):
+    try:
+        category = Category.objects.get(pk=pk)
+    except Category.DoesNotExist:
+        raise NotFound
+
+    if request.method == "GET":
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+    elif request.method == "PUT":
+        serializer = CategorySerializer(category, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_category = serializer.save()
+            return Response(CategorySerializer(updated_category).data)
+        else:
+            return Response(serializer.errors)
+    elif request.method == "DELETE":
+        category.delete()
+        return Response(HTTP_204_NO_CONTENT)
+```
+
+</CH.Scrollycoding>
+
+<br/>
+
+### 결과
+
+다음과 같이 성공적으로 `name`이 업데이트 되는 것을 확인할 수 있다.
+
+<br/>
+
+<center>![delete_attempt](../../media/backend/drf-serializers-get-and-post/delete_attempt.png)</center>
+
+<br/>
+
+<center>![delete_successful](../../media/backend/drf-serializers-get-and-post/delete_successful.png)</center>
