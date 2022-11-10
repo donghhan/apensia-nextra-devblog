@@ -28,8 +28,12 @@ import Bleed from 'nextra-theme-docs/bleed'
 아래와 같이 간단하게 `Category` 모델 클래스를 만들어보았다.
 letsh 서비스는 주거 공간 뿐만이 아니라 주차장 및 교통수단도 공유가 가능하기 때문에 공유 아이템 카테고리가 여러 모델에 사용될 가능성이 농후해보였다.
 
-`kind`는 카테고리를 이루는 대분류에 해당하는 부분이다. 대분류는 선택할 수 있는 값들을 한정짓기 위하여 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#enumeration-types" target="_blank"><code>choices</code>의 enumeration type</a>을 사용해주었다.
-그리고 `name`은 소분류로써 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.CharField" target="_blank"><code>CharField</code></a>를 이용하여 자유롭게 설정할 수 있도록 해주었다.
+<br/>
+
+<CH.Section>
+
+[`kind`](focus://18[5:9])는 카테고리를 이루는 대분류에 해당하는 부분이다. 대분류는 선택할 수 있는 값들을 한정짓기 위하여 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#enumeration-types" target="_blank"><code>choices</code>의 enumeration type</a>을 사용해주었다.
+그리고 [`name`](focus://17[5:9])은 소분류로써 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.CharField" target="_blank"><code>CharField</code></a>를 이용하여 자유롭게 설정할 수 있도록 해주었다.
 
 ```py categories/models.py
 from django.db import models
@@ -63,6 +67,8 @@ class Category(TimeStampModel):
         verbose_name_plural = _("Categories")
         db_table = "categories"
 ```
+
+</CH.Section>
 
 <br/>
 
