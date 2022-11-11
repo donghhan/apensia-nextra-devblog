@@ -1,0 +1,109 @@
+---
+title: ForeignKey 정보와 연동하여 데이터 추가하기
+image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
+description: ForeignKey로 연결되어 있는 외부 데이터와 함께 새 데이터 만들기
+---
+
+import Callout from 'nextra-theme-docs/callout'
+import Bleed from 'nextra-theme-docs/bleed'
+
+# ForeignKey로 연결되어 있는 외부 데이터와 함께 새 데이터 만들기
+
+letsh 플랫폼에서 유저는 본인이 스스로 호스트의 자격으로 숙소를 다른 유저들에게 제공할 수 있다.
+한 유저는 여러 숙소들을 가질 수 있기 때문에 필자가 만든 유저 모델과 숙소 모델은 각각 일대다 관계(`1:N`)를 맺고 있는 상황이다.
+
+## 개요
+
+### 숙소 모델
+
+아래는 숙소 앱인 `accomodations` 내부에 필자가 설정한 모델 파일이다.
+
+- 모든 숙소는 항상 `owner`가 있어야 한다.
+- 해당 유저가 삭제되면 그 유저에 딸려 있던 모든 숙소들은 전부 삭제된다 &rarr; **<a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.ForeignKey.on_delete" target="_blank">`on_delete`</a> 속성을 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.CASCADE" target="_blank">`CASCADE`</a>로 지정해주었다.**
+
+```py accomodations/models.py
+class Room(TimeStampModel):
+
+    """Rooms Model Definition"""
+
+    # 중략
+
+    owner = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        verbose_name=_("Owner"),
+        related_name="rooms",
+    )
+```
+
+> #### Reverse Accessor
+>
+> 위 상황과 같이 숙소(`Room`) 모델이 유저(`User`) 모델을 `ForeignKey`로 가지고 있을 때 (즉, 한마디로 `Room` 모델은 `User` 모델을 `owner`라는 필드로 가리키고 있을 때) 해당 숙소에 대하여 주인이 누구인지는 쉽게 파악할 수 있다.
+>
+> ```
+> >>> from accomodations.models import Room
+> >>> room = Room.objects.get(pk=2)
+> >>> room
+> <Room: Apple Tree>
+> >>> room.owner
+> <User: Anna (anna@example.com)>
+> ```
+>
+> 그렇다면 반대로 한 유저가 가지고 있는 방들에는 어떤 것들이 있는지 어떻게 알 수 있을까?
+>
+> <a href="https://docs.djangoproject.com/en/4.1/topics/db/queries/#following-relationships-backward" target="_blank">공식 문서</a>에 따르면 어떤 A라는 모델이 다른 B라는 모델을 `ForeignKey`로써 포함하게 될 경우, 
+B 모델의 인스턴스들은 상위 A 모델의 모든 인스턴스를 반환하는 Manager에 접근할 수 있다. 이 때, A 모델의 Manager는 `{A 모델 소문자}_set` 형태로 접근할 수 있게 된다. 즉, 위의 예시에서 살펴보면
+>
+> ```
+> >>> room.user_set.all()
+> <User: Alex (admin@example.com)>
+> ```
+>
+> 이때, `FOO_set`을 다른 이름으로 명명할 수가 있는데, 이는 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.ForeignKey.related_name" target="_blank">`related_name`</a>으로 설정할 수 있다.
+>
+> ```py accomodations/models.py
+> class Room(TimeStampModel):
+>
+>
+>    """Rooms Model Definition"""
+>
+>    # 중략
+>
+>    owner = models.ForeignKey(
+>        "users.User",
+>        on_delete=models.CASCADE,
+>        verbose_name=_("Owner"),
+>        # mark[8:19]
+>        related_name="rooms",
+>    )
+> ```
+>
+> 그럼 이제 다음과 같이도 접근이 가능하다.
+>
+> ```
+> >>> from users.models import User
+> >>> me = User.objects.get(pk=1)
+> >>> me.rooms.all()
+> <Room: Apple Tree>
+> ```
+
+<br/>
+
+### 숙소 Serializer
+
+아래는 숙소 생성에 필요한 serializer이다. 숙소 생성 시에는 모든 필드에 대한 정보를 제공해야 하기 때문에 모든 필드를 추가하기로 했다.
+
+```py accomodations/serializers.py
+from rest_framework.serializers import ModelSerializer
+
+class RoomDetailSerializer(ModelSerializer):
+    class Meta:
+        model = Room
+        fields = "__all__"
+```
+
+<br/>
+
+## 로직
+
+현재 우리에게 필요한 것은 무엇인가?

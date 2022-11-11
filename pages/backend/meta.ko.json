@@ -7,5 +7,6 @@
     "password-not-being-hashed-in-django-admin": "[Error] Django 어드민 비밀번호 해싱 에러",
     "django-custom-password-validator": "Django 커스텀 비밀번호 검사기",
     "drf-serializers-get-and-post": "DRF 직렬화 및 함수형 View",
+    "drf-creating-data-with-foreignkey": "DRF ForeignKey 정보로 객체 생성하기", 
     "django-internationalization": "Django 다국어 지원"
 }
