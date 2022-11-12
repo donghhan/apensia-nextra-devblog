@@ -4,7 +4,7 @@ image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_16330
 description: ForeignKey로 연결되어 있는 외부 데이터와 함께 새 데이터 만들기
 ---
 
-import Callout from 'nextra-theme-docs/callout'
+import Admonition from '@yozora/react-admonition'
 import Bleed from 'nextra-theme-docs/bleed'
 
 # ForeignKey로 연결되어 있는 외부 데이터와 함께 새 데이터 만들기
@@ -59,7 +59,7 @@ B 모델의 인스턴스들은 상위 A 모델의 모든 인스턴스를 반환�
 > <User: Alex (admin@example.com)>
 > ```
 >
-> 이때, `FOO_set`을 다른 이름으로 명명할 수가 있는데, 이는 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.ForeignKey.related_name" target="_blank">`related_name`</a>으로 설정할 수 있다.
+> 이때, `user_set`을 다른 이름으로 명명할 수가 있는데, 이는 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.ForeignKey.related_name" target="_blank">`related_name`</a>으로 설정할 수 있다.
 >
 > ```py accomodations/models.py
 > class Room(TimeStampModel):
@@ -75,7 +75,7 @@ B 모델의 인스턴스들은 상위 A 모델의 모든 인스턴스를 반환�
 >        verbose_name=_("Owner"),
 >        # mark[8:19]
 >        related_name="rooms",
->    )
+>    )>
 > ```
 >
 > 그럼 이제 다음과 같이도 접근이 가능하다.
@@ -104,6 +104,267 @@ class RoomDetailSerializer(ModelSerializer):
 
 <br/>
 
+### 유저 모델
+
+다음은 필자가 설정한 `User` 모델이다.
+
+```py
+class User(AbstractBaseUser, TimeStampModel):
+
+    """Custom User Definition Model"""
+
+    # 중략
+
+    nickname = models.CharField(
+        max_length=20,
+        verbose_name=_("Nickname"),
+        help_text=_(
+            "Can only include lower/uppercases numbers, . and _. This nickname will be shown on the profile of the host. If not specified, first name field would appear."
+        ),
+        error_messages={
+            "null": _("You should provide your nickname."),
+            "blank": _("Nickname cannot be empty."),
+        },
+    )
+    profile_photo = models.ImageField(
+        null=True, blank=True, verbose_name=_("Profile Photo")
+    )
+
+    # 중략
+```
+
+<br/>
+
 ## 로직
 
-현재 우리에게 필요한 것은 무엇인가?
+1. 숙소의 디테일 페이지에 들어가게 되면 `Room` 모델에 정의한 필드를 전부 보여줄 것이다.
+2. 따라서 유저가 숙소를 생성할 때에는 기본적으로 `Room` 모델 안에 들어가 있는 모든 필드에 대한 정보를 제공토록 할 것이다.
+3. 유저가 숙소를 생성할 때에는 반드시 `owner`의 정보를 제공해야 한다. 즉, 숙소를 생성하는 사람은 본인의 정보를 제공해야 한다. 단, 이 때 모든 정보를 제공할 필요는 없고 단순히 `nickname`과 `profile_photo`만 제공한다.
+4. `owner` 이외에도 `amenities`와 `category` 정보도 포함해야 한다.
+5. **단, 숙소 정보를 제공할 시 유저 스스로가 본인의 정보를 제공케 해서는 안된다.**
+
+5번의 이유는 유저가 이를 악용하여 함부로 숙소에 대한 정보를 변경시킬 수도 있기 때문이다.
+
+<br/>
+
+## 코드 작성
+
+코드 작성은 대개 다음과 같이 이루어질 예정이다.
+
+1. 숙소 생성 Serializer에는 숙소를 생성할 때 제공해야 하는 유저의 정보를 담은 Serializer를 포함시킨다.
+2. 그렇게 새롭게 만든 Serializer를 가지고 `POST` View를 만든다.
+
+<br/>
+
+<CH.Scrollycoding style={{ height: 500 }}>
+### 외부 모델 Serializer 변경
+
+#### 유저 Serializer
+
+`RoomDetailSerializer`에 `owner` 정보를 포함해야 하기 때문에 `users/` 앱 내부의 `serializers.py` 안에
+숙소를 만들 때 필요한 유저의 정보를 담을 수 있는 Serializer를 만들어야 한다.
+필자는 이 Serializer의 이름을 `SimpleUserForOneRoomSerializer`라 하였다.
+
+```py users/serializers.py
+from rest_framework.serializers import ModelSerializer
+from .models import *
+
+
+class SimpleUserForOneRoomSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["nickname", "profile_photo"]
+```
+
+---
+
+#### 카테고리 Serializer
+
+카테고리는 비교적 모델이 간단하므로 모든 정보를 포함시켜준다.
+
+```py categories/serializers.py
+from rest_framework.serializers import ModelSerializer
+from .models import *
+
+
+class CategorySerializer(ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
+```
+
+---
+
+#### 편의 시설 Serializer
+
+편의 시설에 대한 Serializer를 생성해준다.
+편의 시설에 대한 설명을 담은 `description` 필드는 굳이 넣어줄 필요가 없을 것 같아 <a href="https://www.django-rest-framework.org/api-guide/serializers/#specifying-which-fields-to-include" target="_blank">`exclude` 키워드로 제외시켰다</a>.
+
+```py accomodations/serializers.py
+from rest_framework.serializers import ModelSerializer
+from .models import *
+
+
+class AmenitySerializer(ModelSerializer):
+    class Meta:
+        model = Amenity
+        exclude = ["description"]
+```
+
+---
+
+#### `RoomDetailSerializer`에 포함시키기
+
+`ModelSerializer`는 <a href="https://www.django-rest-framework.org/api-guide/serializers/#specifying-fields-explicitly" target="_blank">다른 모델의 Serializer를 포함시킬 수 있다</a>.
+
+이 때, 하나의 숙소는 여러 편의시설들을 포함시킬 수 있으므로 `many=True`를 집어넣어준다.
+
+```py accomodations/serializers.py focus=3:4,13:15
+from rest_framework.serializers import ModelSerializer
+from .models import *
+from users.serializers import *
+from categories.serializers import *
+
+
+class AmenitySerializer(ModelSerializer):
+    class Meta:
+        model = Amenity
+        exclude = ["description"]
+
+class RoomDetailSerializer(ModelSerializer):
+    owner = SimpleUserForOneRoomSerializer()  # Serializer won't ask owner
+    amenities = AmenitySerializer(many=True)
+    category = CategorySerializer()
+
+    class Meta:
+        model = Room
+        fields = "__all__"
+```
+
+---
+
+### `POST` View 작성
+
+이후 `POST` View를 작성해준다.
+
+```py accomodations/views.py
+class RoomsView(APIView):
+
+    # 중략
+
+    def post(self, request):
+        serializer = RoomDetailSerializer(data=request.data)
+
+        if serializer.is_valid():
+            room_to_create = serializer.save()
+            serializer = RoomDetailSerializer(room_to_create)
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+```
+
+</CH.Scrollycoding>
+
+<br/>
+
+### 1차 결과
+
+그럼 아래와 같은 화면 결과가 나온다.
+
+<br/>
+
+<center>![result1](../../media/backend/drf-creating-data-with-foreignkey/result1.png)</center>
+
+현재에는 `POST` View 내부에 정의한 `serializer`는 데이터의 유효성을 검사할 수 없다.
+그도 그럴것이 앞서 `RoomDetailSerializer`에는 `category`와 `owner` 그리고 `amenities` 정보도 포함될 것이라고 했는데
+View 단에서는 해당 정보를 보내주고 있지 않기 때문이다.
+
+<br/>
+
+<Admonition 
+    keyword="danger"
+    style={{ color: 'red', fontSize: '16px' }}
+    title={<span><strong>`AssertionError`: The `.create()` method does not support writable nested fields by default.</strong></span>}
+  >
+    다음과 같이 `amenities`와 `category`의 정보를 임의로 집어넣는 것은 DRF에선 허용하고 있지 않다.
+    ```json
+    {
+        "name": "melon tree",
+        "price_per_night": 100,
+        "amenities": [{
+            "name": "lala"
+        }],
+        "category": {
+            "name": "lalala",
+            "kind": "room"
+        }
+    }
+    ```
+    <center>![error1](../../media/backend/drf-creating-data-with-foreignkey/error1.png)</center>
+
+</Admonition>
+
+<Admonition 
+    keyword="danger"
+    style={{ color: 'red', fontSize: '16px' }}
+    title={<span><strong>`IntegrityError`: null value in column "FOO" of relation "BAR" violates not-null constraint.</strong></span>}
+  >
+    현재 `owner`는 반드시 포함되어야 하는 정보이나 이를 빼놓고 객체를 생성하게 되면 아래와 같은 에러가 발생하게 된다.
+
+    ```py accomodations/serializers.py
+    class RoomDetailSerializer(ModelSerializer):
+        # mark
+        owner = SimpleUserForOneRoomSerializer(read_only=True)
+        amenities = AmenitySerializer(many=True, read_only=True)
+        category = CategorySerializer(read_only=True)
+
+        class Meta:
+            model = Room
+            fields = "__all__"
+    ```
+    <center>![error2](../../media/backend/drf-creating-data-with-foreignkey/error2.png)</center>
+
+</Admonition>
+
+<br/>
+
+## 디버깅: `IntegrityError`
+
+위 에러를 해결하기 위해선 좌우지간 `serializer`에게 `owner`에 대한 정보를 제공해야 한다.
+여기에 `request` 객체에 대한 정보를 `print` 해보면
+
+```py accomodations/views.py focus=6
+class RoomsView(APIView):
+
+    # 중략
+
+    def post(self, request):
+        print(dir(request))
+        serializer = RoomDetailSerializer(data=request.data)
+
+        if serializer.is_valid():
+            room_to_create = serializer.save()
+            serializer = RoomDetailSerializer(room_to_create)
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+```
+
+<br/>
+
+다음과 같은 결괏값을 얻을 수 있다. 자세히 보면 `request`라는 객체 내에 `user`라는 객체에 접근할 수 있음을 알 수 있다.
+
+```bash
+['DATA', 'FILES', 'POST', 'QUERY_PARAMS', '__class__', '__delattr__', '__dict__', '__dir__',
+'__doc__', '__eq__', '__format__', '__ge__', '__getattr__', '__getattribute__', '__gt__',
+'__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__',
+'__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__',
+'__subclasshook__', '__weakref__', '_auth', '_authenticate', '_authenticator', '_content_type',
+'_data', '_default_negotiator', '_files', '_full_data', '_load_data_and_files', '_load_stream',
+'_not_authenticated', '_parse', '_request', '_stream', '_supports_form_parsing', '_user',
+'accepted_media_type', 'accepted_renderer', 'auth', 'authenticators', 'content_type',
+'csrf_processing_done', 'data', 'force_plaintext_errors', 'negotiator', 'parser_context',
+# mark[66:71]
+'parsers', 'query_params', 'stream', 'successful_authenticator', 'user', 'version',
+'versioning_scheme']
+```
