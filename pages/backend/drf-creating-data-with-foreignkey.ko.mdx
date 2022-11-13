@@ -1,25 +1,37 @@
 ---
-title: ForeignKey 정보와 연동하여 데이터 추가하기
+title: 외부 관계형 데이터와 함께 새 데이터 만들기
 image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
-description: ForeignKey로 연결되어 있는 외부 데이터와 함께 새 데이터 만들기
+description: ForeignKey와 ManyToManyField의 필드 정보를 Serializer에게 담기
 ---
 
 import Admonition from '@yozora/react-admonition'
 import Bleed from 'nextra-theme-docs/bleed'
 
-# ForeignKey로 연결되어 있는 외부 데이터와 함께 새 데이터 만들기
+# 외부 관계형 데이터와 함께 새 데이터 만들기
 
 letsh 플랫폼에서 유저는 본인이 스스로 호스트의 자격으로 숙소를 다른 유저들에게 제공할 수 있다.
 한 유저는 여러 숙소들을 가질 수 있기 때문에 필자가 만든 유저 모델과 숙소 모델은 각각 일대다 관계(`1:N`)를 맺고 있는 상황이다.
 
 ## 개요
 
+여러 관계형 모델들이 포함될 순 있지만 MVP 단계에서는 다음 두 개로 나뉘어서 작업한다.
+
+1. `owner`: `ForeignKey`
+2. `amenities`: `ManyToManyField`
+
 ### 숙소 모델
 
 아래는 숙소 앱인 `accomodations` 내부에 필자가 설정한 모델 파일이다.
 
-- 모든 숙소는 항상 `owner`가 있어야 한다.
-- 해당 유저가 삭제되면 그 유저에 딸려 있던 모든 숙소들은 전부 삭제된다 &rarr; **<a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.ForeignKey.on_delete" target="_blank">`on_delete`</a> 속성을 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.CASCADE" target="_blank">`CASCADE`</a>로 지정해주었다.**
+1. 유저
+   - 모든 숙소는 항상 `owner`가 있어야 한다.
+   - 해당 유저가 삭제되면 그 유저에 딸려 있던 모든 숙소들은 전부 삭제된다 &rarr; **<a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.ForeignKey.on_delete" target="_blank">`on_delete`</a> 속성을 <a href="https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.CASCADE" target="_blank">`CASCADE`</a>로 지정해주었다.**
+2. 카테고리
+   - 모든 숙소는 항상 하나의 `category`가 있어야 한다.
+   - 카테고리가 사라진다 하더라도 해당 숙소는 **변동이 없다**.
+3. 편의 시설
+   - 숙소는 편의 시설이 하나도 없을 수가 있다.
+   - 숙소는 여러 개의 편의 시설을 보유할 수 있다.
 
 ```py accomodations/models.py
 class Room(TimeStampModel):
@@ -33,6 +45,11 @@ class Room(TimeStampModel):
         on_delete=models.CASCADE,
         verbose_name=_("Owner"),
         related_name="rooms",
+    )
+    amenities = models.ManyToManyField("accomodations.Amenity", related_name="rooms")
+    category = models.ForeignKey(
+        "categories.Category",
+        on_delete=models.DO_NOTHING,
     )
 ```
 
@@ -135,6 +152,23 @@ class User(AbstractBaseUser, TimeStampModel):
 
 <br/>
 
+### 편의 시설 모델
+
+다음은 필자가 설정한 `Amenity` 모델이다. `name`은 편의 시설의 명칭이며 필수 조건이다. `description`은 편의 시설에 대한 설명이며 이는 어드민 유저들을 위해 만들었으며 필수 사항은 아니다.
+
+```py
+class Amenity(models.Model):
+
+    """Amenity Model Definition"""
+
+    name = models.CharField(max_length=200)
+    description = models.TextField(null=True, blank=True)
+
+    # 중략
+```
+
+<br/>
+
 ## 로직
 
 1. 숙소의 디테일 페이지에 들어가게 되면 `Room` 모델에 정의한 필드를 전부 보여줄 것이다.
@@ -147,9 +181,7 @@ class User(AbstractBaseUser, TimeStampModel):
 
 <br/>
 
-## 코드 작성
-
-코드 작성은 대개 다음과 같이 이루어질 예정이다.
+## `ForeignKey` (유저)
 
 1. 숙소 생성 Serializer에는 숙소를 생성할 때 제공해야 하는 유저의 정보를 담은 Serializer를 포함시킨다.
 2. 그렇게 새롭게 만든 Serializer를 가지고 `POST` View를 만든다.
@@ -174,23 +206,6 @@ class SimpleUserForOneRoomSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ["nickname", "profile_photo"]
-```
-
----
-
-#### 카테고리 Serializer
-
-카테고리는 비교적 모델이 간단하므로 모든 정보를 포함시켜준다.
-
-```py categories/serializers.py
-from rest_framework.serializers import ModelSerializer
-from .models import *
-
-
-class CategorySerializer(ModelSerializer):
-    class Meta:
-        model = Category
-        fields = "__all__"
 ```
 
 ---
@@ -232,9 +247,7 @@ class AmenitySerializer(ModelSerializer):
         exclude = ["description"]
 
 class RoomDetailSerializer(ModelSerializer):
-    owner = SimpleUserForOneRoomSerializer()  # Serializer won't ask owner
-    amenities = AmenitySerializer(many=True)
-    category = CategorySerializer()
+    owner = SimpleUserForOneRoomSerializer()
 
     class Meta:
         model = Room
@@ -281,12 +294,17 @@ View 단에서는 해당 정보를 보내주고 있지 않기 때문이다.
 
 <br/>
 
+### 디버깅: `AssertionError`
+
+다음과 같이 관계형 데이터의 정보를 임의로 집어넣는 것은 DRF에선 허용하고 있지 않다.
+
+<br/>
+
 <Admonition 
     keyword="danger"
     style={{ color: 'red', fontSize: '16px' }}
     title={<span><strong>`AssertionError`: The `.create()` method does not support writable nested fields by default.</strong></span>}
   >
-    다음과 같이 `amenities`와 `category`의 정보를 임의로 집어넣는 것은 DRF에선 허용하고 있지 않다.
     ```json
     {
         "name": "melon tree",
@@ -304,12 +322,33 @@ View 단에서는 해당 정보를 보내주고 있지 않기 때문이다.
 
 </Admonition>
 
+따라서, 각 Serializer에게 <a href="https://www.django-rest-framework.org/api-guide/fields/#read_only" target="_blank">`read_only=True`</a>를 포함시켜 API 단에서 불러올 때만 포함되지만 생성 혹은 업데이트 때에는 제외를 시킴으로써 문제를 해결할 수 있다.
+
+```py accomodations/serializers.py
+class RoomDetailSerializer(ModelSerializer):
+    # mark[44:57]
+    owner = SimpleUserForOneRoomSerializer(read_only=True)  # Serializer won't ask owner
+    amenities = AmenitySerializer(many=True, read_only=True)
+    category = CategorySerializer(read_only=True)
+
+    class Meta:
+        model = Room
+        fields = "__all__"
+```
+
+<br/>
+
+### 디버깅: `IntegrityError`
+
+현재 `owner`는 반드시 포함되어야 하는 정보이나 이를 빼놓고 객체를 생성하게 되면 아래와 같은 에러가 발생하게 된다.
+
+<br/>
+
 <Admonition 
     keyword="danger"
     style={{ color: 'red', fontSize: '16px' }}
     title={<span><strong>`IntegrityError`: null value in column "FOO" of relation "BAR" violates not-null constraint.</strong></span>}
   >
-    현재 `owner`는 반드시 포함되어야 하는 정보이나 이를 빼놓고 객체를 생성하게 되면 아래와 같은 에러가 발생하게 된다.
 
     ```py accomodations/serializers.py
     class RoomDetailSerializer(ModelSerializer):
@@ -326,9 +365,7 @@ View 단에서는 해당 정보를 보내주고 있지 않기 때문이다.
 
 </Admonition>
 
-<br/>
-
-## 디버깅: `IntegrityError`
+#### `request` 객체
 
 위 에러를 해결하기 위해선 좌우지간 `serializer`에게 `owner`에 대한 정보를 제공해야 한다.
 여기에 `request` 객체에 대한 정보를 `print` 해보면
@@ -350,9 +387,8 @@ class RoomsView(APIView):
             return Response(serializer.errors)
 ```
 
-<br/>
-
 다음과 같은 결괏값을 얻을 수 있다. 자세히 보면 `request`라는 객체 내에 `user`라는 객체에 접근할 수 있음을 알 수 있다.
+그렇다는 것은 Serializer가 `.save()` 메소드를 통해 정보를 저장할 때에 `request` 객체 내의 `user`라는 객체 정보를 전달하면 되지 않을까?
 
 ```bash
 ['DATA', 'FILES', 'POST', 'QUERY_PARAMS', '__class__', '__delattr__', '__dict__', '__dir__',
@@ -368,3 +404,73 @@ class RoomsView(APIView):
 'parsers', 'query_params', 'stream', 'successful_authenticator', 'user', 'version',
 'versioning_scheme']
 ```
+
+#### 추가적인 속성 전달하기
+
+추가적인 속성을 Serializer에 전달하기 위해선 <a href="https://www.django-rest-framework.org/api-guide/serializers/#passing-additional-attributes-to-save" target="_blank">`.save()` 메소드에 전달하고자 하는 속성을 값을 담아 전달하면 된다</a>.
+
+이 상황에선 우리는 `Room` 모델의 `ForeignKey` 필드인 `owner` 정보를 전달하고자 하는 것이므로, 다음과 같이 전달할 수 있다.
+
+```py accomodations/views.py
+    def post(self, request):
+        serializer = RoomDetailSerializer(data=request.data)
+
+        if serializer.is_valid():
+            # mark[46:63]
+            room_to_create = serializer.save(owner=request.user)
+            serializer = RoomDetailSerializer(room_to_create)
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+```
+
+`.save()` 메소드에 추가적인 속성을 전달하는 순간, <a href="https://github.com/encode/django-rest-framework/blob/master/rest_framework/serializers.py#L178" target="_blank">`.create()`</a> 메소드의 파라미터로 전달되는 `**validated_data`에도 전달되게 된다.
+
+## `ManyToManyField` (편의 시설)
+
+<CH.Scrollycoding style={{ height: 500 }}>
+### 외부 모델 Serializer 변경
+
+#### 편의 시설 Serializer
+
+편의 시설에 대한 Serializer를 생성해준다.
+편의 시설에 대한 설명을 담은 `description` 필드는 굳이 넣어줄 필요가 없을 것 같아 <a href="https://www.django-rest-framework.org/api-guide/serializers/#specifying-which-fields-to-include" target="_blank">`exclude` 키워드로 제외시켰다</a>.
+
+```py accomodations/serializers.py
+from rest_framework.serializers import ModelSerializer
+from .models import *
+
+
+class AmenitySerializer(ModelSerializer):
+    class Meta:
+        model = Amenity
+        exclude = ["description"]
+```
+
+---
+
+#### `RoomDetailSerializer`에 포함시키기
+
+이 때, 하나의 숙소는 여러 편의시설들을 포함시킬 수 있으므로 `many=True`를 집어넣어준다.
+
+```py accomodations/serializers.py focus=13
+from rest_framework.serializers import ModelSerializer
+from .models import *
+from users.serializers import *
+
+
+class AmenitySerializer(ModelSerializer):
+    class Meta:
+        model = Amenity
+        exclude = ["description"]
+
+class RoomDetailSerializer(ModelSerializer):
+    owner = SimpleUserForOneRoomSerializer()
+    amenities = AmenitySerializer(many=True)
+
+    class Meta:
+        model = Room
+        fields = "__all__"
+```
+
+</CH.Scrollycoding>
