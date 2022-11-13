@@ -2,7 +2,7 @@
 title: Connecting PostgreSQL to Django
 image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
 description: "Let's connect PostgreSQL to Django"
-date: October 3rd, 2022
+date: November 13th, 2022 
 ---
 
 import Callout from 'nextra-theme-docs/callout'
@@ -43,13 +43,23 @@ _It is suggested to do DB setting by the time we initialize project._
 
 #### MacOS
 
-Let's install PostgreSQL with Homebrew. Based on October 3rd, 2022 version 14 is the latest.
+Let's install PostgreSQL with Homebrew. Version 15 is the latest as of November 13th, 2022.
 
 ```bash
-brew install postgresql@14
+brew install postgresql@15
 ```
 
 You may install manually with install files available at <a href="https://www.enterprisedb.com/downloads/postgres-postgresql-downloads" target="_blank">here</a>.
+
+#### Windows
+
+You can install via <a href="https://community.chocolatey.org/packages/postgresql" target="_blank">Chocolatey</a>.
+
+```powershell
+choco install postgresql
+```
+
+You may install manually with install files available at <a href="https://www.enterprisedb.com/downloads/postgres-postgresql-downloads" target="_blank">here</a> and choose Windows x86-64 version.
 
 <br/>
 

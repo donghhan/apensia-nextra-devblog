@@ -2,6 +2,7 @@
 title: Django를 PostgreSQL와 연동하기 
 image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
 description: 'Django와 PostgreSQL를 연동하는 법'
+date: November 13th, 2022
 ---
 
 import Callout from 'nextra-theme-docs/callout'
@@ -42,13 +43,23 @@ _DB 세팅은 가급적이면 맨 처음 프로젝트를 시작할 때에 세팅
 
 #### MacOS
 
-Homebrew로 설치해보자. 2022년 10월 3일 현재 기준으로 14 버전이 최신 버전이다.
+Homebrew로 설치해보자. 2022년 11월 10일 기준으로 15 버전이 최신 버전이다.
 
 ```bash
-brew install postgresql@14
+brew install postgresql@15
 ```
 
 수동으로 설치 파일을 다운로드 받아 설치하길 원한다면 <a href="https://www.enterprisedb.com/downloads/postgres-postgresql-downloads" target="_blank">여기</a>서 다운로드 할 수 있다.
+
+#### Windows
+
+<a href="https://community.chocolatey.org/packages/postgresql" target="_blank">Chocolatey</a>로 설치할 수 있다.
+
+```powershell
+choco install postgresql
+```
+
+수동으로 설치 파일을 다운로드 받아 설치하길 원한다면 <a href="https://www.enterprisedb.com/downloads/postgres-postgresql-downloads" target="_blank">여기</a>서 Windows x86-64 버전을 다운로드 받으면 된다.
 
 <br/>
 
