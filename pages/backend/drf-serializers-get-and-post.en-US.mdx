@@ -141,7 +141,7 @@ def wishlists(request):
 
 <br/>
 
-<center>![typeerror_notjsonserializable](../../media/drf-serializers/typeerror_notjsonserializable.png)</center>
+<center>![typeerror_notjsonserializable](../../media/backend/drf-serializers-get-and-post/typeerror_notjsonserializable.png)</center>
 
 이는 단순히 얘기해서 우리의 브라우저가 QuerySet을 읽어들이지 못하고 있으며, 그 이유는 QuerySet을 무슨 이유에선지 JSON 형태의 파일로 변환하지 못하고 있기 때문이다.
 그렇기 때문에 QuerySet을 JSON 형태로 한 번 더 바꿔주는 작업을 해야 한다.
@@ -191,7 +191,7 @@ def categories(request):
 
 그럼 아래와 같이 결괏값이 제대로 찍히는 것을 볼 수 있다.
 
-<center>![result](../../media/drf-serializers/result.png)</center>
+<center>![result](../../media/backend/drf-serializers-get-and-post/result.png)</center>
 
 <br/>
 
@@ -352,7 +352,7 @@ def categories(request):
 
 <br/>
 
-<center>![properties](../../media/drf-serializers/properties.png)</center>
+<center>![properties](../../media/backend/drf-serializers-get-and-post/properties.png)</center>
 
 <CH.Scrollycoding>
 
@@ -381,7 +381,7 @@ def categories(request):
 
 <br/>
 
-<center>![attributeerror](../../media/drf-serializers/attributeerror.png)</center>
+<center>![attributeerror](../../media/backend/drf-serializers-get-and-post/attributeerror.png)</center>
 
 이 긴 내용의 에러의 한가지 핵심은 직렬기가 처리할 수 있는 데이터와 QuerySet 수의 차이이다.
 `WishlistSerializer`는 `user`라는 필드가 있는 찜하기 QuerySet을 오직 하나를 바꾸기 위해 만들어졌다.
@@ -414,4 +414,4 @@ def categories(request):
 
 <br/>
 
-<center>![result2](../../media/drf-serializers/result2.png)</center>
+<center>![result2](../../media/backend/drf-serializers-get-and-post/result2.png)</center>

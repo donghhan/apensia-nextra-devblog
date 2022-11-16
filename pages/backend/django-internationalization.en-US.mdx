@@ -5,7 +5,7 @@ description: "Let's work on i18n for Django"
 date: August 11th, 2022
 ---
 
-import Callout from 'nextra-theme-docs/callout'
+import Admonition from '@yozora/react-admonition'
 import Bleed from 'nextra-theme-docs/bleed'
 
 # Why i18n?
@@ -102,8 +102,6 @@ I chose `verbose_name` and `help_text` part.
 > `lazy` suffix literally indicates that doing some task <ins>later</ins>.
 > That is, it is operated not when the value is called, bur rather when value was accessed.[^1]
 
-[^1]: Reference: <a href="https://nsikakimoh.com/blog/gettext-and-gettext_lazy-functions-in-django#what-is-the-difference-between-gettext-and-gettext_lazy" target="_blank">What is the Difference Between `gettext()` and `gettext_lazy()`</a>
-
 ```py users/models.py focus=1,10,17:19,22,24 box=1[38:54],10[22:34],17[19:20],22[22:32],24[19:62]
 from django.utils.translation import gettext_lazy as _
 
@@ -134,13 +132,15 @@ class User(AbstractBaseUser):
     # ... Omitted ...
 ```
 
-<Callout>
+<Admonition 
+    keyword="caution"
+    style={{ color: '#dab600', fontSize: '16px' }}
+    title={<span><strong>Why using `gettext_lazy()`?</strong></span>}
+  >
     Fields defined in `models.py`, `forms.py` or `apps.py` are only called once by the time project initiated. 
     So using `gettext` module will lead to translation on the first language only and it won't be translated into another language although users change their language.
     For this reason, we are using `gettext_lazy` module.[^2]
-</Callout>
-
-[^2]: Reference: <a href="https://nsikakimoh.com/blog/gettext-and-gettext_lazy-functions-in-django#why-you-should-use-gettext_lazy-in-models-and-forms-instead-of-gettext" target="_blank">Why you should use `gettext_lazy()` in Models and Forms instead of `gettext()`</a>
+</Admonition>
 
 <br/>
 
@@ -157,7 +157,7 @@ django-admin makemessages --locale=th
 After running command we can get translation file with `.po` extension. This is the file which translators need to use for translation.
 
 <br/>
-<center>![makemessages](../../media/django-i18n/makemessages.png)</center>
+<center>![makemessages](../../media/backend/django-i18n/makemessages.png)</center>
 
 <br/>
 
@@ -178,4 +178,12 @@ django-admin compilemessages
 After that, we can see that `.mo` file has been created.
 
 <br/>
-<center>![i18n_results](../../media/django-i18n/i18n_results.png)</center>
+<center>![i18n_results](../../media/backend/django-i18n/i18n_results.png)</center>
+
+## References
+
+[^1]:
+    <a href="https://nsikakimoh.com/blog/gettext-and-gettext_lazy-functions-in-django#what-is-the-difference-between-gettext-and-gettext_lazy" target="_blank">What is the Difference Between `gettext()` and `gettext_lazy()`</a>
+
+[^2]:
+    <a href="https://nsikakimoh.com/blog/gettext-and-gettext_lazy-functions-in-django#why-you-should-use-gettext_lazy-in-models-and-forms-instead-of-gettext" target="_blank">Why you should use `gettext_lazy()` in Models and Forms instead of `gettext()`</a>

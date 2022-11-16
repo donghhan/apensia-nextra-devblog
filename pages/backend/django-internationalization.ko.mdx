@@ -4,7 +4,7 @@ image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_16330
 description: 'Django에서 다국어 기능을 구현해보자.'
 ---
 
-import Callout from 'nextra-theme-docs/callout'
+import Admonition from '@yozora/react-admonition'
 import Bleed from 'nextra-theme-docs/bleed'
 
 # 다국어 지원의 필요성
@@ -99,8 +99,6 @@ USE_I18N = True
 > `lazy`라는 끝말이 붙었다는 것은 글자 그대로 어떤 작업을 <ins>뒤늦게</ins> 작업을 한다는 뜻이다.
 > 즉, 값이 처음 호출되었을 때부터가 아닌 값에 접근했을 때 해당 작업이 이루어진다는 뜻이다.[^1]
 
-[^1]: 참조: <a href="https://nsikakimoh.com/blog/gettext-and-gettext_lazy-functions-in-django#what-is-the-difference-between-gettext-and-gettext_lazy" target="_blank">What is the Difference Between `gettext()` and `gettext_lazy()`</a>
-
 ```py users/models.py focus=1,10,17:19,22,24 box=1[38:54],10[22:34],17[19:20],22[22:32],24[19:62]
 from django.utils.translation import gettext_lazy as _
 
@@ -131,12 +129,14 @@ class User(AbstractBaseUser):
     # ... 중략 ...
 ```
 
-<Callout>
+<Admonition 
+    keyword="caution"
+    style={{ color: '#dab600', fontSize: '16px' }}
+    title={<span><strong>`gettext_lazy()`를 사용하는 이유</strong></span>}
+  >
     `models.py`나 `forms.py` 및 `apps.py`에 정의된 필드들은 프로젝트가 시작될 때 오직 한 번만 호출이 되기 때문에 `gettext` 모듈을 사용하게 될 경우 맨 처음 설정된 기본 언어로만 번역이 되어 
     추후 유저가 언어를 변경해도 적용이 되질 않게 된다. 이 때문에 `gettext_lazy` 모듈을 사용하도록 한다.[^2]
-</Callout>
-
-[^2]: 참조: <a href="https://nsikakimoh.com/blog/gettext-and-gettext_lazy-functions-in-django#why-you-should-use-gettext_lazy-in-models-and-forms-instead-of-gettext" target="_blank">Why you should use `gettext_lazy()` in Models and Forms instead of `gettext()`</a>
+</Admonition>
 
 <br/>
 
@@ -153,7 +153,7 @@ django-admin makemessages --locale=th
 명령어를 실행하게 되면 다음과 같이 `.po` 확장자의 파일이 생성된다. 이 파일은 번역가가 직접 번역해야 하는 메세지 파일이다.
 
 <br/>
-<center>![makemessages](../../media/django-i18n/makemessages.png)</center>
+<center>![makemessages](../../media/backend/django-i18n/makemessages.png)</center>
 
 <br/>
 
@@ -174,4 +174,12 @@ django-admin compilemessages
 이후, 다음과 같이 `.mo` 파일이 생성이 되었음을 알 수 있다.
 
 <br/>
-<center>![i18n_results](../../media/django-i18n/i18n_results.png)</center>
+<center>![i18n_results](../../media/backend/django-i18n/i18n_results.png)</center>
+
+## 참고 자료
+
+[^1]:
+    <a href="https://nsikakimoh.com/blog/gettext-and-gettext_lazy-functions-in-django#what-is-the-difference-between-gettext-and-gettext_lazy" target="_blank">What is the Difference Between `gettext()` and `gettext_lazy()`</a>
+
+[^2]:
+    <a href="https://nsikakimoh.com/blog/gettext-and-gettext_lazy-functions-in-django#why-you-should-use-gettext_lazy-in-models-and-forms-instead-of-gettext" target="_blank">Why you should use `gettext_lazy()` in Models and Forms instead of `gettext()`</a>
