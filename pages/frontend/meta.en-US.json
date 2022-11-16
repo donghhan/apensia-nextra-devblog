@@ -1,3 +1,5 @@
 {
-    "custom django validator": "custom django validator"
+    "gulp-configuration": "Connecting Gulp with PUG, SCSS and TypeScript",
+    "gulp-configuration-second": "Using Gulp in more advanced way",
+    "web-accessibility": "Discrimination not allowed in accessing web?"
 }
