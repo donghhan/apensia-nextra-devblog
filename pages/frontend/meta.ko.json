@@ -1,5 +1,6 @@
 {
     "gulp-configuration": "Gulp를 PUG, SCSS 및 TypeScript과 연동하기 ",
     "gulp-configuration-second": "Gulp를 좀 더 고급스럽게",
-    "web-accessibility": "웹에 차별 금지법이 있다고?"
+    "web-accessibility": "웹에 차별 금지법이 있다고?",
+    "custom-react-boilerplate": "나만의 React 보일러플레이트를 만들어보자 (feat. TypeScript)"
 }
