@@ -2,10 +2,10 @@
 title: Django를 PostgreSQL와 연동하기 
 image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
 description: 'Django와 PostgreSQL를 연동하는 법'
-date: November 13th, 2022
+date: November 23rd, 2022
 ---
 
-import Callout from 'nextra-theme-docs/callout'
+import Admonition from '@yozora/react-admonition'
 import Bleed from 'nextra-theme-docs/bleed'
 
 # Django와 PostgreSQL 연동하기
@@ -14,9 +14,6 @@ Django를 맨 처음 설치를 했을 때 기본 DB가 Sqlite3로 연결이 되�
 하지만 Django의 공식 문서에 따르면 수많은 DB 중 <a href="https://docs.djangoproject.com/en/4.1/ref/contrib/postgres/#module-django.contrib.postgres" target="_blank">PostgreSQL를 강력히 추천하고 있다</a>.
 이유는 Django가 오직 PostgreSQL와만 연동될 수 있는 다양한 데이터 타입들을 제공해주고 있기 때문이라 한다[^1]. 실제로 <a href="https://github.com/django/django/tree/main/django/contrib/postgres" target="_blank"><code>django.contrib.postgres</code></a>
 모듈을 보면 Django가 PostgreSQL에 대한 지원을 전폭적으로 해주고 있는 모습을 보이고 있다.
-
-[^1]:
-    <a href="https://www.reddit.com/r/django/comments/v99iuh/comment/ibvdfyt/?utm_source=share&utm_medium=web2x&context=3" target="_blank">Django documentation recommends PostgreSQL</a>
 
 ## PostgreSQL이란?
 
@@ -29,15 +26,14 @@ Django를 맨 처음 설치를 했을 때 기본 DB가 Sqlite3로 연결이 되�
 이러한 데이터들의 관계를 생성, 삭제 그리고 업데이트 해줄 수 있는 시스템을 일컫는다. 
 객체 관계 데이터베이스 시스템(ORDBMS)는 관계형 데이터베이스 시스템이 가지고 있는 기본적인 기능들에 더하여 클래스, 객체 그리고 상속과 같은 객체 지향 프로그래밍에서 통용되는 개념들이 내장되어 있다.
 
-[^2]:
-    <a href="https://www.geeksforgeeks.org/difference-between-rdbms-and-ordbms/" target="_blank">Difference between RDBMS and ORDBMS</a>
-
 <br/>
 
 ## PostgreSQL 설정
 
 그럼 본격적으로 PostgreSQL을 우리가 만든 Django 프로젝트와 연동해보도록 하겠다.
 _DB 세팅은 가급적이면 맨 처음 프로젝트를 시작할 때에 세팅을 미리 해놓는 것이 바람직하다._
+
+&rarr; <a href="https://stackpython.medium.com/how-to-start-django-project-with-a-database-postgresql-aaa1d74659d8" target="_blank">How to Start Django Project with a Database(PostgreSQL)</a>
 
 ### PostgreSQL 설치하기
 
@@ -92,6 +88,21 @@ choco install postgresql
 <br/>
 
 이후 생성하고자 하는 서버의 이름을 설정한다. 필자의 경우 만들고자 하는 서비스의 이름을 그대로 집어넣었다.
+
+<br/>
+
+<Admonition 
+    keyword="error"
+    style={{ color: 'red', fontSize: '16px' }}
+    title={<span><strong>FATAL: password authentication failed for user "postgres" 에러</strong></span>}
+  >
+   해당 유저에 대한 비밀번호를 설정해주어야 한다[^3]. 콘솔창에 다음과 같은 명령어를 통해 비밀번호를 설정해준다.
+
+```bash
+sudo -u postgres psql -c "ALTER ROLE postgres WITH password '원하는 비밀번호 아무거나'"
+```
+
+</Admonition>
 
 <br/>
 
@@ -291,4 +302,11 @@ pgAdmin4에서 우리가 생성한 서버 &rarr; Schemas &rarr; public &rarr; Ta
 
 ## 참고 자료
 
-- <a href="https://stackpython.medium.com/how-to-start-django-project-with-a-database-postgresql-aaa1d74659d8" target="_blank">How to Start Django Project with a Database(PostgreSQL)</a>
+[^1]:
+    <a href="https://www.reddit.com/r/django/comments/v99iuh/comment/ibvdfyt/?utm_source=share&utm_medium=web2x&context=3" target="_blank">Django documentation recommends PostgreSQL</a>
+
+[^2]:
+    <a href="https://www.geeksforgeeks.org/difference-between-rdbms-and-ordbms/" target="_blank">Difference between RDBMS and ORDBMS</a>
+
+[^3]:
+    <a href="https://stackoverflow.com/a/28585705/13121145" target="_blank">psql: FATAL: password authentication failed for user "postgres" postgresql version 10</a>
