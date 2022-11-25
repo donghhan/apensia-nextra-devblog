@@ -1,8 +1,8 @@
 ---
-title: Connecting PostgreSQL to Django
+title: Connecting PostgreSQL with Django
 image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
-description: "Let's connect PostgreSQL to Django"
-date: November 23rd, 2022 
+description: Connecting PostgreSQL with Django
+date: November 25th, 2022 
 ---
 
 import Admonition from '@yozora/react-admonition'
@@ -196,6 +196,26 @@ if __name__ == "__main__":
     main()
 ```
 
+<Admonition 
+    keyword="error"
+    style={{ color: 'red', fontSize: '16px' }}
+    title={<span><strong>django.db.utils.OperationalError: connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused</strong></span>}
+  >
+   As you can literally tell from its error message, this is because you did not start server[^4].
+
+```bash
+django.db.utils.OperationalError: connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused
+    Is the server running on that host and accepting TCP/IP connections?
+```
+
+In case of Ubuntu, start server with the following command.
+
+```bash
+service postgresql start
+```
+
+</Admonition>
+
 <br/>
 
 ### `.env` variables configuration
@@ -310,3 +330,6 @@ If you would like to view data inside of tables, mouse right click on tables tha
 
 [^3]:
     <a href="https://stackoverflow.com/a/28585705/13121145" target="_blank">psql: FATAL: password authentication failed for user "postgres" postgresql version 10</a>
+
+[^4]:
+    <a href="https://stackoverflow.com/a/35367219/13121145" target="_blank">How do I automatically start a service on Ubuntu</a>

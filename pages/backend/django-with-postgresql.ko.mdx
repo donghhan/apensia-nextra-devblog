@@ -1,8 +1,8 @@
 ---
 title: Django를 PostgreSQL와 연동하기 
 image: https://course.oc-static.com/courses/7107341/7107341_teaser_picture_1633008310.jpg
-description: 'Django와 PostgreSQL를 연동하는 법'
-date: November 23rd, 2022
+description: 'Django를 PostgreSQL와 연동하기'
+date: November 25th, 2022
 ---
 
 import Admonition from '@yozora/react-admonition'
@@ -197,6 +197,28 @@ if __name__ == "__main__":
 
 <br/>
 
+<Admonition 
+    keyword="error"
+    style={{ color: 'red', fontSize: '16px' }}
+    title={<span><strong>django.db.utils.OperationalError: connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused 에러</strong></span>}
+  >
+   에러 글자 그대로에서 알 수 있듯이 서버가 시작되지 않은 상황에서 서버를 실행시키면 나타나는 에러이다[^4].
+
+```bash
+django.db.utils.OperationalError: connection to server at "localhost" (127.0.0.1), port 5432 failed: Connection refused
+    Is the server running on that host and accepting TCP/IP connections?
+```
+
+Ubuntu의 경우 다음 콘솔 명령어를 통해서 서버를 시작한다.
+
+```bash
+service postgresql start
+```
+
+</Admonition>
+
+<br/>
+
 ### `.env` 변수 설정
 
 프로젝트 루트 경로에 `.env` 파일을 만든 후 PostgreSQL 서버와 관련된 변수들을 추가해준다. 변수들은 `""` 안에 정의하도록 한다.
@@ -310,3 +332,6 @@ pgAdmin4에서 우리가 생성한 서버 &rarr; Schemas &rarr; public &rarr; Ta
 
 [^3]:
     <a href="https://stackoverflow.com/a/28585705/13121145" target="_blank">psql: FATAL: password authentication failed for user "postgres" postgresql version 10</a>
+
+[^4]:
+    <a href="https://stackoverflow.com/a/35367219/13121145" target="_blank">How do I automatically start a service on Ubuntu</a>
