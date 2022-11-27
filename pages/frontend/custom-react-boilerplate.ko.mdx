@@ -4,6 +4,7 @@ image: https://bs-uploads.toptal.io/blackfish-uploads/components/blog_post_page/
 description: Webpack과 TypeScript를 활용한 나만의 React 보일러 플레이트 만들기 
 ---
 
+import Admonition from '@yozora/react-admonition'
 import Bleed from 'nextra-theme-docs/bleed'
 
 # Webpack과 TypeScript로 나만의 React 보일러플레이트 만들기
@@ -41,7 +42,20 @@ yarn init -y
 
 # 필요 패키지 설치
 yarn add react react-dom
+yarn add -D typescript @types/react @types/react-dom
 ```
+
+## `tsconfig.json`
+
+<Admonition 
+    keyword="caution"
+    style={{ color: '#c29200', fontSize: '16px' }}
+    title={<span><strong>No inputs were found in config file tsconfig.json</strong></span>}
+  >
+    <center>![error_tsconfig](../../media/frontend/custom-react-boilerplate/error_tsconfig.png)</center>
+    해당 에러는 `tsconfig.json` 내부에 `entry` 부분을 지정해주지 않았기 때문에 발생하는 에러이므로, <a href="https://stackoverflow.com/a/41211721/13121145" target="_blank">`include` 내부에 지정된 폴더 안에 TypeScript 파일 아무거나 생성해주면</a> 에러 해결이 가능하다.
+
+</Admonition>
 
 ## 참고 자료
 
