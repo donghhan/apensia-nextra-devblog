@@ -15,8 +15,6 @@
     "@babel/core": "7.0.0",
     "@code-hike/mdx": "^0.6.0",
     "@emotion/css": "^11.9.0",
-    "@emotion/react": "^11.10.5",
-    "@emotion/styled": "^11.10.5",
     "@reach/skip-nav": "^0.16.0",
     "@yozora/react-admonition": "^2.1.0",
     "core==7.0.0": "link:@babel/core==7.0.0",

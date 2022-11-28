@@ -1,5 +1,6 @@
 {
     "gulp-configuration": "Connecting Gulp with PUG, SCSS and TypeScript",
     "gulp-configuration-second": "Using Gulp in more advanced way",
-    "web-accessibility": "Discrimination not allowed in accessing web?"
+    "web-accessibility": "Discrimination not allowed in accessing web?",
+    "typescript-generics": "What are TypeScript generics?"
 }

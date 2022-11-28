@@ -1,0 +1,281 @@
+---
+title: TypeScript의 제네릭이란?
+image: https://bs-uploads.toptal.io/blackfish-uploads/components/blog_post_page/content/cover_image_file/cover_image/689069/regular_800x320_1105-A_Guide_to_Webpack_and_React_Dan_Newsletter-3213ef44db23c39d0c43ba54e63154a7.png
+description: TypeScript의 오버로딩과 다형성, 그리고 제네릭에 대하여
+---
+
+import Admonition from '@yozora/react-admonition'
+import Bleed from 'nextra-theme-docs/bleed'
+
+# TypeScript의 제네릭의 정의와 용법
+
+## Call Signature
+
+예를 들어, 다음과 같은 함수를 만들었다고 가정해보자.
+
+```ts
+const add = (a, b) => a + b;
+```
+
+여기서 <a href="https://www.typescriptlang.org/docs/handbook/2/functions.html#call-signatures" target="_blank">call signature</a>는[^1] 다음과 같다.
+
+```ts
+const add = (a: any, b: any) => any;
+```
+
+즉, 한마디로 우리는 파라미터 `a`, `b` 그리고 반환값인 `a + b`에 대하여 어떠한 타입도 설정해주지 않았기 때문에 타입스크립트는 자동적으로 모든 값의 타입을 `any`로 설정했음을 알 수 있다.
+
+<br/>
+
+### 오버로딩
+
+자바스크립트에서 함수는 다양한 인수들과 타입들을 가질 수 있게 된다. 이 때, <a href="https://www.typescriptlang.org/docs/handbook/2/functions.html#function-overloads" target="_blank">오버로딩</a>이란 함수가 여러 개의 call signature를 가지게 될 때 발생된다.
+
+예를 들어 위에서 살펴본 `add`라는 함수에 명확한 타입을 설정해보도록 하자.
+
+<CH.Section>
+
+```ts
+type Add = {
+    (a: number, b: number): number
+    (a: number, b: string): number
+}
+
+// withClass[28:32] code-error
+const add: Add = (a, b) => a + b; // Operator '+' cannot be applied to types 'number' and 'string | number'.(2365)
+```
+
+`add`라는 함수는 [숫자형 파라미터인 `a`](focus://2[6:15],3[6:15])와 [문자열 혹은 숫자열 모두 가능한 파라미터 `b`](focus://2[17:26],3[17:26])를 받은 후 [반환값이 숫자형이 되게끔](focus://2[29:34],3[29:34]) `Add` 타입을 설정해주었다.
+이런 식으로 하나의 함수에 여러 개의 파라미터를 받아 그에 따른 다른 반환값 타입을 받도록 오버로딩을 통해서 만들 수 있다.
+
+그러나 `b`가 문자열일 경우 숫자형 반환값을 가질 수 없게 되므로 타입스크립트는 [문자열과 숫자열에 연산자 `+`를 적용할 수 없다는 에러](focus://6[28:32])를 발생시킨다.
+
+</CH.Section>
+
+<hr/>
+
+<CH.Section>
+
+또다른 예시를 생각해보자. 이번에는 새로운 숫자형 파라미터인 `c`를 추가해주었다. 즉, `a`와 `b`는 필수 파라미터이고, `c`는 옵션인 것이다.
+
+```ts
+type Add = {
+    (a: number, b: number): number
+    (a: number, b: number, c: number): number
+}
+
+// withClass[7:9] code-error
+const add: Add = (a, b, c) => a + b; // Type '(a: number, b: number, c: number) => number' is not assignable to type 'Add'.(2322)
+```
+
+이 경우 [파라미터 `c`에 대한 타입을 추론할 수 없다는 에러](focus://6[7:9])를 나타내게 된다. 타입스크립트에선 서로 다른 개수의 파라미터를 가지게 되면 해당 파라미터에 대한 타입도 지정해줘야 한다.
+
+</CH.Section>
+
+따라서, 위의 에러는 다음과 같이 해결할 수 있다.
+
+```ts
+const add: Add = (a, b, c?: number) => a + b;
+```
+
+<br/>
+
+## 제네릭
+
+### 다형성
+
+다형성이란 다양한 형태를 가지는 것을 의미한다. 즉, 다양한 타입값을 받는 것에 따라서 반환값도 시시각각으로 변함으로서 **다양한** 형태가 될 수 있음을 의미한다. 다음 예를 들어보자.
+
+```ts
+type PrintEachElement = {
+    (arr: Array<number>): void
+    (arr: Array<string>): void
+    (arr: Array<boolean>): void
+}
+
+const printEachElement: PrintEachElement = (arr) => {
+    arr.forEach(el => console.log(el));
+}
+
+printEachElement([1, 2, 3, 4])
+printEachElement(["a", "b", "c", "d"])
+printEachElement([true, true, false, true])
+```
+
+`printEachElement`라 하는 함수는 각 배열의 모든 요소를 하나씩 꺼내어 출력하는 함수이다. `PrintEachElement`라 하는 `type`을 통해서 받을 수 있는 파라미터의 종류 수는 문자열, 숫자 그리고 불리언 값으로만 구성되어 있는 배열이다.
+
+그런데 만일 배열 안에 다른 타입의 값이 섞여 있으면 어떻게 될까?
+
+```ts
+type PrintEachElement = {
+    (arr: Array<number>): void
+    (arr: Array<string>): void
+    (arr: Array<boolean>): void
+}
+
+const printEachElement: PrintEachElement = (arr) => {
+    arr.forEach(el => console.log(el));
+}
+
+// withClass[19:20] code-error
+printEachElement([1, "2"])
+```
+
+위의 배열에서 다음과 같은 에러를 발생시킨다.
+
+```
+No overload matches this call.
+  Overload 2 of 3, '(arr: string[]): void', gave the following error.
+    Type 'number' is not assignable to type 'string'.(2769)
+```
+
+즉, `1`이라 하는 숫자형 타입의 요소는 문자열로만 이루어져야 하는 배열에는 들어갈 수 없게 된다. 그렇다면 이러한 가능한 모든 경우의 수를 고려하여 아래와 같이 call signature를 모두 작성해야 하지만 이는 너무 비효율적이다.
+
+```ts
+type PrintEachElement = {
+    (arr: Array<number>): void
+    (arr: Array<string>): void
+    (arr: Array<boolean>): void
+    (arr: Array<string | number>): void
+    (arr: Array<string | boolean>): void
+    // ...
+}
+```
+
+<br/>
+
+### 제네릭 타입 활용하기
+
+이 때 활용할 수 있는 것이 바로 <a href="https://www.typescriptlang.org/docs/handbook/2/generics.html#hello-world-of-generics" target="_blank">제네릭</a>이다.
+제네릭은 call signature를 작성할 때 들어갈 타입이 어떤 것인지 확실히 알 수 없을 때 타입이 들어갈 공간을 만들어주어 타입스크립트로 하여금 타입을 유추할 수 있게끔 도와주는 일종의 장치라 보면 된다.
+
+위에서 정의한 `PrintEachElement` 타입을 제네릭 문법을 활용하여 고쳐보면 다음과 같이 고칠 수 있다.
+
+<CH.Section>
+
+```ts
+type PrintEachElement = {
+    <T>(arr: Array<T>): void
+}
+
+printEachElement([1, 2, 3, 4]) // const printEachElement: <number>(arr: number[]) => void
+printEachElement(["a", "b", "c", "d"]) // const printEachElement: <string>(arr: string[]) => void
+printEachElement([true, true, false, true]) // const printEachElement: <boolean>(arr: boolean[]) => void
+printEachElement([1, "2", true]) // const printEachElement: <string | number | boolean>(arr: (string | number | boolean)[]) => void
+```
+
+1. 먼저 [`<T>`](focus://2[5:7])를 파라미터를 받는 공간 앞에 써주어 해당 타입은 제네릭 타입이라는 것을 설정해준다.
+2. 그 후 [뒤쪽의 `<T>`](focus://2[19:21])를 이용해 `arr`라는 파라미터는 [앞쪽의 `T`](focus://2[5:7])를 참고해 각 배열의 요소의 타입을 유추하라는 지시를 내린다.
+
+</CH.Section>
+
+그럼 상기와 같이 배열 안에 어떠한 값이 들어가더라도 타입스크립트가 똑똑하게 자동적으로 내부 요소의 배열들 타입을 보여주는 call signature를 반환하게 된다.
+
+<br/>
+
+### Constraints
+
+위에서 살펴보았듯이 제네릭은 성격 자체가 꽤나 **다이나믹**하다. 하지만 제네릭에는 들어갈 타입에 대하여 제한을 걸 수 있다. 다음 예시를 보도록 하자.
+
+<CH.Section>
+
+```ts
+function mergeObjects<T, U>(objA: T, objB: U) {
+    // withClass[26:29] code-error
+    return Object.assign(objA, objB);
+}
+
+const mergedObj = mergeObjects({name: "Apensia", hobbies: ["Coding"]}, 30);
+console.log(mergedObj);
+```
+
+위의 예시에서 `mergeObjects` 함수는 전부 객체 타입인 `objA`와 `objB`를 파라미터를 받으며 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign" target="_blank">`.assign()`</a> 메소드를 통해 객체들을 합치려 하고 있다.
+하지만 이 경우 [`objA`에 객체 타입을 할당할 수 없다는 에러](focus://2[26:29])가 발생하게 된다.
+
+</CH.Section>
+
+```
+No overload matches this call.
+  Overload 1 of 4, '(target: {}, source: U): {} & U', gave the following error.
+    Argument of type 'T' is not assignable to parameter of type '{}'.
+  Overload 2 of 4, '(target: object, ...sources: any[]): any', gave the following error.
+    Argument of type 'T' is not assignable to parameter of type 'object'.(2769)
+```
+
+<br/>
+
+한 Stack Overflow에 따르면 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" target="_blank">`Object`</a> 클래스의 모든 메소드의 타입 정의가 바뀌었기 때문에
+전달하는 파라미터에 특정 타입으로 제한하여야만 했다[^2]. 이 때 <a href="https://www.typescriptlang.org/docs/handbook/2/generics.html#generic-constraints" target="_blank">Constraints</a>를 사용할 수 있다.
+즉, 전달하는 파라미터의 타입을 <ins>제한</ins>하는 것이다.
+
+<CH.Section>
+
+```ts
+// mark[25:38]
+function mergeObjects<T extends object, U extends object>(objA: T, objB: U) {
+    return Object.assign(objA, objB);
+}
+
+// withClass[72:73] code-error
+const mergedObj = mergeObjects({name: "Apensia", hobbies: ["Coding"]}, 30); // Argument of type 'number' is not assignable to parameter of type 'object'.(2345)
+console.log(mergedObj);
+```
+
+Contraints를 넣는 방법은 위와 같이 각 제네릭 타입에 `extends` 키워드와 제한할 타입을 나란히 쓰면 된다. 위의 경우 제네릭 타입 `T`와 `U`는 모두 객체(`object`)를 받게끔 제한하였다.
+그러면 이제 위의 `objB` 파라미터 값으로 전달한 [`30`은 `object` 타입이 아니므로 타입 에러가 발생하게 된다.](focus://5[72:73])
+
+</CH.Section>
+
+<br/>
+
+#### 다른 프로퍼티의 Contraints 넣기
+
+타입스크립트에서는 <a>다른 타입 파라미터에서 제한된 타입 파라미터를 선언할 수 있다</a>. 무슨 말일까? 다음 코드를 살펴보자.
+
+```ts
+function retrieveObjValue(obj: object, key: string) {
+    // withClass[36:43] code-error
+    return `Value for ${key} is` + obj[key]
+}
+
+console.log(retrieveObjValue({}, "name"))
+```
+
+<br/>
+
+위 코드에서 `retrieveObjValue()`라는 함수는 단순히 `obj`라는 객체 내의 `key`에 해당하는 값을 반환하는 함수이다. 직관적으로 타입을 적었을 때는 문제가 없어 보이지만 위의 예시에서는 다음과 같은 에러가 발생하게 된다.
+
+```
+Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.(7053)
+```
+
+<br/>
+
+위의 에러 코드를 살펴보면 타입스크립트는 `obj`라는 객체가 실제로 `key`라는 값이 존재할지 안 할지에 대하여 확신할 수 없기 때문에 에러를 발생시킨다.
+따라서, 타입스크립트로 하여금 `key`값은 `obj`라는 객체에 항상 존재한다는 것을 <ins>Contraint로 인지시켜 줘야 한다</ins>.
+
+<br/>
+
+<CH.Section>
+
+```ts
+function retrieveObjValue<T extends object, U extends keyof T>(obj: T, key: U) {
+    return "Value: " + obj[key]
+}
+
+// withClass[34:39] code-error
+console.log(retrieveObjValue({}, "name")); // Argument of type 'string' is not assignable to parameter of type 'never'.(2345)
+console.log(retrieveObjValue({name: "Apensia"}, "name"));
+
+```
+
+위의 예시에서 [`keyof` 키워드를 통해 `U`라는 타입은 `T`라는 타입의 키값으로 반드시 존재한다](focus://1[45:62])는 것을 인지시켜 준다.
+
+</CH.Section>
+
+## 참조 자료
+
+[^1]: call signature란 함수의 매개변수와 반환값의 타입이 어떻게 될지를 미리 정해둔 타입의 청사진이라 보면 된다.
+[^2]:
+    <a href="https://stackoverflow.com/a/42421502/13121145" target="_blank">error TS2345: Argument of type 'T' is not assignable to parameter of type 'object'</a>
