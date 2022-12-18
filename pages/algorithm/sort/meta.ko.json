@@ -1,7 +1,0 @@
-{
-    "bubble-sort": "거품 정렬",
-    "insert-sort": "삽입 정렬",
-    "selection-sort": "선택 정렬",
-    "quick-sort": "퀵 정렬",
-    "merge-sort": "병합 정렬"
-}

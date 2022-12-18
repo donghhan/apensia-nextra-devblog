@@ -1,9 +1,0 @@
-{
-    "array": "배열", 
-    "linked-list": "연결 리스트",
-    "stack": "스택",
-    "queue": "큐",
-    "recursion": "재귀",
-    "graph": "그래프",
-    "sort": "정렬"
-}

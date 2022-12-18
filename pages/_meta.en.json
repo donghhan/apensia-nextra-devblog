@@ -1,0 +1,21 @@
+{
+  "index": {
+    "title": "Nextra",
+    "type": "page",
+    "display": "hidden",
+    "theme": {
+      "typesetting": "article"
+    }
+  },
+  "letsh": {
+    "title": "Let'sh",
+    "type": "page",
+    "display": "hidden",
+    "items": {
+      "hello": {
+        "title": "안녕",
+        "href": "/hello"
+      }
+    }
+  }
+}

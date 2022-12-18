@@ -1,0 +1,14 @@
+{
+  "index": {
+    "title": "홈",
+    "display": "hidden",
+    "type": "page",
+    "theme": {
+      "typesetting": "article"
+    }
+  },
+  "django": {
+    "title": "Django",
+    "type": "page"
+  }
+}
