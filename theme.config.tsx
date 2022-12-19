@@ -38,6 +38,7 @@ const config: DocsThemeConfig = {
       };
     }
   },
+  primaryHue: { dark: 105, light: 254 },
   logo,
   head: (
     <>

@@ -1,21 +1,14 @@
 {
   "index": {
-    "title": "Nextra",
-    "type": "page",
+    "title": "Home",
     "display": "hidden",
+    "type": "page",
     "theme": {
       "typesetting": "article"
     }
   },
-  "letsh": {
-    "title": "Let'sh",
-    "type": "page",
-    "display": "hidden",
-    "items": {
-      "hello": {
-        "title": "안녕",
-        "href": "/hello"
-      }
-    }
+  "django": {
+    "title": "Django",
+    "type": "page"
   }
 }

@@ -1,0 +1,75 @@
+# What is Django?
+
+## Introduction
+
+<br />
+
+<center>
+  ![Django
+  Thumbnail](https://crowdbotics.ghost.io/content/images/2019/05/django.png)
+</center>
+
+<br />
+
+It is web framework based on Python programming language.
+Normally it is widely known as backend framework, but it can deal with frontend layer with providing templates separately, ~~which is an awesome boy~~.
+There used to be a [skeptical point of view](https://www.projectpro.io/article/python-for-data-science-vs-python-for-web-development/177) that Python is NOT appropriate for web development,
+but ever since Django came out of this world, people started to think differently.
+
+Let us view what are [advantages](https://www.djangoproject.com/start/overview/) that Django documentation is mentioning.
+
+### Astonishingly quick development speed
+
+One of the biggest advantages that Django feels proud of itself is <ins>**quick development speed**</ins>, which is the reason why I like most too.
+We can tell it from [the history of Django](https://en.wikipedia.org/wiki/Django_web_framework#History), where web programmers made Django for meeting deadlines of their tasks while working newspaper company in the year of 2003.
+
+Django has many different modules as lego blocks that implements a variety of features (such as authentication, admin page, forms, i18n, etc),
+so whenever you are feel get used to using those tools, you can build up your application very quickly.
+
+### Security
+
+Django provides the [basic tools for enhancing web security](https://docs.djangoproject.com/en/4.1/topics/security/) (e.g. XSS, CSRF, etc).
+Therefore, frontend/backend developers do not need to be sick and tired of thinking too much of security.
+
+### Scaling
+
+Django literally has very good position of [scaling up](https://docs.djangoproject.com/en/4.1/faq/general/#does-django-scale).
+As Django is using "shared-nothing" architecture and split all resources into apart except networks (i.e. it does not share anything), it allows us to add up whatever hardwares we would like to add with ease.
+
+<br />
+
+## Features
+
+Then what are some featuers that Django has?
+
+### ORM
+
+Django supports ORM. [ORM(Object-Relational Mapping)](https://en.wikipedia.org/wiki/Object%E2%80%93relational_mapping) in this case means converting data between type systems with using object-oriented programming language.
+That is, _[it allows us to interact database](https://opensource.com/article/17/11/django-orm) even though we do not need to know how to build up SQL queries_.
+~~Hooray! I don't need to learn SQL!!🤭~~
+
+<br />
+
+### Design Pattern
+
+[Design Pattern](https://en.wikipedia.org/wiki/Software_design_pattern) indicates rule or project structure that can effectively makes us produce code which can solve many different problems on software design.
+
+{/* https://www.geeksforgeeks.org/difference-between-mvc-and-mvt-design-patterns/ */}
+
+#### MVT Pattern
+
+MVT pattern stands for <ins>**M**</ins>odel <ins>**V**</ins>iew <ins>**T**</ins>emplate.
+
+1. Model: Manages database.
+2. View: With interacting Model and Template, it manages the sending/receiving HTTP request/response, respectiveyl.
+3. Template: Major frontend layer of Django application to show HTTP responses.
+
+<br />
+
+<center>
+  <figure>
+    ![MVT
+    Structure](https://miro.medium.com/max/720/1*XohhamnRotq53fQaY5HQfA.webp)
+    <figcaption>Reference: Fahadul Shadhin (Medium Blog)</figcaption>
+  </figure>
+</center>
