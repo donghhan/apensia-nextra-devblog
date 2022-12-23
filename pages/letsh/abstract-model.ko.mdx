@@ -110,3 +110,22 @@ class TimeStampModel(models.Model):
 ---
 
 </CH.Scrollycoding>
+
+<br />
+
+## 결과
+
+다른 앱의 `admin.py`에 추상화 모델의 필드를 넣으면 해당 내용이 다음과 같이 삽입이 되는 걸 볼 수 있다.
+
+<br />
+
+<center>![result](../../media/backend/abstract-model/result.png)</center>
+
+<br />
+
+그런데 `common/` 앱의 데이터베이스를 살펴보면 `common/` 앱 내부에서 `TimeStampModel`에 대한 어떠한 migration도 일어나지 않은 것을 볼 수 있다 (파란색).
+이런 식으로 데이터베이스를 효율적으로 관리할 수 있게 된다.
+
+<br />
+
+<center>![result2](../../media/backend/abstract-model/result2.png)</center>

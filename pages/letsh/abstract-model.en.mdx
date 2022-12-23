@@ -112,3 +112,21 @@ class TimeStampModel(models.Model):
 ---
 
 </CH.Scrollycoding>
+
+## Result
+
+If we add field defined in abstract base model in other apps' `admin.py`,
+we can see it is nicely put into admin panel as below.
+
+<br />
+
+<center>![result](../../media/backend/abstract-model/result.png)</center>
+
+<br />
+
+But then if we take a look at `common/` app's database, we can find out that there has been no migration happened for `TimeStampModel` (See blue bracket).
+By doing this, we can effectively manage database.
+
+<br />
+
+<center>![result2](../../media/backend/abstract-model/result2.png)</center>
