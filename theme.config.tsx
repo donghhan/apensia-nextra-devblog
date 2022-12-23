@@ -27,7 +27,7 @@ const logo = (
 
 const config: DocsThemeConfig = {
   project: {
-    link: "https://github.com/shuding/nextra",
+    link: "https://github.com/donghhan",
   },
   docsRepositoryBase: "https://github.com/shuding/nextra/tree/main/docs",
   useNextSeoProps() {
