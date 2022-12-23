@@ -1,0 +1,114 @@
+# Abstract Model
+
+## Introduction
+
+While I was creating letsh application, I thought that there must be some data that could be <ins>shared</ins> throughout data no matter what they are.
+The best example for this could be time that data was newly created or updated.
+If I include these data, then admin users later will be able to easily control over those data based on those time data.
+
+However, including all these common data into all other apps' models is just repeating codes ourselves and it could waste our DB.
+So it would be very effective to make these types of models that <ins>**_do not wasting too much DB space and can be used in other models_**</ins>.
+
+> Django is also suggesting [DRY(Do NOT Repeat Yourself)](https://docs.djangoproject.com/en/4.1/misc/design-philosophies/#don-t-repeat-yourself-dry), so let's keep our code more sexier!
+
+This is where [abstract model](https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes) is used.
+After I defined the common data fields, with [class inheritance](https://docs.python.org/3/tutorial/classes.html#inheritance)
+other apps' models can also use Common model's data fields.
+
+<br />
+
+## Coding
+
+Firstly, I created new django-app called `common/` for our abstract common model in project root route.
+
+```
+django-admin startapp common
+```
+
+Then included in [`INSTALLED_APPS`](https://docs.djangoproject.com/en/4.1/ref/settings/#installed-apps).
+
+```python config/settings.py
+INSTALLED_APPS = [
+  # ...
+  "common",
+]
+```
+
+<br />
+
+### `TimeStampModel`
+
+`TimeStampModel` is abstract model that controls time.
+Let's edit `models.py` file inside of `common/` app folder.
+
+<CH.Scrollycoding>
+
+#### Creating model class
+
+I created class named `TimeStampModel` that controls over time of data has been created/updated.
+
+```python focus=3:7
+from django.db import models
+
+class TimeStampModel(models.Model):
+
+    """TimeStamp Model Definition"""
+
+    pass
+```
+
+---
+
+#### `Meta` class configuration
+
+[`Meta` class](https://docs.djangoproject.com/en/4.1/topics/db/models/#meta-options) allows us to do several configurations for our models.
+As our `TimeStampModel` is abstract base model, I set `abstract = True` as explained in [documentation](https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes).
+
+By doing this, we can use these fields in other models without creating DB table.
+
+```python focus=9:10
+from django.db import models
+
+class TimeStampModel(models.Model):
+
+    """TimeStamp Model Definition"""
+
+    pass
+
+    class Meta:
+        abstract = True
+```
+
+---
+
+#### `DateTimeField`
+
+Finally, let's specify model field.
+
+As you can literally tell from its name, [`DateTimeField`](https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DateTimeField)
+controls date and time.
+I created model field called `created_at` and `updated_at` for created time and updated time, respectively.
+
+Meanwhile, [`auto_now_add`](https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DateField.auto_now_add) attribute sets date and time as now
+when new object is <ins>newly created</ins>.
+
+On the other hand, [`auto_now`](https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DateField.auto_now) attribute marks date and time as now
+when the object is <ins>newly updated</ins>.
+
+```python focus=7:8
+from django.db import models
+
+class TimeStampModel(models.Model):
+
+    """TimeStamp Model Definition"""
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+```
+
+---
+
+</CH.Scrollycoding>

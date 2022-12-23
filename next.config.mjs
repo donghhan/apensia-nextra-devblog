@@ -1,5 +1,5 @@
 import { remarkCodeHike } from "@code-hike/mdx";
-import shikiTheme from "shiki/themes/material-darker.json" assert { type: "json" };
+import githubDarkDimmed from "shiki/themes/github-dark-dimmed.json" assert { type: "json" };
 import nextra from "nextra";
 
 const withNextra = nextra({
@@ -11,7 +11,17 @@ const withNextra = nextra({
   },
   defaultShowCopyCode: true,
   mdxOptions: {
-    remarkPlugins: [[remarkCodeHike, { shikiTheme }]],
+    remarkPlugins: [
+      [
+        remarkCodeHike,
+        {
+          lineNumbers: false,
+          showCopyButton: false,
+          theme: githubDarkDimmed,
+          autoImport: true,
+        },
+      ],
+    ],
   },
 });
 

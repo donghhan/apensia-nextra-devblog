@@ -65,8 +65,29 @@ MVT 패턴은 <ins>**M**</ins>odel <ins>**V**</ins>iew <ins>**T**</ins>emplate�
 
 <br />
 
-<figure>
-  ![MVT
-  Structure](https://miro.medium.com/max/720/1*XohhamnRotq53fQaY5HQfA.webp)
-  <figcaption>출처: Fahadul Shadhin (Medium Blog)</figcaption>
-</figure>
+<center>
+  <figure>
+    ![MVT
+    Structure](https://miro.medium.com/max/720/1*XohhamnRotq53fQaY5HQfA.webp)
+    <figcaption>출처: Fahadul Shadhin (Medium Blog)</figcaption>
+  </figure>
+</center>
+
+<br />
+
+## Django 선택 이유
+
+필자가 Let'sh 프로젝트를 꾸리면서 Django를 백엔드로 선택하게 된 이유는 다음과 같다.
+
+### 최적화되고 빠른 CRUD 개발
+
+[CRUD](https://www.codecademy.com/article/what-is-crud)란 <ins>**C**</ins>reate / <ins>**R**</ins>ead / <ins>**U**</ins>pdate / <ins>**D**</ins>elete의 약자이다.
+API를 만들 때에는 그 목적에 따라 효율적으로 작성하는 것이 좋은데 가장 대표적인 기능 중 4가지가 바로 이들이다.
+앞서 [굉장히 빠른 개발 속도](#굉장히-빠른-개발-속도)에서 잠깐 언급했듯이 Django에는 무릇 웹 사이트들이 갖추고 있을만한 기본적인 기능들을 이미 갖추고 있기 때문에 적절한 모듈만 잘 가져다가
+쓰면 된다. 정말이지 _잘만 가져다 쓰면_ 개발에 대한 시간이 훨씬 줄어들 수 있을 것이라는 생각이 들었다. ~~물론 처음 배울 때는 삽질을 엄청 많이 하느라 시간이 굉장히 많이 소요됐다..😓~~
+
+### 스케일업 가능성
+
+Let'sh는 초창기에 그냥 숙소 공유 서비스만 제공할 예정이었지만 *태국 현지에 특화된 공유경제 플랫폼*이라는 서비스의 취지를 살리기 위해 숙소 제공 뿐만이 아니라
+교통수단 및 주차 공간 그리고 그 밖의 공유할 수 있는 다른 유무형의 모든 서비스들을 한데로 묶을 수 있을 것 같다는 생각이 들었다.
+이 때문에 추후의 프로젝트의 스케일업은 불가피할 것으로 보였고 Django는 스케일업에 대하여 큰 강점을 가지고 있었다.

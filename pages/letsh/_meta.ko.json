@@ -1,0 +1,13 @@
+{
+    "index": "Django란?",
+    "-- Models --": {
+        "type": "separator",
+        "title": "모델"
+    },
+    "model": {
+        "title": "모델"
+    },
+    "abstract-model": {
+        "title": "Abstract 모델"
+    }
+}

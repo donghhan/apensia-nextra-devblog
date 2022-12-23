@@ -3,5 +3,11 @@
     "-- Models --": {
         "type": "separator",
         "title": "Model"
+    },
+    "model": {
+        "title": "Model"
+    },
+    "abstract-model": {
+        "title": "Abstract Model"
     }
 }

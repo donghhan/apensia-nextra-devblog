@@ -1,7 +1,0 @@
-{
-    "index": "Django란?",
-    "-- Models --": {
-        "type": "separator",
-        "title": "모델"
-    }
-}

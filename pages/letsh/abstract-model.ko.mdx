@@ -1,0 +1,112 @@
+# Abstract 모델
+
+## 개요
+
+필자가 letsh 어플리케이션을 제작하면서 느꼈던 점이 어떠한 종류의 데이터든지 간에
+공통적으로 <ins>공유</ins>될 수 있는 데이터가 있지 않을까라는 생각을 했다.
+가장 대표적인 것이 데이터가 새로이 생성되거나 업데이트된 시간이라 할 수 있겠다.
+이러한 데이터들을 추가해놓으면 추후에 어드민 유저들이 시간대별로 정확하게 데이터를 관리할 수 있겠다라는 생각을 하였다.
+
+하지만 이러한 데이터 필드들을 일일히 모든 앱의 모델 클래스에 정의하는 것은 불필요한 코드의 반복일 뿐더러 추후에 DB 쓸데없이 너무 많은 데이터가 쌓일 수도 있다.
+따라서 이러한 데이터를 다루는 모델은 <ins>**_쓸데없이 DB의 공간을 차지하지 않으면서 다른 모델에서도 동시에 사용될 수 있도록 하는 것_**</ins>이 제일 효율적이었다.
+
+> Django에서도 [DRY(Do NOT Repeat Yourself)](https://docs.djangoproject.com/en/4.1/misc/design-philosophies/#don-t-repeat-yourself-dry) 정신을 고수하고 있는만큼 코딩을 좀 더 섹시하게 해보자.
+
+여기서 [추상화 모델](https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes)이 사용되게 된다.
+즉, 공통적으로 사용될 정보들에 대한 데이터 필드를 정의한 후, [클래스의 상속](https://docs.python.org/3/tutorial/classes.html#inheritance)을 통해
+다른 앱의 모델에서도 공통 모델에 사용된 데이터들을 언제든지 사용할 수 있는 것이다.
+
+<br />
+
+## 구현
+
+먼저 공통된 추상화 모델을 넣기 위하여 새로운 앱인 `common/`을 프로젝트 루트 경로에 설치해주었다.
+
+```
+django-admin startapp common
+```
+
+이후 설치한 앱을 [`INSTALLED_APPS`](https://docs.djangoproject.com/en/4.1/ref/settings/#installed-apps) 내부에 설치해준다.
+
+```python config/settings.py
+INSTALLED_APPS = [
+  # ...
+  "common",
+]
+```
+
+<br />
+
+### `TimeStampModel`
+
+`TimeStampModel`은 시간을 관리하는 추상화 모델이다. `common/` 앱 폴더 내부의 `models.py` 파일을 수정해보자.
+
+<CH.Scrollycoding>
+
+#### 모델 클래스 생성
+
+데이터의 생성 및 업데이트를 관리해주는 `TimeStampModel`이라는 모델 클래스를 만들어주었다.
+
+```python focus=3:7
+from django.db import models
+
+class TimeStampModel(models.Model):
+
+    """TimeStamp Model Definition"""
+
+    pass
+```
+
+---
+
+#### `Meta` 클래스 설정
+
+[`Meta` 클래스](https://docs.djangoproject.com/en/4.1/topics/db/models/#meta-options)는 해당 모델 클래스에 추가적인 설정을 해줄 수 있게 해준다. `common/` 앱 내의 모델들은 추상화 모델이기
+때문에 [공식문서](https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes) 에서 설명한 것처럼 `abstract = True`를 설정해 주었다.
+
+이렇게 될 경우 DB 테이블을 생성하지 않는 대신 다른 앱의 모델에서 사용되었을 때 해당 필드들을 사용할 수 있다.
+
+```python focus=9:10
+from django.db import models
+
+class TimeStampModel(models.Model):
+
+    """TimeStamp Model Definition"""
+
+    pass
+
+    class Meta:
+        abstract = True
+```
+
+---
+
+#### `DateTimeField`
+
+마지막으로 필드들을 설정해 주었다.
+
+[`DateTimeField`](https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DateTimeField)은 글자에서 그대로 알 수 있듯이 날짜와 시간을 관장하는 모델 필드이다.
+그 중에서 생성된 날짜/시간을 `created_at`로, 업데이트된 날짜/시간을 `updated_at`라는 이름으로 필드를 설정해주었다.
+
+여기서 [`auto_now_add`](https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DateField.auto_now_add) 속성은 어떤 객체가 처음으로 <ins>생성될 떄</ins> 자동적으로 현재 시점으로 설정을 해준다.
+
+반면 [`auto_now`](https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DateField.auto_now)의 경우
+어떤 객체가 처음으로 <ins>업데이트될 때</ins>자동적으로 현재 시점으로 설정을 해준다.
+
+```python focus=7:8
+from django.db import models
+
+class TimeStampModel(models.Model):
+
+    """TimeStamp Model Definition"""
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+```
+
+---
+
+</CH.Scrollycoding>
