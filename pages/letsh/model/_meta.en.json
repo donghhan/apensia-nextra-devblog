@@ -1,3 +1,6 @@
 {
-    "custom-user-model": "AbstractBaseUser"
+    "custom-user-model": "AbstractBaseUser",
+    "abstract-model": {
+        "title": "Abstract model"
+    }
 }

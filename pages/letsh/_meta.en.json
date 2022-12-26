@@ -1,13 +1,18 @@
 {
-    "index": "What is Django?",
-    "-- Models --": {
+    "intro": "Introduction",
+    "-- Backend --": {
         "type": "separator",
-        "title": "Model"
+        "title": "Backend"
     },
+    "django": "What is Django?",
     "model": {
         "title": "Model"
     },
-    "abstract-model": {
-        "title": "Abstract Model"
+    "-- Frontend --": {
+        "type": "separator",
+        "title": "Frontend"
+    },
+    "styled-components": {
+        "title": "Styled Components"
     }
 }

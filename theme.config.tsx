@@ -93,7 +93,7 @@ const config: DocsThemeConfig = {
       }
       return <>{title}</>;
     },
-    defaultMenuCollapseLevel: 0,
+    defaultMenuCollapseLevel: 2,
   },
   footer: {
     text: () => {

@@ -1,13 +1,18 @@
 {
-    "index": "Django란?",
-    "-- Models --": {
+    "intro": "개요",
+    "-- Backend --": {
         "type": "separator",
-        "title": "모델"
+        "title": "백엔드"
     },
+    "django": "Django란?",
     "model": {
         "title": "모델"
     },
-    "abstract-model": {
-        "title": "Abstract 모델"
+    "-- Frontend --": {
+        "type": "separator",
+        "title": "프론트엔드"
+    },
+    "styled-components": {
+        "title": "Styled Components"
     }
 }
