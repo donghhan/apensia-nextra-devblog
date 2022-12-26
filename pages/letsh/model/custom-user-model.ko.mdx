@@ -4,7 +4,7 @@ Django에서 설명하고 있는 [기본 방법](https://docs.djangoproject.com/
 매번 새로운 필드를 만드는 귀찮은 작업을 피하고, 유저라고 하면 통상적으로 있어야 할 법한 정보들을 한꺼번에 불러와서 손쉽게 사용할 수 있으면 더욱 좋겠다.
 그런 의미에서 Django에서 제공하는 좀 더 섹시한 방법으로 커스텀 User 모델을 만들어보자.
 
-Django에서는 크게 2가지 방법으로 제시를 하고 있는데 이는 다음과 같다.[^1]
+Django에서는 크게 [2가지 방법](https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#customizing-authentication-in-django)으로 제시를 하고 있는데 이는 다음과 같다.
 
 1. 기존 유저 모델에서 [확장](https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#extending-user)을 하는 방법
 2. 기존 유저 모델을 [대체](https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#auth-custom-user)하는 방법
@@ -488,34 +488,6 @@ class MyUserManager(BaseUserManager):
 이제 본격적으로 `User` 모델을 만들어보자.
 
 <CH.Scrollycoding>
-
-#### `AbstractBaseUser` 및 `TimeStampModel` 클래스 상속
-
-`User`라는 모델 클래스를 생성해준 뒤, `AbstractBaseUser`와 저번 포스트에 만들었던
-추상화 베이스 모델인 `TimeStampModel`을 상속시켜 준다.
-
-`TimeStampModel`의 경우 데이터가 생성되거나 업데이트 된 시간을 다루는 모델이나 데이터베이스에는 직접적으로 저장이 되지는 않는 모델이다.
-
-```py users/models.py
-from django.db import models
-from django.contrib.auth.models import (
-    AbstractBaseUser,
-    BaseUserManager,
-    PermissionsMixin,
-)
-from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
-from common.models import *
-
-
-class User(AbstractBaseUser, TimeStampModel):
-
-     """Custom User Definition Model"""
-
-     pass
-```
-
----
 
 #### 모델 필드 설정하기
 
