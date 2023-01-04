@@ -10,5 +10,9 @@
   "letsh": {
     "title": "Let'sh",
     "type": "page"
+  },
+  "nlp": {
+    "title": "NLP",
+    "type": "page"
   }
 }

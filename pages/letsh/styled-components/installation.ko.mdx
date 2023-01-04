@@ -1,3 +1,107 @@
+import { Tab, Tabs, Callout } from "nextra-theme-docs";
+import { Tree, File, Folder } from "@components/file-tree";
+
 # Styled Components
 
 ## 개요
+
+Styled Components는 CSS를
+
+## CSS in JS
+
+## 설치
+
+<div className="steps-container">
+
+### 패키지 다운로드
+
+먼저, 다음과 같이 styled-components 패키지를 다운로드 받는다.
+[타입스크립트를 사용할 경우](https://styled-components.com/docs/api#typescript) `@types`까지 다운로드 해준다.
+
+<Tabs items={["npm", "yarn"]}>
+  <Tab>```npm i styled-components @types/styled-components -D ```</Tab>
+  <Tab>```yarn add styled-components @types/styled-components -D ```</Tab>
+</Tabs>
+
+<br />
+
+#### Babel 플러그인 설치 (선택)
+
+좀 더 나은 디버깅 환경이나 스타일 minification 등을 원할 경우 Babel을 추가적으로 설정할 수 있다.
+
+<Tabs items={["npm", "yarn"]}>
+  <Tab>```npm i babel-plugin-styled-components -D ```</Tab>
+  <Tab>```yarn add babel-plugin-styled-components -D ```</Tab>
+</Tabs>
+
+<br />
+
+이후, 프로젝트 루트 경로에 [`.babelrc` 파일](https://styled-components.com/docs/tooling#usage)을 생성하여 다음과 같이 적는다.
+
+```json .babelrc
+{
+  "plugins": ["babel-plugin-styled-components"]
+}
+```
+
+<br />
+
+### `d.ts` 파일 생성
+
+Styled Components를 위한 [기본 타입 확장](https://styled-components.com/docs/api#create-a-declarations-file)을 해준다.
+이곳에 reset CSS에 넣을만한 요소들 (예컨대 _글꼴, 색상 등_)을 지정해주면 훨씬 좋다.
+
+파일의 경로는 각자의 취향에 따르면 된다.
+
+<Tree>
+  <Folder name="프로젝트 루트 경로" defaultOpen>
+    <Folder name="@types" defaultOpen>
+      <File name="styled.d.ts" />
+    </Folder>
+  </Folder>
+</Tree>
+
+이후 자주 사용될만한 요소들을 타입화 해둔다.
+추후에 디자이너와 협업할 때 디자이너가 미리 이러한 요소들을 정리해준다면 바로 정리해두도록 하는 것이 좋다.
+
+```ts @types/styled.d.ts
+import "styled-components";
+
+declare module "styled-components" {
+  export interface DefaultTheme {
+    fonts: {
+      prompt: string;
+      ibmSans: string;
+      charmonman: string;
+      rubik: string;
+    };
+  }
+}
+```
+
+<Callout type="info" emoji="ℹ">
+    만일 타입 확장을 타입스크립트에서 불러들일 수 없다면 `tsconfig.json`에서 타입 루트를 따로 설정해주자.
+
+    ```json tsconfig.json
+    {
+        "typeRoots": ["./node_modules/@types/", "./src/@types/"],
+    }
+    ```
+
+</Callout>
+
+<br />
+
+### Theme 설정
+
+앞서 타입 확장한 theme을 적용하기 위해 theme 파일을 하나 생성해준다. 이 theme 파일이 우리가 주로 사용할 변수값들을 포함하고 있다.
+
+<Tree>
+  <Folder name="프로젝트 루트 경로" defaultOpen>
+    <Folder name="styles" defaultOpen>
+      <File name="myTheme.ts" />
+    </Folder>
+  </Folder>
+</Tree>
+
+</div>
