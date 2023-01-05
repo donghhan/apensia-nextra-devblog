@@ -1,4 +1,6 @@
 import { remarkCodeHike } from "@code-hike/mdx";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 import githubDarkDimmed from "shiki/themes/github-dark-dimmed.json" assert { type: "json" };
 import nextra from "nextra";
 
@@ -9,6 +11,7 @@ const withNextra = nextra({
   flexsearch: {
     codeblocks: false,
   },
+  latex: true,
   defaultShowCopyCode: true,
   mdxOptions: {
     remarkPlugins: [

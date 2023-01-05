@@ -1,3 +1,7 @@
 {
-    "intro": "What is NLP?"
+    "intro": "What is NLP?",
+    "-- Representation --": {
+        "type": "separator",
+        "title": "Representation"
+    }
 }

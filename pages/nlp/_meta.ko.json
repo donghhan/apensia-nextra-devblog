@@ -1,3 +1,10 @@
 {
-    "intro": "자연어 처리란?"
+    "intro": "자연어 처리란?",
+    "-- Representation --": {
+        "type": "separator",
+        "title": "표현"
+    },
+    "representation": {
+        "title": "표현"
+    }
 }
