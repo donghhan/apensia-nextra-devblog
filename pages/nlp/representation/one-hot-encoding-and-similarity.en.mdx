@@ -1,1 +1,117 @@
-# One-Hot Encoding
+# One-Hot Encoding & Similarity Calculation
+
+## One-Hot Encoding
+
+One of the simple methods of representation of words. As literally can tell from its name, after dimensions for words were created, each of words are encoded with `1` and other remaining dimensions are encoded with `0`.
+
+For instance, let's say there are three words: _korea_, _usa_ and _thailand_.
+
+```py
+korea = [1, 0, 0]
+usa = [0, 1, 0]
+thailand = [0, 0, 1]
+```
+
+### Drawbacks
+
+But there are some drawbacks that One-Hot Encoding method has.
+
+#### Inefficiency of dimensions
+
+As you can infer from the example above, the more words we add, the more dimensions need to be created.
+Therefore, we have no choice but to waste spaces and operation becomes more complex as we need as much dimensions as we have for words.
+
+```py
+korea = [1, 0, 0, 0]
+usa = [0, 1, 0, 0]
+thailand = [0, 0, 1, 0]
+japan = [0, 0, 0, 1]
+# ...
+```
+
+#### Difficulty of Representation of Meanings
+
+One-Hot Encoding is also poor for representing meanings of words. For instance, let's say we have 5 words as below:
+
+- Monkey
+- Apple
+- Banana
+- Dog
+- Cat
+
+Then, we can assume that
+
+1. Monkey, dog and cat can be categorized as an _animal_.
+2. Apple and banana can be categorized as a _fruit_.
+3. Monkey and banana can be correlated in terms that _monkey likes banana_.
+
+But One-Hot Encoding cannot fully represent the meanings of words in terms of **similiary of words**.
+
+<br />
+
+## Similiary Calculation
+
+### Euclidiean Distance
+
+Words can be represented as vectors. Euclidiean distance indicates the distance between these vectors of words.
+
+<br />
+
+<center>
+  <figure>
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Euclidean_distance_3d_2_cropped.png/1024px-Euclidean_distance_3d_2_cropped.png"
+      alt="Euclidiean Distance"
+      width="500"
+    />
+    <figcaption>Source: Wikipedia</figcaption>
+  </figure>
+</center>
+
+### Jaccard Similarity
+
+This method is usually used to check the similiarity between documents or sentences.
+
+<br />
+
+<center>$J(A,B) = \cfrac{| A \bigcap B |}{|A \bigcup B|} = \cfrac{| A \bigcap B |}{|A| + |B| - |A \bigcap B|}$</center>
+
+<br />
+
+<center>
+  <figure>
+    <img
+      src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Intersection_of_sets_A_and_B.svg/1024px-Intersection_of_sets_A_and_B.svg.png"
+      alt="Jaccard Index"
+      width="300"
+    />
+    <figcaption>Source: Wikipedia</figcaption>
+  </figure>
+</center>
+
+### Cosine Similarity
+
+It is a method of calculating similiarity between two vectors and its value comes from cosine value of two vectors.
+It can have value of -1 at least and 1 at most, and the more its value gets close to 1, it means two words have much stronger similarity.
+
+<center>$\cos(\theta) = \cfrac{A \cdot B}{ \Vert A \Vert \Vert B \Vert} = \cfrac{\displaystyle\sum_{i=1}^n A_i \times B_i }{\sqrt{\displaystyle\sum_{i=1}^n (A_i)^2} \times \sqrt{\displaystyle\sum_{i=1}^n (B_i)^2}}$</center>
+
+<br />
+
+<center>
+  <figure>
+    <img
+      src="https://media.licdn.com/dms/image/C4D12AQGLuiuropsWUA/article-cover_image-shrink_720_1280/0/1520203391934?e=2147483647&v=beta&t=0q8pImQxS1toIpFrnF9FIdWEsOQ1eUmZF_PGr50bJUY"
+      alt="Cosine Similarity"
+      width="500"
+    />
+    <figcaption>
+      Source: [Chen
+      Yang](https://www.linkedin.com/pulse/machine-learning-intuition-cosine-similarity-chen-yang)
+    </figcaption>
+  </figure>
+</center>
+
+> Based on the One-Hot Encoding method, all words are spread out in coordinate plane in orthogonally.
+> Therefore, if we calculate the cosine similiarity of these words, we will have always 0 value.
+> This is why One-Hot Encoding has difficulty of representing meanings of words.
