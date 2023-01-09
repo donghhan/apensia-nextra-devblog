@@ -1,0 +1,85 @@
+import { Tab, Tabs } from "nextra-theme-docs";
+
+# Installation
+
+## Virtual Environment
+
+The first thing we need to do before initializing project with python is to set up virutal environment.
+**Virtual Environment** indicates <ins>_the independent environment that is isolated from currently installed Python environment_</ins>.
+In other words, we are basically setting individual Python development environment per each projects independently.
+
+Why would we need to do this? We need to install many packages while doing projects and if those packages have their own dependencies,
+an error would occur if package versions are different.
+Moreover, error can also occur when package versions collide with each other after upgrading or installing packages.
+In order to effectively control over these cumbersome things, it is recommended to set up virtual environment.
+
+## Installing with Virtual Environment
+
+### Pipenv
+
+Pipenv is a combination of word of pip which is Python package managing tool and virtualenv which helps to create virtual environment.
+
+Let's install Pipenv first.
+
+```bash
+pip install pipenv
+```
+
+Next, install necessary packages with using `pipenv` keyword. Before install packages, make sure you install packages under the project root folder.
+
+```bash
+mkdir django-project
+cd django-project
+pipenv install django
+```
+
+![success](../../media/backend/installation/success.png)
+
+### Poetry
+
+[Poetry](https://python-poetry.org/docs/) is another Python package manage tool.
+
+<Tabs items={["MacOS", "Windows", "Linux"]}>
+  <Tab>
+    Install Poetry with curl.
+    ```bash
+    curl -sSL https://install.python-poetry.org | POETRY_HOME=/etc/poetry python3 -
+    ```
+
+  </Tab>
+  <Tab>
+    If you are using Powershell, 
+    ```bash
+    (Invoke-WebRequest -Uri https://install.python-poetry.org -UseBasicParsing).Content | py -
+    ```
+
+    Then, add environment variable in Advanced System Settings in Windows.
+    <br/>
+    <center>![env](../../media/backend/installation/env.png)</center>
+
+  </Tab>
+  <Tab>
+    Install Poetry with curl. 
+    ```bash
+    curl -sSL https://install.python-poetry.org | POETRY_HOME=/etc/poetry python3 -
+    ```
+  </Tab>
+</Tabs>
+
+Next, navigate to project root folder and create `.lock` file with the following command.
+
+```bash
+mkdir django-project
+cd django-project
+poetry init
+```
+
+![Poetry Init](../../media/backend/installation/poetry_init.png)
+
+And we can install Django now.
+
+```bash
+poetry add django
+```
+
+![Poetry Django](../../media/backend/installation/poetry_django.png)

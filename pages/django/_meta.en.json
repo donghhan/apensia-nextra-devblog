@@ -1,0 +1,18 @@
+{
+  "intro": "Introduction",
+  "installation": "Installation",
+  "-- Model --": {
+    "type": "separator",
+    "title": "Model"
+  },
+  "model": {
+    "title": "Model"
+  },
+  "-- Frontend --": {
+    "type": "separator",
+    "title": "Frontend"
+  },
+  "styled-components": {
+    "title": "Styled Components"
+  }
+}

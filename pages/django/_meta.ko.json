@@ -1,0 +1,18 @@
+{
+  "intro": "개요",
+  "installation": "설치",
+  "-- Model --": {
+    "type": "separator",
+    "title": "모델"
+  },
+  "model": {
+    "title": "모델"
+  },
+  "-- Frontend --": {
+    "type": "separator",
+    "title": "프론트엔드"
+  },
+  "styled-components": {
+    "title": "Styled Components"
+  }
+}
