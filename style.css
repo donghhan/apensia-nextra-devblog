@@ -98,3 +98,13 @@ code.text-\[\.9em\] {
 .tech-grid span {
   font-size: 2.5rem;
 }
+
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.container .image-wrapper {
+  width: 500px;
+}

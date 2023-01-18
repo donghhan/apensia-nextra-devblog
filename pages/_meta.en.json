@@ -7,6 +7,10 @@
       "typesetting": "article"
     }
   },
+  "react": {
+    "title": "React",
+    "type": "page"
+  },
   "django": {
     "title": "Django",
     "type": "page"
