@@ -3,5 +3,11 @@
     "-- Representation --": {
         "type": "separator",
         "title": "Representation"
+    },
+    "representation": {
+        "title": "Representation"
+    },
+    "deep-learining": {
+        "title": "Deep Learning"
     }
 }
