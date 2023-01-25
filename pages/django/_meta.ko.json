@@ -8,11 +8,14 @@
   "model": {
     "title": "모델"
   },
-  "-- Frontend --": {
+  "-- DRF --": {
     "type": "separator",
-    "title": "프론트엔드"
+    "title": "DRF"
   },
-  "styled-components": {
-    "title": "Styled Components"
+  "drf-intro": {
+    "title": "개요"
+  },
+  "serializers": {
+    "title": "Serializers"
   }
 }
