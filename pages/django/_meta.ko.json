@@ -8,14 +8,16 @@
   "model": {
     "title": "모델"
   },
-  "-- DRF --": {
+  "-- Serializers --": {
     "type": "separator",
-    "title": "DRF"
-  },
-  "drf-intro": {
-    "title": "개요"
+    "title": "Serializer"
   },
   "serializers": {
     "title": "Serializers"
-  }
+  },
+  "-- Views --": {
+    "type": "separator",
+    "title": "Views"
+  },
+  "fbv": "함수형 View"
 }

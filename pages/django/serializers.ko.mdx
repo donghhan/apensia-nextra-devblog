@@ -131,3 +131,70 @@ DRF 라이브러리를 사용하게 되면 보다 손쉽게 Serializer를 만들
 ### 구현
 
 #### `serializers.py` 파일 생성
+
+유저의 정보들을 직렬화하는 `UserSerializer` 클래스를 만들어주었다.
+DRF에서 제공해주는 Serializer Field를 이용하여 각 필드의 성격에 맞게 모델링해준다.
+아래의 예시에서 `username`은 [`CharField`](https://www.django-rest-framework.org/api-guide/fields/#charfield)를, `email`은 [`EmailField`](https://www.django-rest-framework.org/api-guide/fields/#emailfield)를 사용해주었다.
+
+```py users/serializers.py
+from rest_framework import serializers
+from .models import User
+
+
+class UserSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    email = serializers.EmailField()
+    # ...
+```
+
+### `ModelSerializer`
+
+[`ModelSerializer`](https://www.django-rest-framework.org/api-guide/serializers/#modelserializer)는 상기와 같이 일일히 Field들을 다룰 필요 없이
+이미 만들어진 모델 중 필드들을 취사선택 해주기만 하면 손쉽게 Serializer를 만들 수 있게 해주는 클래스이다.
+
+```py users/serializers.py
+from rest_framework.serializers import ModelSerializer
+from .models import User
+
+
+class UserSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            "username",
+            "email",
+        ]
+```
+
+<br />
+
+`ModelSerializer`는 [손쉽게 필드들을 취사선택하게 해줄 수 있는 장치들을 지니고 있다](https://www.django-rest-framework.org/api-guide/serializers/#specifying-which-fields-to-include).
+만일 모든 필드들을 포함하고 싶다면 단순히 `__all__`을 포함해주면 된다.
+
+```py users/serializers.py
+from rest_framework.serializers import ModelSerializer
+from .models import User
+
+
+class UserSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = "__all__"
+```
+
+<br />
+
+`exclude` 키워드를 통해 전체 필드 중 제외시킬 필드만 따로 설정할 수도 있다.
+
+```py users/serializers.py
+from rest_framework.serializers import ModelSerializer
+from .models import User
+
+
+class UserSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        exclude = [
+            "password",
+        ]
+```

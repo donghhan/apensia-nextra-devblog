@@ -8,14 +8,15 @@
   "model": {
     "title": "Model"
   },
-  "-- DRF --": {
+  "-- Serializers --": {
     "type": "separator",
-    "title": "DRF"
-  },
-  "drf-intro": {
-    "title": "Introduction"
+    "title": "Serializer"
   },
   "serializers": {
     "title": "Serializers"
+  },
+  "-- Views --": {
+    "type": "separator",
+    "title": "Views"
   }
 }

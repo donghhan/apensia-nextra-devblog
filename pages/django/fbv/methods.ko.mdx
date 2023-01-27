@@ -1,0 +1,122 @@
+import { Callout } from "nextra-theme-docs";
+
+# 메소드
+
+## `.is_valid()`
+
+Serializer가 view단에서 수행하는 작업에는 크게 두 가지가 있다.
+
+1. 하나는 우리가 정의한 모델에 대한 정보들(QuerySet)을 JSON 형태로 번역하여 브라우저를 통해 유저들에게 전달하거나
+2. 다른 하나는 반대로 유저에게서 받은 데이터를 바탕으로 모델에 대한 인스턴스를 생성할 수 있다.
+
+특히 유저에게서 받은 데이터를 토대로 모델 인스턴스를 만들 경우에는 항상 그 데이터가 우리가 정의한 Serializer의 제약 조건에 부합하는지를 따져야한다.
+왜냐하면 우리는 유저가 어떤 데이터를 받아낼지 알 수 없기 때문이다.
+DRF에서는 이 경우, [유효한 데이터에 접근하기 전에 항상 `is_valid()` 메소드를 호출하는 것을 권장하고 있다](https://www.django-rest-framework.org/api-guide/serializers/#validation).
+
+예를 들어, 다음의 코드를 살펴보도록 하자.
+
+<CH.Section>
+
+```py users/views.py
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import User
+from .serializers import UserSerializer
+
+@api_view(["GET", "POST"])
+    def all_user_view(request):
+        if request.method == "GET":
+            all_users = User.objects.all()
+            serializer = UserSerializer(all_users, many=True)
+            return Response(serializer.data)
+        elif request.method == "POST":
+            serializer = UserSerializer(data=request.data)
+            return Response({"created": True})
+
+```
+
+`all_user_view()`는 모든 유저들을 보여주는 view이며 HTTP 메소드가 각각 `GET` 방식과 `POST` 방식일 때 어떻게 보일지 분기처리하여 보여주고 있다.
+특히 `POST` view에서는 유저들이 전달해준 `data`를 바탕으로 [데이터를 직렬화해주고 있다](https://www.django-rest-framework.org/api-guide/serializers/#serializing-objects).
+즉, 유저가 제공한 [`data=request.data`](focus://13[41:57])를 `UserSerializer`를 통해 직렬화하고 있다.
+
+</CH.Section>
+
+그렇다면 이제 데이터가 유효한지 알아보도록 하자. 다음과 같이 `request.is_valid()`와 `request.errors`를 각각 `print` 해보도록 하자.
+
+```py users/views.py focus=14,15
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import User
+from .serializers import UserSerializer
+
+@api_view(["GET", "POST"])
+    def all_user_view(request):
+        if request.method == "GET":
+            all_users = User.objects.all()
+            serializer = UserSerializer(all_users, many=True)
+            return Response(serializer.data)
+        elif request.method == "POST":
+            serializer = UserSerializer(data=request.data)
+            print(request.is_valid())
+            print(request.errors)
+            return Response({"created": True})
+
+```
+
+이제 직접 JSON 데이터를 작성하여 POST 요청을 해보자. 일부러 필수 항목들을 몇 개 빼놓은 상태에서 POST 요청을 하게 되면
+
+![post_input](../../../media/django/fbv/methods/post_input.png)
+
+다음과 같이 콘솔에 `request.is_valid()`의 값이 `False`로 뜨는 것을 알 수 있으며, 아래에 유효하지 않는 이유들이 나온다.
+
+![console_result](../../../media/django/fbv/methods/console_result.png)
+
+<br />
+
+## `.save()`
+
+이제 유저가 제공해준 데이터가 모두 유효하여 데이터베이스에 저장하고자 한다면 어떻게 해야 할까?
+DRF에서는 [`.save()`라는 메소드를 통해 저장하게끔 하고 있다](https://www.django-rest-framework.org/api-guide/serializers/#saving-instances).
+
+`.save()` 메소드가 호출되게 되면 DRF는 자동적으로 `.create()` 메소드를 찾게 된다.
+위의 예시에서
+
+<CH.Code>
+
+```py users/views.py focus=10
+@api_view(["GET", "POST"])
+    def all_user_view(request):
+        if request.method == "GET":
+            all_users = User.objects.all()
+            serializer = UserSerializer(all_users, many=True)
+            return Response(serializer.data)
+        elif request.method == "POST":
+            serializer = UserSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response({"created": True})
+                else:
+                    return Response(serializer.errors)
+
+```
+
+---
+
+```py users/serializers.py
+def create(self, validated_data):
+    print(validated_data)
+    return User.objects.create(**validated_data)
+```
+
+</CH.Code>
+
+`.create()` 메소드는 Serializer 클래스 내부에 위치해있기 때문에 `self`를 첫번째 인자로 받으며, 유저가 제공한 유효한 데이터는 `validated_data`에 담긴다.
+하지만 유저가 제공한 데이터를 어떻게 저장할지에 대한 로직은 **_순전히 개발자의 몫에 달려있다_**.
+
+<Callout type="warning" emoji="⚠️">
+  만일 `.create()` 메소드에 어떤 것도 `return` 하지 않을 경우 `AssertionError:
+  .create() did not return an object instance.` 에러를 발생시킨다.
+  ![assertion_error_create](../../../media/django/fbv/methods/assertion_error_create.png)
+</Callout>
+
+## `.update()`
