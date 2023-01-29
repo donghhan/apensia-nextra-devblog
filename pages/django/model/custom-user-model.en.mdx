@@ -1,4 +1,4 @@
-# Customizing User models in Django
+# Customizing User models
 
 ## Introduction
 
@@ -699,7 +699,7 @@ class User(AbstractBaseUser, TimeStampModel):
 #### Defining Other Methods
 
 1. [`__str__`](https://docs.djangoproject.com/en/4.1/ref/models/instances/#django.db.models.Model.__str__): Display objects with human-readable fields so that they can be recognized well.
-2. [`has_perm()`과 `has_module_perms()`](https://docs.djangoproject.com/en/4.1/topics/auth/customizing/#custom-users-and-django-contrib-admin): Determine whether the user has specific permission
+2. [`has_perm()` and `has_module_perms()`](https://docs.djangoproject.com/en/4.1/topics/auth/customizing/#custom-users-and-django-contrib-admin): Determine whether the user has specific permission
    for certain app label. For `has_module_perms()`, I prevented normal users from entering admin page except admin users.
 
 ```py users/models.py focus=97:111
@@ -947,6 +947,7 @@ class User(AbstractBaseUser, TimeStampModel):
 
 Finally, I put `users.User` in [`AUTH_USER_MODEL`](https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-AUTH_USER_MODEL)
 so that we can tell Django that we actually replaced with the customized `User` model.
+Below code should be added in `settings.py` file within our project root folder.
 
 ```py confing/settings.py
 AUTH_USER_MODEL = "users.User"

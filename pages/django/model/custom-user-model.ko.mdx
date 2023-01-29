@@ -1,4 +1,4 @@
-# `AbstractBaseUser` 커스텀 유저 모델
+# 유저 모델 커스터마이징
 
 Django에서 설명하고 있는 [기본 방법](https://docs.djangoproject.com/en/4.0/intro/tutorial02/#creating-models)으로도 유저 모델을 충분히 구현해낼 수 있지만
 매번 새로운 필드를 만드는 귀찮은 작업을 피하고, 유저라고 하면 통상적으로 있어야 할 법한 정보들을 한꺼번에 불러와서 손쉽게 사용할 수 있으면 더욱 좋겠다.
@@ -155,10 +155,10 @@ admin.site.register(User, UserAdmin)
 
 1.  [`model` 프로퍼티에 앞서 만든 `Customer` 모델 클래스를 연결해준다.](https://docs.djangoproject.com/en/4.0/ref/contrib/admin/#django.contrib.admin.InlineModelAdmin.model)
 2.  [`can_delete`](https://docs.djangoproject.com/en/4.0/ref/contrib/admin/#django.contrib.admin.InlineModelAdmin.can_delete)
-    에 `False` 값을 줌으로서 생성된 유저는 삭제될 수 없도록 만들었다. > `can_delete`
-    프로퍼티는 만들고자 하는 서비스의 정책에 따라 `True` 혹은 `False`가 될 수 있을
-    것이다. 필자의 경우 공식 문서에 나온 내용 토대로 했지만 어드민이 (어떤 이유에서든)
-    유저를 삭제해야 할 필요가 있다면 기본값인 `True`로 놔둬도 괜찮을 것 같다.
+    에 `False` 값을 줌으로서 생성된 유저는 삭제될 수 없도록 만들었다.
+    > `can_delete` 프로퍼티는 만들고자 하는 서비스의 정책에 따라 `True` 혹은 `False`가 될 수 있을
+    > 것이다. 필자의 경우 공식 문서에 나온 내용 토대로 했지만 어드민이 (어떤 이유에서든)
+    > 유저를 삭제해야 할 필요가 있다면 기본값인 `True`로 놔둬도 괜찮을 것 같다.
 3.  [`verbose_name_plural`](https://docs.djangoproject.com/en/4.0/ref/contrib/admin/#django.contrib.admin.InlineModelAdmin.verbose_name_plural)
     를 설정해줌으로서 `Customer`들이 여러 개가 있을 때 Django admin 페이지에서 어떻게
     보일지 설정해준다.
@@ -949,6 +949,7 @@ class User(AbstractBaseUser, TimeStampModel):
 #### `AUTH_USER_MODEL` 설정
 
 마지막으로, 우리가 만든 커스터마이징된 `User` 모델 클래스를 대체했다는 것을 Django에게 알리기 위해 [`AUTH_USER_MODEL`](https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-AUTH_USER_MODEL)를 `users.User`로 설정해주었다.
+아래 코드는 프로젝트 루트 경로에 있는 `settings.py` 파일에 추가해야 한다.
 
 ```py confing/settings.py
 AUTH_USER_MODEL = "users.User"
