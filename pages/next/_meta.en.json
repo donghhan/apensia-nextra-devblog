@@ -1,0 +1,7 @@
+{
+    "-- Style --": {
+        "title": "Style",
+        "type": "separator"
+    },
+    "tailwindcss": "TailwindCSS"
+}

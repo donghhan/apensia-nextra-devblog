@@ -11,6 +11,10 @@
     "title": "React",
     "type": "page"
   },
+  "next": {
+    "title": "NextJS",
+    "type": "page"
+  },
   "django": {
     "title": "Django",
     "type": "page"

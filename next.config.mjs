@@ -19,7 +19,7 @@ const withNextra = nextra({
         remarkCodeHike,
         {
           lineNumbers: false,
-          showCopyButton: false,
+          showCopyButton: true,
           theme: githubDarkDimmed,
           autoImport: true,
         },

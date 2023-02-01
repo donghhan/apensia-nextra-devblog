@@ -1,0 +1,97 @@
+# TailwindCSS
+
+TailwindCSS is a styling library that allows us to do CSS styling without making separate CSS/SCSS files by using class names.
+For those who actively use Bootstrap would feel much more familiar.
+
+## Installation
+
+### Package Download
+
+Let's [install with PostCSS](https://tailwindcss.com/docs/installation/using-postcss) in our project root folder.
+Of course, there are other ways of installation so feel free to choose at your will.
+
+```bash
+npm i -D tailwindcss postcss autoprefixer
+npx tailwindcss init
+```
+
+<div className="steps-container">
+
+<CH.Scrollycoding>
+
+### Configuration
+
+After running `npx tailwindcss init` command, TailwindCSS will create `tailwind.config.js` configuration file in our project root folder.
+
+```js tailwind.config.js
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+```
+
+---
+
+### `content` configuration
+
+`content` indicates which parts are we going to apply TailwindCSS in our project root folder.
+If you created your project with `src/` folder included, make sure you include `src/` also.
+Following code means that we will be applying TailwindCSS to all sub `.js`, `.jsx`, `.ts`, `.tsx` files.
+
+```js tailwind.config.js focus=3:6
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: ["./src/**/*.{js,jsx,ts,tsx}"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+```
+
+---
+
+### `global.css` configuration
+
+Insert the following code in `global.css`.
+
+```css src/styles/globals.css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+</CH.Scrollycoding>
+
+</div>
+
+## Result
+
+If you can see changes happening in `index.tsx` after modifying class names, then configuration is successful.
+
+```tsx src/pages/index.tsx
+import Head from "next/head";
+import Image from "next/image";
+import { Inter } from "@next/font/google";
+import styles from "@/styles/Home.module.css";
+
+const inter = Inter({ subsets: ["latin"] });
+
+export default function Home() {
+  return (
+    <div className="bg-red-100">
+      <h1 className="text-blue-700">It works</h1>
+    </div>
+  );
+}
+```
+
+![result](../../../media/next/tailwindcss/installation/result.png)
+
+## See also
+
+For those who are using VSCode, you'd better install [Tailwind CSS IntelliSense](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss) extension for auto complete.
