@@ -108,3 +108,19 @@ code.text-\[\.9em\] {
 .container .image-wrapper {
   width: 500px;
 }
+
+/* Tech Stack */
+
+.tech-stack {
+  display: flex;
+  justify-content: space-around;
+}
+
+.tech-stack span,
+.tech-stack a {
+  font-size: 2.5rem;
+}
+
+.no-image img {
+  width: 70px;
+}

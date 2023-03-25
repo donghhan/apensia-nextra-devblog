@@ -22,5 +22,9 @@
   "nlp": {
     "title": "NLP",
     "type": "page"
+  },
+  "nest": {
+    "title": "NestJS",
+    "type": "page"
   }
 }
