@@ -1,3 +1,6 @@
 {
-    "intro": "개요"
+    "intro": "개요",
+    "database": {
+        "title": "데이터베이스 연동"
+    }
 }

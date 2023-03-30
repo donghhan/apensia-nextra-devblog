@@ -19,7 +19,7 @@ NestJS로 프로젝트를 만들어보면 크게 다음과 같은 파일들로 �
 
 ### 모듈
 
-`app.module.ts` 파일은 글자 그대로 NestJS의 app에서 모듈을 담당하는 부분이다.
+`앱이름.module.ts` 파일은 글자 그대로 NestJS의 app에서 모듈을 담당하는 부분이다.
 
 ```ts app.module.ts
 import { Module } from "@nestjs/common";
@@ -35,9 +35,9 @@ export class AppModule {}
 여기서 <ins>**모듈**</ins>은 하나의 역할을 수행하는 프로젝트 내의 어플리케이션 중 일부를 의미한다. 비유를 하자면 Python의 Django에서의 app과도 같은 존재이다.
 유저에 대한 인증 절차를 위한 어플리케이션, 주문을 위한 어플리케이션 등 모두가 전부 모듈이 될 수 있다.
 
-### Controllers
+### 컨트롤러
 
-`app.controller.ts` 파일은 [Controller](https://docs.nestjs.com/controllers)이며 주 역할은 <ins>_URL를 가져온 후 함수를 실행시키는 역할_</ins>을 수행한다.
+`앱이름.controller.ts` 파일은 [Controller](https://docs.nestjs.com/controllers)이며 주 역할은 <ins>_URL를 가져온 후 함수를 실행시키는 역할_</ins>을 수행한다.
 비유를 하자면 [ExpressJS에서의 Router](https://expressjs.com/en/4x/api.html#express.router)와도 같다.
 
 <br />
@@ -69,7 +69,7 @@ export class AppController {
 
 위에서 `@Get`은 데코레이터로써 해당 URL이 GET 요청을 받아서 `getHello()`라는 함수를 실행시켜주는 역할을 하고 있다.
 
-### Services
+### 서비스
 
 Service는 NestJS 내에서 실제 비즈니스 로직을 담당하고 있는 부분이다.
 
@@ -82,7 +82,3 @@ Service는 NestJS 내에서 실제 비즈니스 로직을 담당하고 있는 �
   />
   <figcaption>출처: NestJS 공식 문서</figcaption>
 </figure>
-
-### Controllers
-
-[Controller](https://docs.nestjs.com/controllers)는
