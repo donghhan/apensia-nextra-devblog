@@ -2,5 +2,12 @@
     "intro": "개요",
     "database": {
         "title": "데이터베이스 연동"
+    },
+    "-- Users --": {
+        "type": "separator",
+        "title": "유저"
+    },
+    "user": {
+        "title": "유저 모듈"
     }
 }
