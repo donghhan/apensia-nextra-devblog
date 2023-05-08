@@ -8,6 +8,13 @@
   "model": {
     "title": "모델"
   },
+  "-- Admin --": {
+    "type": "separator",
+    "title": "Admin"
+  },
+  "admin": {
+    "title": "어드민"
+  },
   "-- Serializers --": {
     "type": "separator",
     "title": "Serializer"

@@ -8,6 +8,13 @@
   "model": {
     "title": "Model"
   },
+  "-- Admin --": {
+    "type": "separator",
+    "title": "Admin"
+  },
+  "admin": {
+    "title": "Admin"
+  },
   "-- Serializers --": {
     "type": "separator",
     "title": "Serializer"
