@@ -1,5 +1,10 @@
 {
     "intro": "개요",
+    "-- Setting --": {
+        "type": "separator",
+        "title": "설정"
+    },
+    "graphql": "GraphQL",
     "database": {
         "title": "데이터베이스 연동"
     },

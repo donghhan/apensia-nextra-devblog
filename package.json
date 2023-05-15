@@ -2,7 +2,7 @@
   "name": "docs",
   "private": true,
   "scripts": {
-    "dev": "next",
+    "dev": "next -p 6001",
     "start": "next start",
     "build": "next build"
   },
