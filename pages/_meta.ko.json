@@ -15,6 +15,10 @@
     "title": "Next",
     "type": "page"
   },
+  "svelte": {
+    "title": "Svelte",
+    "type": "page"
+  },
   "django": {
     "title": "Django",
     "type": "page"

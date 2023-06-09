@@ -1,0 +1,48 @@
+# Svelte란?
+
+React, Vue, Angular의 뒤를 이어 혜성같이 등장한 프론트엔드의 또다른 **_프레임워크_**이다.
+
+## 특징
+
+### 컴파일러
+
+React는 가상 DOM을 활용하는 시스템을 갖추고 있다. 매번 변경 사항이 있을 때마다 브라우저로 하여금 직접 렌더링을 시키게 하는 것이 아니라
+가상 DOM을 조작하여 어느 정도 변경이 마무리가 되었으면 디핑(Diffing) 알고리즘을 통해 변경된 부분을 감지함과 동시에 실제 브라우저에
+변경 사항들을 적용한다.[^1]
+
+[^1]: [\[React\] Virtual DOM & Diffing Algorithm](https://yeoulcoding.me/147)
+
+> DOM과 브라우저 렌더링 과정
+> Document Object Manager의 약자로써 <ins>_브라우저가 HTML 문서를 해석하는 방식_</ins>을 의미한다.
+
+하지만 Svelte의 경우 [공식 문서](https://svelte.dev/)에서도 나타내고 있듯이 본인 스스로를 컴파일러라고 칭하고 있다.
+변경 사항이 생길 경우 <ins>**빌드 시**</ins> DOM을 효율적으로 업데이트하는 코드를 생산해냄으로서 가상 DOM에서 발생되는 오버헤드 없이
+실제 브라우저를 직접 변경한다.[^2]
+
+[^2]: [\[Svelte\] Svelte 소개](https://beomy.github.io/tech/svelte/introduction-svelte/)
+
+## 설치
+
+[Vite](https://vitejs.dev/guide/#trying-vite-online)를 이용하여 설치할 수 있다.
+
+```bash
+# 자바스크립트 이용 시
+# NPM
+npm create vite@latest my-svelte-app --template svelte
+
+# yarn
+yarn create vite@latest my-svelte-app --template svelte
+
+# PNPM
+pnpm create vite@latest my-svelte-app --template svelte
+
+# 타입스크립트 이용시
+# NPM
+npm create vite@latest my-svelte-app --template svelte-ts
+
+# yarn
+yarn create vite@latest my-svelte-app --template svelte-ts
+
+# PNPM
+pnpm create vite@latest my-svelte-app --template svelte-ts
+```
