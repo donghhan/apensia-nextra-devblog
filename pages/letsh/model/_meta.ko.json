@@ -1,6 +1,12 @@
 {
-    "custom-user-model": "AbstractBaseUser",
+    "custom-user-model": "User 모델",
     "abstract-model": {
         "title": "Abstract 모델"
+    },
+    "rooms-model": {
+        "title": "Rooms 모델"
+    },
+    "reservations-model": {
+        "title": "Reservation 모델"
     }
 }
