@@ -1,19 +1,19 @@
 {
-  "intro": "개요",
-  "installation": "설치",
+  "intro": "Introduction",
+  "init": "Project Initialization",
   "-- Model --": {
     "type": "separator",
-    "title": "모델"
+    "title": "Model"
   },
   "model": {
-    "title": "모델"
+    "title": "Model"
   },
   "-- Admin --": {
     "type": "separator",
     "title": "Admin"
   },
   "admin": {
-    "title": "어드민"
+    "title": "Admin"
   },
   "-- Serializers --": {
     "type": "separator",
@@ -25,6 +25,5 @@
   "-- Views --": {
     "type": "separator",
     "title": "Views"
-  },
-  "fbv": "함수형 View"
+  }
 }

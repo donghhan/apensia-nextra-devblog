@@ -19,8 +19,8 @@
     "title": "Svelte",
     "type": "page"
   },
-  "django": {
-    "title": "Django",
+  "letsh": {
+    "title": "Let'sh",
     "type": "page"
   },
   "nlp": {
@@ -30,5 +30,16 @@
   "nest": {
     "title": "Nest",
     "type": "page"
+  }, 
+  "etc" : {
+    "title": "ETC",
+    "type": "page",
+    "theme": {
+      "toc": false,
+      "sidebar": false,
+      "pagination": true,
+      "breadcrumb": false,
+      "typesetting": "default"
+    }
   }
 }
