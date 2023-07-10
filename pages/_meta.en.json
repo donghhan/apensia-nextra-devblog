@@ -9,15 +9,18 @@
   },
   "react": {
     "title": "React",
-    "type": "page"
+    "type": "page",
+    "display": "hidden"
   },
   "next": {
     "title": "Next",
-    "type": "page"
+    "type": "page",
+    "display": "hidden"
   },
   "svelte": {
     "title": "Svelte",
-    "type": "page"
+    "type": "page",
+    "display": "hidden"
   },
   "letsh": {
     "title": "Let'sh",
@@ -25,10 +28,23 @@
   },
   "nlp": {
     "title": "NLP",
-    "type": "page"
+    "type": "page",
+    "display": "hidden"
   },
   "nest": {
     "title": "Nest",
-    "type": "page"
+    "type": "page",
+    "display": "hidden"
+  }, 
+  "etc" : {
+    "title": "ETC",
+    "type": "page",
+    "theme": {
+      "toc": false,
+      "sidebar": false,
+      "pagination": true,
+      "breadcrumb": false,
+      "typesetting": "default"
+    }
   }
 }
