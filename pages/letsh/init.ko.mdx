@@ -95,6 +95,8 @@ poetry add django
 
 ![Poetry Django](../../media/django/installation/poetry_django.png)
 
+<br />
+
 ## 프론트엔드 (React + TS)
 
 React는 TypeScript와 함께 사용하기로 하였으며, [Vite](https://vitejs.dev/guide/#overview)를 통해 보일러 플레이트를 설치하기로 하였다.
@@ -111,7 +113,13 @@ React는 TypeScript와 함께 사용하기로 하였으며, [Vite](https://vitej
 pnpm create vite letsh --template react-ts
 ```
 
-> PNPM이란?[^2]
-> PNPM은 NPM
+#### PNPM이란?[^2]
+
+PNPM은 NPM이 가지고 있는 고질적인 문제를 해결하기 위해 만들어진 NPM의 상위 호완 대체재이다.
+
+NPM 및 Yarn은 플랫한(flattened)[^3] `node_modules`를 사용하고 있기 때문에
+
+<br />
 
 [^2]: [Let's settle things out [2]: NPM Vs. YARN VS. PNPM](https://dev.to/ayoub3bidi/lets-settle-things-out-2-npm-vs-yarn-vs-pnpm-5e04)
+[^3]: 한 프로젝트에 필요한 패키지들의 의존성이 깊이 중첩된 구조가 아닌 하나의 얕은 구조에 모두 설치되는 형태
