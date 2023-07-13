@@ -1,4 +1,4 @@
-# 유저 모델 커스터마이징
+# User 모델
 
 Django에서 설명하고 있는 [기본 방법](https://docs.djangoproject.com/en/4.0/intro/tutorial02/#creating-models)으로도 유저 모델을 충분히 구현해낼 수 있지만
 매번 새로운 필드를 만드는 귀찮은 작업을 피하고, 유저라고 하면 통상적으로 있어야 할 법한 정보들을 한꺼번에 불러와서 손쉽게 사용할 수 있으면 더욱 좋겠다.
@@ -301,7 +301,7 @@ Django admin 페이지에서 최종적으로 다음과 같이 보이게 된다.
 2. [`AbstractBaseUser`](https://docs.djangoproject.com/en/4.2/topics/auth/customizing/#django.contrib.auth.models.AbstractBaseUser)
 
 `AbstractUser`는 기본적으로 유저라면 반드시 있을 정보들을 미리 만들어 둔 일종의 샘플과도 같은 클래스이다.
-필요한 필드의 경우 추가하거나 오버라이드를 통해 언제든지 수정할 수 있다.[^1]
+필요한 필드의 경우 추가하거나 오버라이드를 통해 언제든지 수정할 수 있다[^1].
 
 [^1]: [코드](https://github.com/django/django/blob/b7a17b0ea0a2061bae752a3a2292007d41825814/django/contrib/auth/models.py#L334)
 
@@ -388,9 +388,9 @@ class User(AbstractUser):
 
 ---
 
-### `__str__`
+### `__str__()`
 
-[`__str__`](https://docs.djangoproject.com/en/4.2/ref/models/instances/#str)를 통해
+[`__str__()`](https://docs.djangoproject.com/en/4.2/ref/models/instances/#str)를 통해
 Django 어드민 패널에서 `username`이 보여지게끔 하였다.
 
 ```py users/models.py focus=26:27
@@ -423,14 +423,60 @@ class User(AbstractUser):
         return str(self.username)
 ```
 
+---
+
+### 추가 모델 메소드
+
+모델 클래스에 추가적인 메소드를 통하여 우리가 원하는 값을 커스터마이징 할 수 있다.
+
+`AbstractUser` 클래스 내부에 내장된 [`get_full_name()`](https://docs.djangoproject.com/en/4.2/topics/auth/customizing/#django.contrib.auth.models.CustomUser.get_full_name) 메소드를 통하여
+유저의 풀네임을 가져왔다[^2].
+
+[^2]: [What does Django's property do?](https://stackoverflow.com/a/58559066/13121145)
+
+```py users/models.py focus=29:32
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+
+    """User Model Definition"""
+
+    class SexChoices(models.TextChoices):
+        MALE = "Male", _("Male")
+        FEMALE = "Female", _("Female")
+        UNKNOWN = "Unknown", _("Unknown")
+
+    mobile_number = models.CharField(
+        max_length=128, verbose_name=_("Mobile Number"), null=True, blank=True
+    )
+    sex = models.CharField(
+        max_length=20,
+        verbose_name=_("Sex"),
+        choices=SexChoices.choices,
+        default=SexChoices.MALE,
+    )
+    profile_picture = models.URLField(
+        null=True, blank=True, verbose_name=_("Profile picture")
+    )
+
+    def __str__(self):
+        return str(self.username)
+
+    @property
+    @display(description="Full Name")
+    def get_full_name(self):
+        return super().get_full_name()
+```
+
 </CH.Scrollycoding>
 
 <br />
-
+{/* 
 ## 대체 (`AbstractBaseUser`)
 
 `AbstractBaseUser`에 대한 [공식 문서의 내용](https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#specifying-a-custom-user-model)에 따르면
-의 경우 인증에 대한 기능만 있을 뿐 나머지 필요한 필드들은 본인이 전부 직접 구현을 해야하는 점에서 `AbstractUser`와 다르다.
+인증에 대한 기능만 있을 뿐 나머지 필요한 필드들은 본인이 전부 직접 구현을 해야하는 점에서 `AbstractUser`와 다르다.
 
 <br />
 
@@ -438,9 +484,6 @@ class User(AbstractUser):
 
 [Manager](https://docs.djangoproject.com/en/4.1/topics/db/managers/#managers)는 Django 모델에 DB 쿼리 작업을 제공해주는 인터페이스를 의미한다. Django는 이 Manager를
 통해서 데이터베이스와 통신을 하며, 모든 Django의 모델은 최소 하나의 Manager를 가지고 있다.
-
-`AbstractUser`를 상속하게 될 경우 앞서 얘기했듯이 `username`, `email`, `last_login` 등 유저에 대한 기본 정보 필드들을 자동적으로 제공해준다.
-하지만 필자는 원하는 필드들을 직접 추가해서 쓰는 방식인 `AbstractBaseUser`를 사용하기 때문에 [`BaseUserManager`를 상속하는 방식](https://docs.djangoproject.com/en/4.1/topics/auth/customizing/#writing-a-manager-for-a-custom-user-model)으로 최대한 커스터마이징을 해볼 생각이다.
 
 <br />
 
@@ -1074,9 +1117,9 @@ class User(AbstractBaseUser, TimeStampModel):
         db_table = "users"
 ```
 
-</CH.Scrollycoding>
+</CH.Scrollycoding> */}
 
-#### `AUTH_USER_MODEL` 설정
+### `AUTH_USER_MODEL` 설정
 
 마지막으로, 우리가 만든 커스터마이징된 `User` 모델 클래스를 대체했다는 것을 Django에게 알리기 위해 [`AUTH_USER_MODEL`](https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-AUTH_USER_MODEL)를 `users.User`로 설정해주었다.
 아래 코드는 프로젝트 루트 경로에 있는 `settings.py` 파일에 추가해야 한다.
@@ -1084,17 +1127,5 @@ class User(AbstractBaseUser, TimeStampModel):
 ```py confing/settings.py
 AUTH_USER_MODEL = "users.User"
 ```
-
-<br />
-
-### 결과
-
-이미 등록된 이메일로 회원가입을 하려 하면 다음과 같이 이미 존재하는 이메일 주소라는 에러가 발생하게 된다.
-
-<br />
-
-<center>
-  ![unique_error](../../../media/django/custom-user-model/unique_error.png)
-</center>
 
 <br />

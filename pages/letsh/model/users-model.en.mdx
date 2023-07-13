@@ -1,4 +1,4 @@
-# Customizing User models
+# User Model
 
 ## Introduction
 
@@ -304,14 +304,136 @@ If necessary, you are more than welcomed to include or replace fields by overrid
 
 <CH.Scrollycoding>
 
-### `User` 모델 클래스 생성
+### Creating `User` Model Class
+
+Let's create `User` model class.
+Be sure to include [`AbstractUser`](focus://2[40:51]) into `User` class.
 
 ```py users/models.py
 from django.db import models
-from django.contrib.admin import display
 from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext_lazy as _
 
+
+class User(AbstractUser):
+
+    """User Model Definition"""
+
+    pass
+```
+
+---
+
+### Configuring Fields
+
+Configure necessary fields.
+For `profile_picture`, as we will let users to send their profile pictures to backend server
+and generate CloudFlare or AWS's object storage URL, I used [`UrlField`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#urlfield).
+
+```py users/models.py focus=8:17
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+
+    """User Model Definition"""
+
+    mobile_number = models.CharField(
+        max_length=128, verbose_name=_("Mobile Number"), null=True, blank=True
+    )
+    sex = models.CharField(
+        max_length=20,
+        verbose_name=_("Sex"),
+    )
+    profile_picture = models.URLField(
+        null=True, blank=True, verbose_name=_("Profile picture")
+    )
+```
+
+---
+
+### `choices`
+
+For `sex`, I used [`choices`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#choices) property,
+and set [`default`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#default) option to be `MALE`.
+
+```py users/models.py focus=8:11,19:20
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+
+    """User Model Definition"""
+
+    class SexChoices(models.TextChoices):
+        MALE = "Male", _("Male")
+        FEMALE = "Female", _("Female")
+        UNKNOWN = "Unknown", _("Unknown")
+
+    mobile_number = models.CharField(
+        max_length=128, verbose_name=_("Mobile Number"), null=True, blank=True
+    )
+    sex = models.CharField(
+        max_length=20,
+        verbose_name=_("Sex"),
+        choices=SexChoices.choices,
+        default=SexChoices.MALE,
+    )
+    profile_picture = models.URLField(
+        null=True, blank=True, verbose_name=_("Profile picture")
+    )
+```
+
+---
+
+### `__str__()`
+
+I overrid [`__str__()`](https://docs.djangoproject.com/en/4.2/ref/models/instances/#str)
+in order to show `username` on Django admin panel.
+
+```py users/models.py focus=26:27
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+class User(AbstractUser):
+
+    """User Model Definition"""
+
+    class SexChoices(models.TextChoices):
+        MALE = "Male", _("Male")
+        FEMALE = "Female", _("Female")
+        UNKNOWN = "Unknown", _("Unknown")
+
+    mobile_number = models.CharField(
+        max_length=128, verbose_name=_("Mobile Number"), null=True, blank=True
+    )
+    sex = models.CharField(
+        max_length=20,
+        verbose_name=_("Sex"),
+        choices=SexChoices.choices,
+        default=SexChoices.MALE,
+    )
+    profile_picture = models.URLField(
+        null=True, blank=True, verbose_name=_("Profile picture")
+    )
+
+    def __str__(self):
+        return str(self.username)
+```
+
+---
+
+### Adding Model Method
+
+We can produce the wanted customized value by creating model method.
+
+I called [`get_full_name()`](https://docs.djangoproject.com/en/4.2/topics/auth/customizing/#django.contrib.auth.models.CustomUser.get_full_name) method
+saved in `AbstractUser` for getting full name of user.[^2]
+
+[^2]: [What does Django's property do?](https://stackoverflow.com/a/58559066/13121145)
+
+```py users/models.py focus=29:32
+from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
 
@@ -342,13 +464,12 @@ class User(AbstractUser):
     @display(description="Full Name")
     def get_full_name(self):
         return super().get_full_name()
-
 ```
 
 </CH.Scrollycoding>
 
 <br />
-
+{/* 
 ## Replacing (`AbstractBaseUser`)
 
 According to [documentation](https://docs.djangoproject.com/en/4.0/topics/auth/customizing/#specifying-a-custom-user-model),
@@ -361,10 +482,6 @@ there are only basic authentication features for `AbstractBaseUser`, which is di
 
 [Manager](https://docs.djangoproject.com/en/4.1/topics/db/managers/#managers) is an interface that provides DB query operation for Django model.
 Django talks database with this Manager and all Django models have at least one Manager.
-
-Inheriting `AbstractUser` will automatically give us the basic information fields such as `username`, `email`, `last_login`.
-However, as I decided to use `AbstractBaseUser` where I need to specify all necessary information fields, I will be using [method of `BaseUserManager` inheritance](https://docs.djangoproject.com/en/4.1/topics/auth/customizing/#writing-a-manager-for-a-custom-user-model)
-and will be customizing fields as much as possible.
 
 <br />
 
@@ -997,9 +1114,9 @@ class User(AbstractBaseUser, TimeStampModel):
         db_table = "users"
 ```
 
-</CH.Scrollycoding>
+</CH.Scrollycoding> */}
 
-#### `AUTH_USER_MODEL`
+### `AUTH_USER_MODEL`
 
 Finally, I put `users.User` in [`AUTH_USER_MODEL`](https://docs.djangoproject.com/en/4.1/ref/settings/#std-setting-AUTH_USER_MODEL)
 so that we can tell Django that we actually replaced with the customized `User` model.
@@ -1008,17 +1125,5 @@ Below code should be added in `settings.py` file within our project root folder.
 ```py confing/settings.py
 AUTH_USER_MODEL = "users.User"
 ```
-
-<br />
-
-### Results
-
-We can see that Django raises error when we are trying to signup with the registered email address.
-
-<br />
-
-<center>
-  ![unique_error](../../../media/django/custom-user-model/unique_error.png)
-</center>
 
 <br />

@@ -8,5 +8,8 @@
     },
     "reservations-model": {
         "title": "Reservation 모델"
+    },
+    "photos-model": {
+        "title": "Photo 모델"
     }
 }

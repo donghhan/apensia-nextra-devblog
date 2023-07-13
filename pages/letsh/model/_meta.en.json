@@ -5,5 +5,11 @@
     },
     "rooms-model": {
         "title": "Rooms Model"
+    },
+    "reservations-model": {
+        "title": "Reservation Model"
+    },
+    "photos-model": {
+        "title": "Photo Model"
     }
 }
