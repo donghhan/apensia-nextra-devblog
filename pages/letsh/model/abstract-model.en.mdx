@@ -11,67 +11,71 @@ So it would be very effective to make these types of models that <ins>**_do not 
 
 > Django is also suggesting [DRY(Do NOT Repeat Yourself)](https://docs.djangoproject.com/en/4.1/misc/design-philosophies/#don-t-repeat-yourself-dry), so let's keep our code more sexier!
 
-This is where [abstract model](https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes) is used.
+This is where [abstract model](https://docs.djangoproject.com/en/4.2/topics/db/models/#abstract-base-classes) is used.
 After I defined the common data fields, with [class inheritance](https://docs.python.org/3/tutorial/classes.html#inheritance)
 other apps' models can also use Common model's data fields.
 
 <br />
 
-## Coding
+## Initialization
 
-Firstly, I created new django-app called `common/` for our abstract common model in project root route.
+To get start with creating an abstract model, I created `common/` app in my project root route.
 
 ```
 django-admin startapp common
 ```
 
-Then included in [`INSTALLED_APPS`](https://docs.djangoproject.com/en/4.1/ref/settings/#installed-apps).
+Then included my app in [`INSTALLED_APPS`](https://docs.djangoproject.com/en/4.2/ref/settings/#installed-apps) 내부에 설치해준다.
 
 ```python config/settings.py
 INSTALLED_APPS = [
   # ...
-  "common",
+  "common.apps.CommonConfig",
 ]
 ```
 
 <br />
 
-### `TimeStampModel`
+### `CommonDateModel`
 
-`TimeStampModel` is abstract model that controls time.
-Let's edit `models.py` file inside of `common/` app folder.
+`CommonDateModel` is an abstract model for representing date.
+This model will be occasionally used where date data is needed.
+
+1. Date that user left comment
+2. Date that user created its own wishlist
+3. Date that user created reservation (check-in & check-out)
 
 <CH.Scrollycoding>
 
-#### Creating model class
+#### Creating Model Class
 
-I created class named `TimeStampModel` that controls over time of data has been created/updated.
+I created `CommonDateModel` model class.
 
 ```python focus=3:7
 from django.db import models
 
-class TimeStampModel(models.Model):
+class CommonDateModel(models.Model):
 
-    """TimeStamp Model Definition"""
+    """Common Date Model Definition"""
 
     pass
 ```
 
 ---
 
-#### `Meta` class configuration
+#### `Meta` Class Configuration
 
-[`Meta` class](https://docs.djangoproject.com/en/4.1/topics/db/models/#meta-options) allows us to do several configurations for our models.
-As our `TimeStampModel` is abstract base model, I set `abstract = True` as explained in [documentation](https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes).
+[`Meta` class](https://docs.djangoproject.com/en/4.1/topics/db/models/#meta-options) allows us to do extra configuration on the model.
+As models in `common/` app are abstract models, I set `abstract = True` as shown in [documentaiton](https://docs.djangoproject.com/en/4.1/topics/db/models/#abstract-base-classes).
 
-By doing this, we can use these fields in other models without creating DB table.
+By doing this, it won't create tables in DB separately but still be able to use those abstract model fields in other models as well.
 
 ```python focus=9:10
 from django.db import models
 
-class TimeStampModel(models.Model):
+class CommonDateModel(models.Model):
 
-    """TimeStamp Model Definition"""
+    """Common Date Model Definition"""
 
     pass
 
@@ -81,29 +85,27 @@ class TimeStampModel(models.Model):
 
 ---
 
-#### `DateTimeField`
+#### `DateField`
 
-Finally, let's specify model field.
+Lastly I set fields.
 
-As you can literally tell from its name, [`DateTimeField`](https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DateTimeField)
-controls date and time.
-I created model field called `created_at` and `updated_at` for created time and updated time, respectively.
+[`DateField`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#datefield) is a field that literally controls with date.
+I set date created as `created_date`, and date updated as `updated_date`, respectively.
 
-Meanwhile, [`auto_now_add`](https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DateField.auto_now_add) attribute sets date and time as now
-when new object is <ins>newly created</ins>.
+Here, [`auto_now_add`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#django.db.models.DateField.auto_now_add) attribute is used when an object is automatically <ins>created</ins> as current date.
 
-On the other hand, [`auto_now`](https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DateField.auto_now) attribute marks date and time as now
-when the object is <ins>newly updated</ins>.
+On the other hand, [`auto_now`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#django.db.models.DateField.auto_now) attribute is used
+when object is <ins>updated</ins> and set update date as current date automatically.
 
 ```python focus=7:8
 from django.db import models
 
-class TimeStampModel(models.Model):
+class CommonDateModel(models.Model):
 
-    """TimeStamp Model Definition"""
+    """Common Date Model Definition"""
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_date = models.DateField(auto_now_add=True, verbose_name=_("Created Date"))
+    updated_date = models.DateField(auto_now=True, verbose_name=_("Updated Date"))
 
     class Meta:
         abstract = True
@@ -112,6 +114,34 @@ class TimeStampModel(models.Model):
 ---
 
 </CH.Scrollycoding>
+
+<br />
+
+### `CommonDateTimeModel`
+
+I followed exact same logic as I did above for `CommonDateModel`.
+The only difference is that since this model will control over both date and time, I used [`DateTimeField`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#datetimefield).
+This abstract model will be used in which models that require more precise date and time.
+
+1. Date and time when user created reservation
+2. Date and time when user created payment
+3. Date and time when user created abuse report
+
+```py common/models.py
+class CommonDateTimeModel(models.Model):
+
+    """Common Date Time Model Definition"""
+
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name=_("Created Date & Time")
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True, verbose_name=_("Updated Date & Time")
+    )
+
+    class Meta:
+        abstract = True
+```
 
 ## Result
 

@@ -36,12 +36,12 @@
     "type": "page",
     "display": "hidden"
   }, 
-  "etc" : {
-    "title": "ETC",
+  "wil" : {
+    "title": "wil",
     "type": "page",
     "theme": {
       "toc": false,
-      "sidebar": false,
+      "sidebar": true,
       "pagination": true,
       "breadcrumb": false,
       "typesetting": "default"

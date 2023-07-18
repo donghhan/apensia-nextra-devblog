@@ -18,7 +18,7 @@
 
 <br />
 
-## 구현
+## 초기화
 
 먼저 공통된 추상화 모델을 넣기 위하여 새로운 앱인 `common/`을 프로젝트 루트 경로에 설치해주었다.
 
@@ -31,28 +31,33 @@ django-admin startapp common
 ```python config/settings.py
 INSTALLED_APPS = [
   # ...
-  "common",
+  "common.apps.CommonConfig",
 ]
 ```
 
 <br />
 
-### `TimeStampModel`
+### `CommonDateModel`
 
-`TimeStampModel`은 시간을 관리하는 추상화 모델이다. `common/` 앱 폴더 내부의 `models.py` 파일을 수정해보자.
+`CommonDateModel`은 날짜 추상화 모델이다.
+해당 추상화 모델은 날짜 데이터를 주로 사용하는 곳에서 사용될 예정이다.
+
+1. 유저가 리뷰를 단 날짜
+2. 유저가 좋아요 리스트를 만든 날짜
+3. 유저가 예약을 잡은 날짜 (체크인 및 체크아웃)
 
 <CH.Scrollycoding>
 
 #### 모델 클래스 생성
 
-데이터의 생성 및 업데이트를 관리해주는 `TimeStampModel`이라는 모델 클래스를 만들어주었다.
+데이터의 생성 및 업데이트를 관리해주는 `CommonDateModel`이라는 모델 클래스를 만들어주었다.
 
 ```python focus=3:7
 from django.db import models
 
-class TimeStampModel(models.Model):
+class CommonDateModel(models.Model):
 
-    """TimeStamp Model Definition"""
+    """Common Date Model Definition"""
 
     pass
 ```
@@ -69,9 +74,9 @@ class TimeStampModel(models.Model):
 ```python focus=9:10
 from django.db import models
 
-class TimeStampModel(models.Model):
+class CommonDateModel(models.Model):
 
-    """TimeStamp Model Definition"""
+    """Common Date Model Definition"""
 
     pass
 
@@ -81,27 +86,27 @@ class TimeStampModel(models.Model):
 
 ---
 
-#### `DateTimeField`
+#### `DateField`
 
 마지막으로 필드들을 설정해 주었다.
 
-[`DateTimeField`](https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DateTimeField)은 글자에서 그대로 알 수 있듯이 날짜와 시간을 관장하는 모델 필드이다.
-그 중에서 생성된 날짜/시간을 `created_at`로, 업데이트된 날짜/시간을 `updated_at`라는 이름으로 필드를 설정해주었다.
+[`DateField`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#datefield)은 글자에서 그대로 알 수 있듯이 날짜와 시간을 관장하는 모델 필드이다.
+그 중에서 생성된 날짜/시간을 `created_date`로, 업데이트된 날짜/시간을 `updated_date`라는 이름으로 필드를 설정해주었다.
 
-여기서 [`auto_now_add`](https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DateField.auto_now_add) 속성은 어떤 객체가 처음으로 <ins>생성될 떄</ins> 자동적으로 현재 시점으로 설정을 해준다.
+여기서 [`auto_now_add`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#django.db.models.DateField.auto_now_add) 속성은 어떤 객체가 처음으로 <ins>생성될 떄</ins> 자동적으로 현재 시점으로 설정을 해준다.
 
-반면 [`auto_now`](https://docs.djangoproject.com/en/4.1/ref/models/fields/#django.db.models.DateField.auto_now)의 경우
+반면 [`auto_now`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#django.db.models.DateField.auto_now)의 경우
 어떤 객체가 처음으로 <ins>업데이트될 때</ins>자동적으로 현재 시점으로 설정을 해준다.
 
 ```python focus=7:8
 from django.db import models
 
-class TimeStampModel(models.Model):
+class CommonDateModel(models.Model):
 
-    """TimeStamp Model Definition"""
+    """Common Date Model Definition"""
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_date = models.DateField(auto_now_add=True, verbose_name=_("Created Date"))
+    updated_date = models.DateField(auto_now=True, verbose_name=_("Updated Date"))
 
     class Meta:
         abstract = True
@@ -112,6 +117,32 @@ class TimeStampModel(models.Model):
 </CH.Scrollycoding>
 
 <br />
+
+### `CommonDateTimeModel`
+
+위에서 만든 `CommonDateModel`과 동일한 로직으로 만들었다.
+날짜와 시간을 필요로 하기 때문에 [`DateTimeField`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#datetimefield)를 사용하였다.
+해당 추상화 모델은 보다 정확한 날짜와 시간을 필요로 하는 곳에 사용될 예정이다.
+
+1. 유저가 예약을 만든 날짜 및 시간
+2. 유저가 결제를 완료한 날짜 및 시간
+3. 유저가 신고를 날린 날짜 및 시간
+
+```py common/models.py
+class CommonDateTimeModel(models.Model):
+
+    """Common Date Time Model Definition"""
+
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name=_("Created Date & Time")
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True, verbose_name=_("Updated Date & Time")
+    )
+
+    class Meta:
+        abstract = True
+```
 
 ## 결과
 

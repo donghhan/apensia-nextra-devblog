@@ -24,7 +24,7 @@ Django에서는 크게 [2가지 방법](https://docs.djangoproject.com/en/4.0/to
 
 먼저 `User` 클래스를 import 해주자.
 
-`User` 클래스의 코드를 기본적으로 살펴보면 (추후에 살펴볼) `AbstractUser`를 상속받고 있는 것을 알 수 있다.[^2]
+`User` 클래스의 코드를 기본적으로 살펴보면 (추후에 살펴볼) `AbstractUser`를 상속받고 있는 것을 알 수 있다.
 
 따라서, 기본적으로 `username`과 `password`와 같이 필수 필드들과 나머지 부가적인 필드들을 제공한다.
 
@@ -301,7 +301,7 @@ Django admin 페이지에서 최종적으로 다음과 같이 보이게 된다.
 2. [`AbstractBaseUser`](https://docs.djangoproject.com/en/4.2/topics/auth/customizing/#django.contrib.auth.models.AbstractBaseUser)
 
 `AbstractUser`는 기본적으로 유저라면 반드시 있을 정보들을 미리 만들어 둔 일종의 샘플과도 같은 클래스이다.
-필요한 필드의 경우 추가하거나 오버라이드를 통해 언제든지 수정할 수 있다[^1].
+필요한 필드의 경우 추가하거나 오버라이드를 통해 언제든지 수정할 수 있다.[^1]
 
 [^1]: [코드](https://github.com/django/django/blob/b7a17b0ea0a2061bae752a3a2292007d41825814/django/contrib/auth/models.py#L334)
 
@@ -430,7 +430,7 @@ class User(AbstractUser):
 모델 클래스에 추가적인 메소드를 통하여 우리가 원하는 값을 커스터마이징 할 수 있다.
 
 `AbstractUser` 클래스 내부에 내장된 [`get_full_name()`](https://docs.djangoproject.com/en/4.2/topics/auth/customizing/#django.contrib.auth.models.CustomUser.get_full_name) 메소드를 통하여
-유저의 풀네임을 가져왔다[^2].
+유저의 풀네임을 가져왔다.[^2]
 
 [^2]: [What does Django's property do?](https://stackoverflow.com/a/58559066/13121145)
 
