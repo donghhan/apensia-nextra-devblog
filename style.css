@@ -124,3 +124,14 @@ code.text-\[\.9em\] {
 .no-image img {
   width: 70px;
 }
+
+.emphasize {
+  display: inline-block;
+  border-radius: 4px;
+  outline: dotted 1px;
+  transition: 0.2s;
+}
+
+.emphasize:hover {
+  transform: scale(1.5);
+}

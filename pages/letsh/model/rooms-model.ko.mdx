@@ -1,3 +1,341 @@
 # Rooms 모델
 
-Rooms 모델은
+## 개요
+
+Rooms 모델은 글자 그대로 유저들이 선택할 수 있는 숙소에 관한 모든 데이터들을 정리해놓은 모델이다.
+
+유저들이 선택할 수 있는 숙소에는 다음과 같은 데이터들 또한 포함되어야 한다.
+
+1. 숙소
+2. 숙소 내부에 준비되어 있는 편의 시설들
+3. 숙소 타입 &rarr; 추후에 유저들이 타입별로 쉽게 검색할 수 있게 하기 위함이다.
+4. 숙소 주소 &rarr; 추후에 유저들이 장소별로 쉽게 검색할 수 있게 하기 위함이다.
+
+<br />
+
+## 앱 설치
+
+먼저 `rooms`[^1]라는 앱을 새로 만들어 주었다.
+
+[^1]: [PEP8 가이드라인](https://peps.python.org/pep-0008/#package-and-module-names)에 따라 앱 이름은 복수형으로 보통 만들어주었다.
+
+```
+django-admin startapp rooms
+```
+
+이후 설치된 앱을 `INSTALLED_APPS`에 등록한다.
+
+```py
+INSTALLED_APPS = [
+    # ...
+    "rooms.apps.RoomsConfig",
+]
+
+```
+
+<br />
+
+## `Room` 모델
+
+<CH.Scrollycoding>
+
+### 초기화
+
+먼저 `Room` 모델을 초기화해준다.
+이 때, 저번 Abstract 모델 파트에서 만들었던 `CommonDateTimeModel`을 상속시켜 주었다.
+이는 어드민 유저가 시간대별로 좀 더 관리하기 편리하게 하기 위함이었다.
+
+```py rooms/models.py
+from django.db import models
+from common.models import CommonDateTimeModel
+
+
+class Room(CommonDateTimeModel):
+
+    """Room Model Definition"""
+
+    pass
+```
+
+---
+
+### 필드 세팅
+
+필요한 필드들을 전부 나열한다.
+
+```py rooms/models.py
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from common.models import CommonDateTimeModel
+
+
+class Room(CommonDateTimeModel):
+
+    """Room Model Definition"""
+
+    name = models.CharField(
+        max_length=50,
+        verbose_name=_("Name"),
+        help_text=_("Name of accomodation should not exceed more than 50 characters."),
+    )
+    price_per_night = models.PositiveSmallIntegerField(
+        verbose_name=_("Price per night"),
+        help_text=_(
+            "Value of price per night should always be more than 1 no matter of currency."
+        ),
+    )
+    guest = models.PositiveSmallIntegerField(
+        verbose_name=_("Guest"),
+        help_text=_(
+            "Guest should include at least one person, and not exceed more than 100 people."
+        ),
+    )
+    bedroom = models.PositiveSmallIntegerField(verbose_name=_("Bedroom"), default=1)
+    bathroom = models.PositiveSmallIntegerField(verbose_name=_("Bathroom"), default=1)
+    wifi = models.BooleanField(
+        verbose_name=_("Wi-Fi"),
+        help_text=_("Shows if Wi-Fi is available. Default is set to be True."),
+        default=True,
+    )
+    description = models.TextField(
+        verbose_name=_("Description"),
+        null=True,
+        blank=True,
+        help_text=_("Can be omitted."),
+    )
+```
+
+---
+
+#### `PositiveSmallIntegerField`
+
+침실(`bedroom`) 및 화장실(`bathroom`)의 개수는 항상 양의 정수(자연수) 값을 가지므로
+[`PositiveSmallIntegerField`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#positivesmallintegerfield)는
+을 사용해주었다[^2].
+
+[^2]: 최대 32767의 값을 가진다.
+
+그리고 숙소마다 최소 1개의 침실과 화장실이 있을 것이라 간주하고 [`default`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#default) 속성을 추가해주었다.
+
+마지막으로 어드민 유저들을 위해 해당 필드에 대한 설명을 [`help_text`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#help-text)를 통해 넣어주었다.
+
+```py rooms/models.py focus=27:28
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from common.models import CommonDateTimeModel
+
+
+class Room(CommonDateTimeModel):
+
+    """Room Model Definition"""
+
+    name = models.CharField(
+        max_length=50,
+        verbose_name=_("Name"),
+        help_text=_("Name of accomodation should not exceed more than 50 characters."),
+    )
+    price_per_night = models.PositiveSmallIntegerField(
+        verbose_name=_("Price per night"),
+        help_text=_(
+            "Value of price per night should always be more than 1 no matter of currency."
+        ),
+    )
+    guest = models.PositiveSmallIntegerField(
+        verbose_name=_("Guest"),
+        help_text=_(
+            "Guest should include at least one person, and not exceed more than 100 people."
+        ),
+    )
+    bedroom = models.PositiveSmallIntegerField(verbose_name=_("Bedroom"), default=1)
+    bathroom = models.PositiveSmallIntegerField(verbose_name=_("Bathroom"), default=1)
+    wifi = models.BooleanField(
+        verbose_name=_("Wi-Fi"),
+        help_text=_("Shows if Wi-Fi is available. Default is set to be True."),
+        default=True,
+    )
+    description = models.TextField(
+        verbose_name=_("Description"),
+        null=True,
+        blank=True,
+        help_text=_("Can be omitted."),
+    )
+```
+
+---
+
+#### `BooleanField`
+
+와이파이의 유무(`wifi`)를 나타내는 것은 [`BooleanField`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#booleanfield)로 표현해주었으며
+요즘 대부분의 숙소들은 와이파이가 있을 것이라 간주하고 `default` 값을 `True`로 설정해주었다.
+
+```py rooms/models.py focus=29:33
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from common.models import CommonDateTimeModel
+
+
+class Room(CommonDateTimeModel):
+
+    """Room Model Definition"""
+
+    name = models.CharField(
+        max_length=50,
+        verbose_name=_("Name"),
+        help_text=_("Name of accomodation should not exceed more than 50 characters."),
+    )
+    price_per_night = models.PositiveSmallIntegerField(
+        verbose_name=_("Price per night"),
+        help_text=_(
+            "Value of price per night should always be more than 1 no matter of currency."
+        ),
+    )
+    guest = models.PositiveSmallIntegerField(
+        verbose_name=_("Guest"),
+        help_text=_(
+            "Guest should include at least one person, and not exceed more than 100 people."
+        ),
+    )
+    bedroom = models.PositiveSmallIntegerField(verbose_name=_("Bedroom"), default=1)
+    bathroom = models.PositiveSmallIntegerField(verbose_name=_("Bathroom"), default=1)
+    wifi = models.BooleanField(
+        verbose_name=_("Wi-Fi"),
+        help_text=_("Shows if Wi-Fi is available. Default is set to be True."),
+        default=True,
+    )
+    description = models.TextField(
+        verbose_name=_("Description"),
+        null=True,
+        blank=True,
+        help_text=_("Can be omitted."),
+    )
+```
+
+---
+
+#### `TextField`
+
+숙소에 대한 자세한 설명을 적게 하기 위해서 [`TextField`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#textfield)를 넣어주었다.
+
+> 숙소에 대한 설명을 유저로 하여금 짧게 적게끔 하고 싶다면 `CharField`를 사용해도 무관할듯 하다.
+
+그리고 해당 필드값은 필수로 집어넣어야 하는 값이 아니기 때문에 [`null`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#null)과 [`blank`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#blank)값을 `True`로 넣어주었다[^3].
+
+[^3]: [What's the Difference Between `null=True` and `blank=True` in Django?](https://sentry.io/answers/django-difference-between-null-and-blank/#:~:text=The%20Solution,validation%20at%20the%20application%20level.&text=By%20default%20all%20fields%20are%20required.)
+
+```py rooms/models.py focus=34:39
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from common.models import CommonDateTimeModel
+
+
+class Room(CommonDateTimeModel):
+
+    """Room Model Definition"""
+
+    name = models.CharField(
+        max_length=50,
+        verbose_name=_("Name"),
+        help_text=_("Name of accomodation should not exceed more than 50 characters."),
+    )
+    price_per_night = models.PositiveSmallIntegerField(
+        verbose_name=_("Price per night"),
+        help_text=_(
+            "Value of price per night should always be more than 1 no matter of currency."
+        ),
+    )
+    guest = models.PositiveSmallIntegerField(
+        verbose_name=_("Guest"),
+        help_text=_(
+            "Guest should include at least one person, and not exceed more than 100 people."
+        ),
+    )
+    bedroom = models.PositiveSmallIntegerField(verbose_name=_("Bedroom"), default=1)
+    bathroom = models.PositiveSmallIntegerField(verbose_name=_("Bathroom"), default=1)
+    wifi = models.BooleanField(
+        verbose_name=_("Wi-Fi"),
+        help_text=_("Shows if Wi-Fi is available. Default is set to be True."),
+        default=True,
+    )
+    description = models.TextField(
+        verbose_name=_("Description"),
+        null=True,
+        blank=True,
+        help_text=_("Can be omitted."),
+    )
+```
+
+---
+
+### Validator 추가
+
+letsh 어플리케이션에 등록 가능한 숙소들은 그리 크지 않은 숙소들로 이루어져있다.
+따라서 숙소가 수용할 수 있는 최소 인원과 최대 인원을 [`validators`](https://docs.djangoproject.com/en/4.2/ref/models/fields/#validators)로 설정해주었다.
+
+숙소는 최소 1명의 유저를 수용해야 하므로 [`MinValueValidator`](https://docs.djangoproject.com/en/4.2/ref/validators/#minvaluevalidator)의 값에 `1`를 넣어주었고,
+최대 100명의 유저를 수용할 수 있게 하기 위해 [`MaxValueValidator`](https://docs.djangoproject.com/en/4.2/ref/validators/#maxvaluevalidator)의 값에 `100`을 넣어주었다.
+
+```py rooms/models.py focus=32
+from django.db import models
+from django.utils.translation import gettext_lazy as _
+from common.models import CommonDateTimeModel
+
+
+class Room(CommonDateTimeModel):
+
+    """Room Model Definition"""
+
+    name = models.CharField(
+        max_length=50,
+        verbose_name=_("Name"),
+        help_text=_("Name of accomodation should not exceed more than 50 characters."),
+    )
+    price_per_night = models.PositiveSmallIntegerField(
+        verbose_name=_("Price per night"),
+        validators=[MinValueValidator(1)],
+        help_text=_(
+            "Value of price per night should always be more than 1 no matter of currency."
+        ),
+    )
+    room_type = models.ForeignKey(
+        "rooms.RoomType",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        verbose_name=_("Room Type"),
+        related_name="rooms",
+    )
+    guest = models.PositiveSmallIntegerField(
+        verbose_name=_("Guest"),
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
+        help_text=_(
+            "Guest should include at least one person, and not exceed more than 100 people."
+        ),
+    )
+    bedroom = models.PositiveSmallIntegerField(verbose_name=_("Bedroom"), default=1)
+    bathroom = models.PositiveSmallIntegerField(verbose_name=_("Bathroom"), default=1)
+    wifi = models.BooleanField(
+        verbose_name=_("Wi-Fi"),
+        help_text=_("Shows if Wi-Fi is available. Default is set to be True."),
+        default=True,
+    )
+    description = models.TextField(
+        verbose_name=_("Description"),
+        null=True,
+        blank=True,
+        help_text=_("Can be omitted."),
+    )
+```
+
+---
+
+### 호스트 추가
+
+모든 숙소는 반드시 한 명의 호스트를 가진다.
+
+```py rooms/models.py
+
+```
+
+</CH.Scrollycoding>
+
+<br />
