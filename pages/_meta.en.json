@@ -26,6 +26,10 @@
     "title": "Let'sh",
     "type": "page"
   },
+  "knower": {
+    "title": "Knower",
+    "type": "page"
+  },
   "nlp": {
     "title": "NLP",
     "type": "page",

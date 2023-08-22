@@ -1,0 +1,8 @@
+{
+    "intro": "Introduction",
+    "-- Admin --": {
+        "type": "separator",
+        "title": "Auth"
+    },
+    "auth": "Auth"
+}

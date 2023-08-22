@@ -1,0 +1,8 @@
+{
+    "intro": "개요",
+    "-- Admin --": {
+        "type": "separator",
+        "title": "인증"
+    },
+    "auth": "인증"
+}
