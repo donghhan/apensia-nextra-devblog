@@ -1,3 +1,4 @@
 {
-    "forward-ref": "Functional Component's forwardRef"
+    "forward-ref": "Functional Component's forwardRef",
+    "prisma-relation": "Prisma @relation warning"
 }

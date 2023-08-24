@@ -1,0 +1,89 @@
+# With `relationMode = "prisma"`, no foreign keys are used, so relation fields will not benefit from the index usually created by the relational database under the hood.
+
+## What I tried to do
+
+회원가입을 하고자 하는 유저들을 위한 토큰 발행을 위한 Prisma `Token` 모델을 만들고 있는 중이었다.
+
+## What I actually tried
+
+### `User` 모델
+
+```prisma
+model User {
+  id          Int     @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  email       String  @unique
+  phoneNumber String
+  Token       Token[]
+}
+```
+
+### `Token` 모델
+
+```prisma
+model Token {
+  id        Int       @id @default(autoincrement())
+  payload   String    @unique
+  user      User      @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  userId    Int
+}
+```
+
+## Error that I got
+
+에러는 아니었지만 `@relation` 부분에 다음과 같은 경고 문구가 나타났다.
+
+> With `relationMode = "prisma"`, no foreign keys are used, so relation fields will not benefit from the index usually created by the relational database under the hood. This can lead to poor performance when querying these fields. We recommend adding an index manually. Learn more at https://pris.ly/d/relation-mode-prisma-indexes"
+
+## Analysis
+
+Prisma Client의 [해당 공식 문서](https://www.prisma.io/docs/concepts/components/prisma-schema/relations/relation-mode#indexes)를 읽어보니
+관계형 데이터베이스에서는 foreign key 제약을 사용하기 때문에 foreign key의 열에 대한 인덱스를 암시적으로 사용하여
+DB 테이블을 따로 스캔할 필요없이 신속하게 체크하기 위함이다.
+
+하지만 `prisma` 단계에서는 foreign key를 사용하고 있지 않기 때문에 DB에 마이그레이션을 할 경우에만 인덱스가 생성된다.
+따라서 수동적으로 foreign key의 필드를 추가시켜줘야 한다.
+
+## Solution
+
+<CH.Scrollycoding>
+
+### 바꾸기 전
+
+기존의 `Token` 모델에서
+
+```prisma
+model Token {
+  id        Int       @id @default(autoincrement())
+  payload   String    @unique
+  user      User      @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  userId    Int
+}
+```
+
+---
+
+### 바꾼 후
+
+공식 문서에 나온대로 [`@@index`](https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#index)를 통해
+인덱스를 추가해주었다.
+
+```prisma focus=9
+model Token {
+  id        Int       @id @default(autoincrement())
+  payload   String    @unique
+  userId    Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  User      User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+```
+
+</CH.Scrollycoding>
