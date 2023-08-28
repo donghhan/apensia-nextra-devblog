@@ -1,0 +1,213 @@
+# Uncaught Error: Objects are not valid as a React child (found: object with keys `{message}`). If you meant to render a collection of children, use an array instead Error.
+
+## What I tried to do
+
+회원가입 폼에 새롭게 추가된 `role`을 유저가 드롭다운 메뉴 형식으로 고를 수 있도록 설계하였다.
+그리고 에러가 발생하면 해당 에러 메세지를 그 아래 빨간색으로 표기하기로 하였다.
+
+<br />
+
+## What I actually tried
+
+### `OptionInput` 컴포넌트
+
+<br />
+
+<CH.Section>
+
+아래에서 `<p>` 태그로 옵션을 선택하지 않았을 때 [`errorMessage`](focus://22[7:53])를 나타내도록 했다.
+
+```tsx src/components/input/OptionInput.tsx
+import React, { FC, SelectHTMLAttributes, forwardRef } from "react";
+import "./style.OptionInput.scss";
+
+interface OptionInputProp extends SelectHTMLAttributes<HTMLSelectElement> {
+  options: Array<string>;
+  errorMessage?: string | null;
+}
+
+const OptionInput: FC<OptionInputProp> = forwardRef<
+  HTMLSelectElement,
+  OptionInputProp
+>(({ options, errorMessage, ...props }, ref) => {
+  return (
+    <div className="input__wrapper">
+      <select ref={ref} {...props}>
+        {options.map((value: string) => (
+          <option key={value} value={value}>
+            {value === "" ? "Please choose your role" : value}
+          </option>
+        ))}
+      </select>
+      <p className="error-message">{errorMessage}</p>
+    </div>
+  );
+});
+
+export default OptionInput;
+```
+
+</CH.Section>
+
+### 회원가입 폼
+
+<br />
+
+<CH.Section>
+
+회원가입 시 유저가 선택할 수 있는 `role`은 오직 2가지 밖에 없으므로 [`options`](focus://16[15:49]) prop에 배열 형태로 선택지를 넣어주었다.
+또한, [`errorMessage`](focus://17[15:69])를 prop으로 넘겨주었다.
+
+```tsx src/app/create-account/page.tsx focus=13:18
+export default function CreateAccount(): JSX.Element {
+  return (
+    <section>
+      <div className="title__wrapper">
+        <h1 className="title">create account</h1>
+      </div>
+      <div className="form__wrapper">
+        <form
+          id="create-account"
+          onSubmit={handleSubmit(signUpFormSubmit, invalidSignUpSubmit)}
+        >
+          <div className="input-container">
+            <OptionInput
+              {...register("role")}
+              name="role"
+              options={["", "customer", "brand"]}
+              errorMessage={errors.role ? errors.role.message : null}
+            />
+          </div>
+          {/* ... */}
+        </form>
+      </div>
+    </section>
+  );
+}
+```
+
+</CH.Section>
+
+## Error that I got
+
+브라우저 콘솔에 다음과 같은 에러가 나타났다.
+
+```
+Error: Objects are not valid as a React child (found: object with keys {message}). If you meant to render a collection of children, use an array instead Error.
+```
+
+<center>
+  ![react_child_error](https://bobbyhadz.com/images/blog/react-objects-are-not-valid-as-react-child/objects-are-not-valid-as-react-child.webp)
+  출처: bobbyhadz.com
+</center>
+
+## Package version
+
+```json
+"dependencies": {
+    "@prisma/client": "^5.1.1",
+    "@types/node": "20.4.2",
+    "@types/react": "18.2.15",
+    "@types/react-dom": "18.2.7",
+    "eslint": "8.45.0",
+    "eslint-config-next": "13.4.11",
+    "next": "^13.4.16",
+    "ra-data-json-server": "^4.13.0",
+    "react": "18.2.0",
+    "react-admin": "4.10",
+    "react-dom": "18.2.0",
+    "react-hook-form": "^7.45.4",
+    "typescript": "5.1.6",
+    "yup": "^1.2.0"
+  },
+```
+
+## Analysis
+
+글자 그대로 `object` 형태의 데이터를 자식 컴포넌트에 prop으로 전달할 수 없다는 내용이었다.
+
+가만히 생각해보니 `<p>` 태그로 감싸진 `errorMessage` 또한 선택된 옵션에 따라 다양한 에러 메세지가 나타나게끔 설계를 하였으니
+`errorMessage` prop 또한 여러 개의 데이터가 담길 것이 뻔했다. 여기서 에러가 발생했던 듯했다.
+
+## Solution
+
+UI 측면에서 생각해봤을 때 `<OptionInput />` 컴포넌트는 선택을 하지 않았을 때 단순히 `border-color`를 빨간색으로 지정함으로서
+유저들에게 에러가 발생했다는 것을 알려주기만 하면 되었기 때문에 굳이 `errorMessage`의 내용을 보여줄 조차 필요가 없었다.
+
+따라서 단순히 에러가 발생했는지의 여부를 살펴본 다음에 `className`을 지정하여 에러가 떴을 때의 스타일링을 따로 해주었다.
+
+<CH.Scrollycoding>
+
+### `error` 발생 여부 확인
+
+부모 컴포넌트의 `<OptionInput />` 컴포넌트에
+만일 `role` 부분에 `errors`가 있을 경우 `.error`라는 `className`을 지정하고,
+그렇지 않으면 따로 지정하지 않도록 했다.
+
+```tsx src/app/create-account/page.tsx focus=17
+export default function CreateAccount(): JSX.Element {
+  return (
+    <section>
+      <div className="title__wrapper">
+        <h1 className="title">create account</h1>
+      </div>
+      <div className="form__wrapper">
+        <form
+          id="create-account"
+          onSubmit={handleSubmit(signUpFormSubmit, invalidSignUpSubmit)}
+        >
+          <div className="input-container">
+            <OptionInput
+              {...register("role")}
+              name="role"
+              options={["", "customer", "brand"]}
+              className={errors.role ? "error" : undefined}
+            />
+          </div>
+          {/* ... */}
+        </form>
+      </div>
+    </section>
+  );
+}
+```
+
+---
+
+### 에러 스타일링
+
+자식 컴포넌트의 `OptionInput`으로 돌아와서 기존에 있었던 `<p>` 태그를 지우고
+`<option>`을 통해`role`을 정할 수 있도록 하였다.
+
+이 때, 초기값은 아무 것도 선택하지 않았을 때이며 그 때의 값은 빈 문자열(`""`)이다.
+
+```tsx src/components/input/OptionInput.tsx focus=17:19
+import React, { FC, SelectHTMLAttributes, forwardRef } from "react";
+import "./style.OptionInput.scss";
+
+interface OptionInputProp extends SelectHTMLAttributes<HTMLSelectElement> {
+  options: Array<string>;
+  error?: boolean;
+}
+
+const OptionInput: FC<OptionInputProp> = forwardRef<
+  HTMLSelectElement,
+  OptionInputProp
+>(({ options, error, ...props }, ref) => {
+  return (
+    <div className="input__wrapper">
+      <select ref={ref} {...props}>
+        {options.map((value: string) => (
+          <option key={value} value={value}>
+            {value === "" ? "please choose your role" : value}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+});
+
+export default OptionInput;
+```
+
+</CH.Scrollycoding>
