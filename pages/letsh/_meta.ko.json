@@ -1,6 +1,6 @@
 {
   "intro": "개요",
-  "init": "프로젝트 생성",
+  "init-backend": "프로젝트 설정(백엔드)",
   "-- Model --": {
     "type": "separator",
     "title": "모델"

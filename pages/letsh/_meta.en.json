@@ -1,6 +1,6 @@
 {
   "intro": "Introduction",
-  "init": "Project Initialization",
+  "init-backend": "Project Init(Backend)",
   "-- Model --": {
     "type": "separator",
     "title": "Model"

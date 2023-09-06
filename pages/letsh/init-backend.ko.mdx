@@ -1,10 +1,6 @@
-import { Tab, Tabs, Callout } from "nextra-theme-docs";
+import { Callout, Tabs, Tab, Steps } from "nextra/components";
 
-# 프로젝트 세팅
-
-## 백엔드 (Django)
-
-### 가상 환경
+# 가상 환경
 
 파이썬으로 프로젝트를 시작할 때 가장 먼저 해야할 것이 가상 환경 설정이다.
 여기서 **가상 환경**이란 <ins>_현재 설치된 파이썬 환경과 다른 독립된 환경_</ins>을 의미한다.
@@ -14,17 +10,21 @@ import { Tab, Tabs, Callout } from "nextra-theme-docs";
 패키지 버전이 다르게 되면 에러가 발생하게 된다. 그리고 패키지를 업그레이드 및 설치를 할 경우 패키지 버전이 맞지 않을 때 에러가 발생할 수도 있다.
 이러한 불편함을 효율적으로 통제하기 위해서 파이썬으로 웹 개발을 할 경우에는 가상 환경을 설정해주는 것이 바람직하다.
 
-### 가상 환경을 통해 Django 설치하기
-
-#### Pipenv
+## Pipenv
 
 Pipenv는 파이썬 패키지 관리 툴인 pip와 가상 환경 생성을 도와주는 virtualenv 패키지의 합성어이다.
 
-만일 Pipenv를 아직 설치하지 않았다면 Pipenv 설치를 먼저 해주자.
+<Steps>
+
+### 설치
+
+Pipenv 설치를 먼저 해주자.
 
 ```bash
 pip install pipenv
 ```
+
+### 가상환경 만들기
 
 그 다음으로 우리가 원하는 파이썬 환경을 선택하여 가상환경을 만들어준다. Pipenv와 관련된 모든 명령어들은 [여기](https://github.com/pypa/pipenv#usage-examples)를 참조하자.
 필자의 경우 2023년 7월 기준 파이썬의 가장 최신 버전인 `3.11` 버전을 선택하였다.
@@ -32,6 +32,8 @@ pip install pipenv
 ```bash
 pipenv --python 3.11
 ```
+
+### 필요 패키지들 설치
 
 이후 `pipenv` 키워드를 이용해 필요한 [패키지들을 설치](https://github.com/pypa/pipenv#install-packages)해준다. 설치 전 반드시 본인이 원하는 프로젝트의 루트 경로 내에서 설치해주도록 한다.
 
@@ -43,7 +45,9 @@ pipenv install django
 
 ![success](../../media/django/installation/success.png)
 
-#### Poetry
+</Steps>
+
+## Poetry
 
 [Poetry](https://python-poetry.org/docs/)는 또다른 파이썬 패키지 관리 툴이다.
 
@@ -55,6 +59,10 @@ pipenv install django
 [^1]: [Poetry is extremely slow when resolving the dependencies](https://github.com/python-poetry/poetry/issues/2094#issuecomment-596224736)
 
 </Callout>
+
+<Steps>
+
+### 설치
 
 <Tabs items={["MacOS / Linux", "Windows"]}>
   <Tab>
@@ -77,6 +85,8 @@ pipenv install django
   </Tab>
 </Tabs>
 
+### `.lock` 파일 생성
+
 이후 프로젝트 루트 폴더로 들어와 다음 명령어를 통해 `.lock` 파일을 생성해준다.
 
 ```bash
@@ -87,6 +97,8 @@ poetry init
 
 ![Poetry Init](../../media/django/installation/poetry_init.png)
 
+### Django 설치
+
 만들게 되면 Django를 설치해준다.
 
 ```bash
@@ -94,6 +106,8 @@ poetry add django
 ```
 
 ![Poetry Django](../../media/django/installation/poetry_django.png)
+
+</Steps>
 
 <br />
 

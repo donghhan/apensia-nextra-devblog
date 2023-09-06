@@ -1,10 +1,6 @@
-import { Tab, Tabs, Callout } from "nextra-theme-docs";
+import { Callout, Tabs, Tab, Steps } from "nextra/components";
 
-# Initialization
-
-## Backend (Django)
-
-### Virtual Environment
+# Virtual Environment
 
 The first thing we need to do before initializing project with python is to set up virutal environment.
 **Virtual Environment** indicates <ins>_the independent environment that is isolated from currently installed Python environment_</ins>.
@@ -15,11 +11,13 @@ an error would occur if package versions are different.
 Moreover, error can also occur when package versions collide with each other after upgrading or installing packages.
 In order to effectively control over these cumbersome things, it is recommended to set up virtual environment.
 
-### Installing Django with Virtual Environment
-
-#### Pipenv
+## Pipenv
 
 Pipenv is a combination of word of pip which is Python package managing tool and virtualenv which helps to create virtual environment.
+
+<Steps>
+
+### Installation
 
 Let's install Pipenv first.
 
@@ -27,12 +25,16 @@ Let's install Pipenv first.
 pip install pipenv
 ```
 
+### Creating Virtual Environment
+
 Next, choose which version of Python you would like to use. All commands of Pipenv are at [here](https://github.com/pypa/pipenv#usage-examples).
 For me, I used the most recent version of `3.11` as of July 2023.
 
 ```bash
 pipenv --python 3.11
 ```
+
+### Installing Necessary Packages
 
 Next, [install necessary packages](https://github.com/pypa/pipenv#install-packages) with using `pipenv` keyword. Before install packages, make sure you install packages under the project root folder.
 
@@ -44,7 +46,9 @@ pipenv install django
 
 ![success](../../media/django/installation/success.png)
 
-#### Poetry
+</Steps>
+
+## Poetry
 
 [Poetry](https://python-poetry.org/docs/) is another Python package manage tool.
 
@@ -55,6 +59,10 @@ pipenv install django
 [^1]: [Poetry is extremely slow when resolving the dependencies](https://github.com/python-poetry/poetry/issues/2094#issuecomment-596224736)
 
 </Callout>
+
+<Steps>
+
+### Installtion
 
 <Tabs items={["MacOS / Linux", "Windows"]}>
   <Tab>
@@ -77,6 +85,8 @@ pipenv install django
   </Tab>
 </Tabs>
 
+### Creating `.lock` File
+
 Next, navigate to project root folder and create `.lock` file with the following command.
 
 ```bash
@@ -87,6 +97,8 @@ poetry init
 
 ![Poetry Init](../../media/django/installation/poetry_init.png)
 
+### Installing Necessary Packages
+
 And we can install Django now.
 
 ```bash
@@ -94,6 +106,8 @@ poetry add django
 ```
 
 ![Poetry Django](../../media/django/installation/poetry_django.png)
+
+</Steps>
 
 <br />
 
