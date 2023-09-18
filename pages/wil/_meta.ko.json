@@ -1,3 +1,9 @@
 {
-    "intro": "intro"
+    "intro": {
+        "title": "인트로",
+        "theme": {
+            "typesetting": "article",
+            "sidebar": "true"
+        }
+    }
 }
