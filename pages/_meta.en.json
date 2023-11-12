@@ -40,8 +40,8 @@
     "type": "page",
     "display": "hidden"
   }, 
-  "wil" : {
-    "title": "wil",
+  "sfm" : {
+    "title": "SFM",
     "type": "page",
     "theme": {
       "toc": false,

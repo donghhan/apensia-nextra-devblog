@@ -40,12 +40,12 @@
     "type": "page",
     "display": "hidden"
   }, 
-  "wil" : {
-    "title": "Blender",
+  "sfm" : {
+    "title": "SFM",
     "type": "page",
     "theme": {
       "toc": false,
-      "sidebar": false,
+      "sidebar": true,
       "pagination": true,
       "breadcrumb": false,
       "typesetting": "default"
