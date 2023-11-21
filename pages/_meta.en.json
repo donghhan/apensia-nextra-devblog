@@ -50,5 +50,9 @@
       "breadcrumb": false,
       "typesetting": "default"
     }
+  },
+  "styling": {
+    "title": "CSS",
+    "type": "page"
   }
 }
