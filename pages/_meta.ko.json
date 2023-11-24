@@ -51,8 +51,17 @@
       "typesetting": "default"
     }
   },
-  "styling": {
-    "title": "CSS",
-    "type": "page"
+  "blog": {
+    "title": "블로그",
+    "type": "page",
+    "href": "https://apensia-single-devblog.vercel.app/",
+    "newWindow": true
+  },
+  "project": {
+    "title": "프로젝트",
+    "type": "page",
+    "theme": {
+      "typesetting": "article"
+    }
   }
 }

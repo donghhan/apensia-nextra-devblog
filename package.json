@@ -6,7 +6,7 @@
     "start": "next start",
     "build": "next build"
   },
-  "author": "Shu Ding",
+  "author": "Apensia",
   "license": "MIT",
   "dependencies": {
     "@code-hike/mdx": "^0.7.4",
