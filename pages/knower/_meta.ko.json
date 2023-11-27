@@ -4,5 +4,10 @@
         "type": "separator",
         "title": "인증"
     },
-    "auth": "인증"
+    "auth": "인증",
+    "-- Deploy --": {
+        "type": "separator",
+        "title": "배포"
+    },
+    "deploy": "배포"
 }

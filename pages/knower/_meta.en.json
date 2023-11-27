@@ -4,5 +4,10 @@
         "type": "separator",
         "title": "Auth"
     },
-    "auth": "Auth"
+    "auth": "Auth",
+    "-- Deploy --": {
+        "type": "separator",
+        "title": "Deploy"
+    },
+    "deploy": "Deploy"
 }
