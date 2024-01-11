@@ -40,6 +40,10 @@
     "type": "page",
     "display": "hidden"
   }, 
+  "css": {
+    "title": "CSS",
+    "type": "page"
+  },
   "sfm" : {
     "title": "SFM",
     "type": "page",

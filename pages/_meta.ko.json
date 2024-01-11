@@ -51,6 +51,10 @@
       "typesetting": "default"
     }
   },
+  "css": {
+    "title": "CSS",
+    "type": "page"
+  },
   "blog": {
     "title": "블로그",
     "type": "page",
