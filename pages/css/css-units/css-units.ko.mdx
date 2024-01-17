@@ -1,21 +1,33 @@
 # CSS 단위들
 
+**시작에 앞서 [WhatUnit 플로우차트](https://whatunit.com/)**을 기반으로 작성된 포스트임을 밝힌다.
+
 ## `px`
 
-제일 간단한
+제일 자주 사용하는 절댓값 단위이다.
 
-## 상댓값
+## `rem`
 
-### `rem`
-
-<u>**_루트_**</u> 요소에 비례한 크기를 반환한다. 여기서 *루트*란 HTML 문서에서 최상단 부분에 해당하는 [`<html>`](https://developer.mozilla.org/ko/docs/Web/HTML/Element/html) 태그를 의미한다.
+<u>**_루트_**</u> 요소에 비례한 고정값을 반환한다. 여기서 *루트*란 HTML 문서에서 최상단 부분에 해당하는 [`<html>`](https://developer.mozilla.org/ko/docs/Web/HTML/Element/html) 태그를 의미한다.
 기본값으로는 16px로 고정이 되어 있으며 이는 얼마든지 CSS를 통해 바꿀 수 있다.
 
-### `em`
+### 용법
 
-<u>**_부모_**</u> 요소에 비례한 크기를 반환한다.
+1. [`font-size`](https://developer.mozilla.org/ko/docs/Web/CSS/font-size)의 대부분 혹은 `<html>` 태그의 기본 글자 크기를 설정할 때
+2. 각 요소들 간의 고정된 [`margin`](https://developer.mozilla.org/ko/docs/Web/CSS/margin) 혹은 [`padding`](https://developer.mozilla.org/ko/docs/Web/CSS/padding)의 고정값을 줄 때
+3. [Grid](https://developer.mozilla.org/ko/docs/Glossary/Grid)의 각 요소들에 대한 고정된 크기값을 설정할 때
+4. 요소의 너비와 높이에 대한 고정된 크기값을 설정할 때
 
-#### `rem`과 `em`을 사용하는 이유
+## `em`
+
+<u>**_부모_**</u> 요소에 비례한 고정값을 반환한다. 여기서 *부모*란 선택된 자식 요소를
+감싸고 있는 바로 윗부분의 요소를 의미한다.
+
+### 용법
+
+1.
+
+### `rem`과 `em`을 사용하는 이유
 
 `px`의 경우 유저가 선호하는 브라우저의 환경 설정은 무시한 채 오직 주어진 고정값만을 집어넣기 때문이다. 밑의 예제를 한 번 보자.
 
@@ -54,3 +66,5 @@
     <figcaption>`px`과 `rem`/`em`의 차이점</figcaption>
   </figure>
 </center>
+
+<br />
