@@ -48,7 +48,7 @@
     "title": "SFM",
     "type": "page",
     "theme": {
-      "toc": false,
+      "toc": true,
       "sidebar": true,
       "pagination": true,
       "breadcrumb": false,
