@@ -1,0 +1,42 @@
+# Modifying Existing Animations
+
+Let's edit existing animations created by recording, sequence or animation with graph editor.
+
+![initial](../../media/sfm/modifying-existing-animations/initial.png)
+
+For example, if we set bookmark at certain point of animation for modifying,
+
+<br />
+
+<center>
+  ![before](../../media/sfm/modifying-existing-animations/before.png)
+</center>
+
+<br />
+
+animation curve becomes flattened before bookmark.
+
+<br />
+
+<center>
+  ![after](../../media/sfm/modifying-existing-animations/after.png)
+</center>
+
+<br />
+
+This breaks our existing animation, turning into loose animation.
+
+## Toggle Offset Mode
+
+The reason why this happens is because offset is NOT included in our existing animation.
+To fix this, let's turn on the Toggle offset mode.
+
+<br />
+
+<center>
+  ![toggle_offset_mode](../../media/sfm/modifying-existing-animations/toggle_offset_mode.png)
+</center>
+
+<br />
+
+By doing this, every time we set bookmark, it won't break the original existing animation by adding offset.

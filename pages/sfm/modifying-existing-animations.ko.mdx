@@ -1,0 +1,42 @@
+# 기존 애니메이션 편집하기
+
+기존의 Recording, sequence 혹은 animation을 편집하고자 Graph editor를 사용한다고 가정해보자.
+
+![initial](../../media/sfm/modifying-existing-animations/initial.png)
+
+예를 들어 다음 그림과 같이 어느 특정 시점에 애니메이션에 변화를 주기 위해서 북마크를 설정하게 될 경우
+
+<br />
+
+<center>
+  ![before](../../media/sfm/modifying-existing-animations/before.png)
+</center>
+
+<br />
+
+기존의 애니메이션 곡선이 북마크 전까지는 평평해진 걸 볼 수 있다.
+
+<br />
+
+<center>
+  ![after](../../media/sfm/modifying-existing-animations/after.png)
+</center>
+
+<br />
+
+이렇게 되면 원래의 애니메이션이 없어지고 갑자기 밋밋한 애니메이션으로 변하게 된다.
+
+## Toggle Offset Mode
+
+이렇게 되는 이유는 기존 애니메이션에 offset이 들어가지 않게 되기 때문이다.
+이를 위해서 아래 그림과 같이 Toggle offset mode를 켜준다.
+
+<br />
+
+<center>
+  ![toggle_offset_mode](../../media/sfm/modifying-existing-animations/toggle_offset_mode.png)
+</center>
+
+<br />
+
+Toggle offset mode를 켜주게 되면 북마크를 설정할 때마다 offset이 들어가게 되면서 기존의 애니메이션도 망치지 않게 된다.
