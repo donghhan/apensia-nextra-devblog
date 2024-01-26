@@ -1,3 +1,4 @@
 {
-    "render-deploy-errors": "Render 배포 에러"
+    "render-deploy-errors": "Render 배포 에러",
+    "vpc-internet-gateway": "Internet Gateway 연결 에러"
 }

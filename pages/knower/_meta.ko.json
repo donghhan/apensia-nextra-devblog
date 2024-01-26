@@ -1,5 +1,15 @@
 {
     "intro": "개요",
+    "-- Model --": {
+        "type": "separator",
+        "title": "모델"
+    },
+    "model": "모델",
+    "-- View --": {
+        "type": "separator",
+        "title": "뷰"
+    },
+    "transaction": "Transaction을 통한 DB 과부하 줄이기",
     "-- Admin --": {
         "type": "separator",
         "title": "인증"

@@ -1,0 +1,23 @@
+# Internet Gateway 연결 에러
+
+## What I Tried To Do
+
+AWS EC2 인스턴스를 만든 후 탄력적 IP 할당을 하고자 했었다.
+
+## What Went Wrong
+
+다음과 같은 에러가 발생했다.
+
+```
+An error occurred while attempting to associate the address
+Network vpc-(security id) is not attached to any internet gateway
+```
+
+## Analysis
+
+[Stack Overflow의 답변](https://stackoverflow.com/a/28779019/13121145)에 따르면 기존 EC2 Classic과 달리 새로운 AWS VPC(Virtual Private Cloud)를 사용하고 있기 때문에
+수동적으로 Internet Gateway를 새로 생성하여 연결시켜 주어야 했다.
+
+## Solution
+
+[바로 밑 Stack Overflow 답변](https://stackoverflow.com/a/69537532/13121145)을 통해 새로운 Interent Gateway를 생성한 후 탄력적 IP에 할당시켜 주었다.

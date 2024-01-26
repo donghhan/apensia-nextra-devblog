@@ -1,3 +1,4 @@
 {
-    "render-deploy-errors": "Errors when deploying with Render"
+    "render-deploy-errors": "Errors when deploying with Render",
+    "vpc-internet-gateway": "Internet Gateway Connection Error"
 }

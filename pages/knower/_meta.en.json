@@ -1,5 +1,14 @@
 {
     "intro": "Introduction",
+    "-- Model --": {
+        "type": "separator",
+        "title": "Model"
+    },
+    "-- View --": {
+        "type": "separator",
+        "title": "View"
+    },
+    "transaction": "Helping DB with transaction",
     "-- Admin --": {
         "type": "separator",
         "title": "Auth"
