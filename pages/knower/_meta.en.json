@@ -18,5 +18,6 @@
         "type": "separator",
         "title": "Deploy"
     },
-    "deploy": "Deploy"
+    "railway": "Deploying with Railway",
+    "aws": "Deploying with AWS"
 }

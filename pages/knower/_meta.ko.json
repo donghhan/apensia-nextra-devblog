@@ -19,5 +19,6 @@
         "type": "separator",
         "title": "배포"
     },
-    "deploy": "배포"
+    "railway": "Railway 배포",
+    "aws": "AWS 배포"
 }

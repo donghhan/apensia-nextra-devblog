@@ -1,0 +1,6 @@
+{
+    "invalid_http_host_header": "Invalid HTTP_HOST header 이슈",
+    "failure-translation-hostname-to-address": "호스트와 DB URL 연결 이슈",
+    "csrf_authentication_failure": "CSRF 인증 실패 이슈",
+    "createsuperuser-command": "Django 어드민 계정 생성 이슈"
+}

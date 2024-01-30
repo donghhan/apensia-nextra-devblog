@@ -1,20 +1,6 @@
-# Railway로 배포하기
+# Could not translate host name to address: nodename nor servname provided or not known
 
-## Invalid HTTP_HOST header 이슈
-
-### Problem
-
-Railway로 Django API 서버를 등록하고자 하는 도중 Invalid HTTP_HOST header 이슈가 생겼다.
-
-### Analysis
-
-배포할 때 `ALLOWED_HOSTS`에 Railway API 호스트를 등록하는 것을 깜빡했었다.
-
-### Solution
-
-## Could not translate host name to address: nodename nor servname provided or not known
-
-### Problem
+## Problem
 
 Railway 내에 만든 임시 개발 DB를 연결하는 과정에서 문제가 생겼다.
 
@@ -105,19 +91,13 @@ Traceback (most recent call last):
 django.db.utils.OperationalError: could not translate host name "dpg-clhb0bmf27hc739pr86g-a" to address: nodename nor servname provided, or not known
 ```
 
-### Analysis
+## Analysis
 
-에러 메세지의 중간에 보면 `psycopg2` 라이브러리에서 문제가 생긴 건줄 알았지만 호스트 이름이 잘못된 것을 보고는 DB의 URL 주소가 잘못되었음을 발견했다.
+맨 밑의 에러 메세지보다는 중간 부분의 `psycopg2`에 대한 에러 메세지가 문제 해결에 훨씬 큰 도움을 주었다.
+
+`psycopg2` 라이브러리에서 문제가 생긴 건줄 알았지만 호스트 이름이 잘못된 것을 보고는 DB의 URL 주소가 잘못되었음을 발견했다.
 생각해보니 예전에 [Render](https://render.com/)로 배포를 하려다가 유료로 전환되는 바람에 Railway로 갈아탔었는데 그 때 환경변수 내에 설정한 DB URL을 바꾸지 않았던 것이 화근이었다.
 
-### Solution
+## Solution
 
 환경변수 파일에서 올바른 Railway DB 주소를 기입했다.
-
-## CSRF Authentication Failed
-
-### Problem
-
-어드민 페이지에 들어가려고 했더니 CSRF 검증에 실패하면서 요청이 중단되었다.
-
-### Analysis
