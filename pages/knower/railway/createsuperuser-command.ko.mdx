@@ -1,3 +1,5 @@
+import { Callout } from "nextra/components";
+
 # 배포된 Django API 서버에 어드민 계정 만들기
 
 ## Problem 1
@@ -64,3 +66,9 @@ No such file or directory (os error 2)
 ## Solution
 
 `railway up` 명령어를 실행시킨 후 `railway run python manage.py createsuperuser` 명령어를 실행하였다.
+
+<Callout type="info" emoji="ℹ️">
+  이 때, `railway up` 명령어를 시킨 터미널은 종료하지 않은 상태에서 새 터미널
+  창에서 `railway run python manage.py createsuperuser` 명령어를 실행하도록
+  하자.
+</Callout>

@@ -20,5 +20,6 @@
         "title": "배포"
     },
     "railway": "Railway 배포",
+    "vercel": "Vercel 배포",
     "aws": "AWS 배포"
 }

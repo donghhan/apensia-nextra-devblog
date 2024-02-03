@@ -19,5 +19,6 @@
         "title": "Deploy"
     },
     "railway": "Deploying with Railway",
+    "vercel": "Deploying with Vercel",
     "aws": "Deploying with AWS"
 }

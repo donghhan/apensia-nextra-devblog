@@ -1,0 +1,30 @@
+# Pre-render 에러
+
+## Problem
+
+Vercel을 배포하는 도중 Pre-render 에러를 맞닥뜨렸다.
+
+```bash
+Error occurred prerendering page "/api/products/home-collections". Read more: https://nextjs.org/docs/messages/prerender-error
+SyntaxError: Unexpected token < in JSON at position 1
+    at JSON.parse (<anonymous>)
+    at parseJSONFromBytes (node:internal/deps/undici/undici:4553:19)
+    at successSteps (node:internal/deps/undici/undici:4527:27)
+    at fullyReadBody (node:internal/deps/undici/undici:1307:9)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async specConsumeBody (node:internal/deps/undici/undici:4536:7)
+    at async u (/vercel/path0/.next/server/app/api/products/home-collections/route.js:1:543)
+    at async /vercel/path0/node_modules/.pnpm/next@14.0.3_react-dom@18.0.0_react@18.0.0_sass@1.69.7/node_modules/next/dist/compiled/next-server/app-route.runtime.prod.js:6:41322
+```
+
+## Analysis
+
+문제가 발생한 곳은 홈화면의 상품 3개를 Collection 섹션에 보여주기 위한 Route Handler API에서 문제가 되었다.
+
+[Next.js 공식 문서](https://nextjs.org/docs/messages/prerender-error)와 [Vercel Issue #48979](https://github.com/vercel/next.js/issues/48979)의 글을 참조하였을 때
+Next.js 버전 13.2 이상부터 `page` 혹은 `app` 폴더 내에 페이지로 분류될 수 없는 것들 (예: 컴포넌트 등)을 Pre-rendering하게 되면 실패하게 된다.
+
+## Solution
+
+["Next.js 14 Build Prerender Error Fix "아티클](https://medium.com/phantom3/next-js-14-build-prerender-error-fix-f3c51de2fe1d)과 [ozgur-shape의 답변](https://github.com/vercel/next.js/issues/48979#issuecomment-1539961418)을 참조하여
+Route Handler API 상단에 캐싱을 비활성화하고 동시에 dynamic 라우팅을 설정하였다.
