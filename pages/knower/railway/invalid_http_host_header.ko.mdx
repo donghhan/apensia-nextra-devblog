@@ -32,9 +32,7 @@ if not DEBUG:
 ## Analysis
 
 [Stack Overflow의 답변](https://stackoverflow.com/a/19875816/13121145)에 의하면 호스트의 header가 `ALLOWED_HOSTS` 배열 중 어느 한 값이라도 일치하지 않아서 생기게 되는
-[`SuspiciousOperation`](https://docs.djangoproject.com/en/dev/ref/exceptions/#suspiciousoperation) 에러로 인해 Bad Request 400 에러가 발생하였음을 알게 되었다[^1].
-
-[^1]: [Host header validation](https://docs.djangoproject.com/en/dev/topics/security/#host-headers-virtual-hosting)
+[`SuspiciousOperation`](https://docs.djangoproject.com/en/dev/ref/exceptions/#suspiciousoperation) 에러로 인해 Bad Request 400 에러가 발생하였음을 알게 되었다
 
 ## Solution
 
