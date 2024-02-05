@@ -1,0 +1,178 @@
+# 커스텀 모델 필드 Validator 만들기
+
+## 개요
+
+서비스를 운영하다보면 데이터의 검증이 필요한 때가 있다. 예를 들자면,
+
+1. 유저들이 계정을 생성할 때 이름 칸에는 특수문자 혹은 공백을 허용해선 안 된다.
+2. 예약 날짜가 현재 혹은 과거일 수는 없다 (즉, 항상 미래의 날짜이어야 한다).
+3. 할인가는 반드시 원가보다 작은 값이어야 하며, 할인가와 원가는 반드시 자연수여야 한다.
+
+등이 있을 수 있다.
+
+이를 위하여 Django의 모델 [필드](https://docs.djangoproject.com/en/dev/topics/db/models/#fields)에는 `validators` 속성을 통하여 [Validator](https://docs.djangoproject.com/en/dev/ref/validators/)를 넘겨줄 수 있다.
+
+## 적용 예시
+
+### 룩북 시즌 연도
+
+Knower에서 룩북은 각 연도와 해당되는 시즌에 맞춰 제품 컬렉션을 한군데에 담아 유저들로 하여금 보다 다양한 제품군 탐색을 통한 개선된 소비 경험을 만들어주기 위함이다.
+룩북의 시즌은 총 2개의 모델 필드가 결합된 형태이며 이는 *연도*와 _시즌 (SS 및 FW)_ 두 값으로 이루어진다.
+
+룩북은 다가올 미래에 대한 제품 컬렉션들로 구성되어 있기에 그 연도가 항상 <u>**미래**</u>의 값을 가져야 했다.
+
+<CH.Scrollycoding>
+
+#### 커스텀 Validator 함수 생성
+
+룩북 시즌 연도의 Validator를 위한 함수를 생성한다.
+
+```py models.py focus=5:6
+class Lookbook(models.Model):
+
+    # ...
+
+    def validate_lookbook_year(year):
+        pass
+
+    year = models.PositiveSmallIntegerField(
+        verbose_name="연도",
+        help_text="최대 4자리 수",
+    )
+
+    # ...
+```
+
+---
+
+#### 연도 측정
+
+Python에 내장되어 있는 [datetime](https://docs.python.org/3/library/datetime.html) 모듈에서 현재 날짜의 연도를 추출하기 위해
+[`year`](https://docs.python.org/3/library/datetime.html#datetime.datetime.year) 속성을 사용했다.
+
+이후 룩북의 연도(`year`)가 현재 시각의 연도(`this_year`)보다 작을 경우 (즉, 과거일 경우) [`ValidationError`](https://docs.djangoproject.com/en/dev/ref/exceptions/#django.core.exceptions.ValidationError)를 발생시키도록 했다.
+
+```py models.py focus=1,8:11
+from datetime import datetime
+
+class Lookbook(models.Model):
+
+    # ...
+
+    def validate_lookbook_year(year):
+        this_year = datetime.now().year
+
+        if year < this_year:
+            raise ValidationError("룩북 연도는 현재보다 과거일 수 없습니다.")
+
+    year = models.PositiveSmallIntegerField(
+        verbose_name="연도",
+        help_text="최대 4자리 수",
+    )
+
+    # ...
+```
+
+---
+
+#### 잘못된 형식의 연도 배제
+
+또한, 비정상적으로 큰 숫자의 연도의 경우 (예를 들어 12345년)에도 에러를 발생시켰다.
+
+```py models.py focus=13:14
+from datetime import datetime
+
+class Lookbook(models.Model):
+
+    # ...
+
+    def validate_lookbook_year(year):
+        this_year = datetime.now().year
+
+        if year < this_year:
+            raise ValidationError("룩북 연도는 현재보다 과거일 수 없습니다.")
+
+        if len(str(year)) >= 5:
+            raise ValidationError("잘못된 연도입니다.")
+
+    year = models.PositiveSmallIntegerField(
+        verbose_name="연도",
+        help_text="최대 4자리 수",
+    )
+
+    # ...
+```
+
+---
+
+#### 룩북 연도 한도 설정
+
+룩북은 특성상 최대 1년 이후의 컬렉션들을 모아놓은 것이기에 2년 이상의 먼 미래를 바라보는 것은 의미가 없었다.
+따라서, 룩북의 연도가 현재 연도에서 1을 더한 숫자보다 더 클 경우 에러를 발생시키기로 했다.
+
+```py models.py focus=16:19
+from datetime import datetime
+
+class Lookbook(models.Model):
+
+    # ...
+
+    def validate_lookbook_year(year):
+        this_year = datetime.now().year
+
+        if year < this_year:
+            raise ValidationError("룩북 연도는 현재보다 과거일 수 없습니다.")
+
+        if len(str(year)) >= 5:
+            raise ValidationError("잘못된 연도입니다.")
+
+        if year > this_year + 1:
+            raise ValidationError(
+                "룩북 연도는 현재 연도보다 2년 이상 설정할 수 없습니다."
+            )
+
+    year = models.PositiveSmallIntegerField(
+        verbose_name="연도",
+        help_text="최대 4자리 수",
+    )
+
+    # ...
+```
+
+---
+
+#### Validator 적용
+
+만든 커스텀 Validator를 `year` 필드에 적용시켜주었다.
+
+```py models.py focus=24
+from datetime import datetime
+
+class Lookbook(models.Model):
+
+    # ...
+
+    def validate_lookbook_year(year):
+        this_year = datetime.now().year
+
+        if year < this_year:
+            raise ValidationError("룩북 연도는 현재보다 과거일 수 없습니다.")
+
+        if len(str(year)) >= 5:
+            raise ValidationError("잘못된 연도입니다.")
+
+        if year > this_year + 1:
+            raise ValidationError(
+                "룩북 연도는 현재 연도보다 2년 이상 설정할 수 없습니다."
+            )
+
+    year = models.PositiveSmallIntegerField(
+        verbose_name="연도",
+        help_text="최대 4자리 수",
+        validators=[validate_lookbook_year],
+    )
+
+    # ...
+```
+
+</CH.Scrollycoding>

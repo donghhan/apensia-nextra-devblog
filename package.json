@@ -16,7 +16,7 @@
     "@mdx-js/react": "^2.3.0",
     "@projectstorm/react-diagrams": "^6.7.4",
     "clsx": "^1.2.1",
-    "framer-motion": "^7.3.2",
+    "framer-motion": "^7.6.15",
     "next": "^13.2.4",
     "nextra": "^2.12.3",
     "nextra-theme-docs": "2.12.3",
