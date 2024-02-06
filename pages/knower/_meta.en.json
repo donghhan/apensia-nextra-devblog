@@ -4,15 +4,16 @@
         "type": "separator",
         "title": "Model"
     },
+    "-- Admin --": {
+        "type": "separator",
+        "title": "Admin"
+    },
+    "foreignkey-listdisplay": "Linking up customer's info",
     "-- View --": {
         "type": "separator",
         "title": "View"
     },
     "transaction": "Helping DB with transaction",
-    "-- Admin --": {
-        "type": "separator",
-        "title": "Auth"
-    },
     "auth": "Auth",
     "-- Deploy --": {
         "type": "separator",
