@@ -1,5 +1,9 @@
 {
     "intro": "Introduction",
+    "-- Design --": {
+        "type": "separator",
+        "title": "Design"
+    },
     "-- Model --": {
         "type": "separator",
         "title": "Model"
@@ -15,6 +19,7 @@
     },
     "transaction": "Helping DB with transaction",
     "auth": "Auth",
+    "products": "Product View",
     "-- Deploy --": {
         "type": "separator",
         "title": "Deploy"

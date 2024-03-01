@@ -1,0 +1,103 @@
+# URL 파라미터로 Dyanamic View 만들기
+
+## 개요
+
+API URL에 특정 파라미터를 이용한 Dynamic View를 만들고 싶었다. 예컨대,
+
+1. `id` (혹은 `pk`) 값에 해당하는 하나의 제품 디테일을 보여주는 View
+2. `category` 파라미터의 값을 읽어들여 해당 `category`에 해당하는 모든 제품을 리턴하여 보여주는 View
+
+등이 있겠다.
+
+## 초기 설정
+
+### 모델 설정
+
+먼저 기능을 구현하기 전, `Product` 모델을 다음과 같이 설정하였다. `Product` 모델을 글자 그대로 `Product`에 대한 정보를 담고 있다.
+
+```py models.py
+class Product(models.Model):
+    # ...
+
+    categories = models.ManyToManyField(
+        "products.ProductCategory", verbose_name="카테고리", related_name="products"
+    )
+
+    # ...
+
+class ProductCategory(models.Model):
+    # ...
+
+    category = models.CharField(max_length=50, verbose_name="카테고리")
+
+    # ...
+```
+
+위에서 `Product`는 여러 `categories`들을 포함할 수 있으며 `ProductCategory` 또한 여러 `Product`들을 포함할 수 있다.
+따라서 `Product` 모델에 `ProductCategory` 모델을 [`ManyToManyField`](https://docs.djangoproject.com/en/dev/ref/models/fields/#django.db.models.ManyToManyField)로 연결해주었다.
+
+### Serializer 작성
+
+```py serializers.py
+
+```
+
+## View 작성
+
+필자는 이번 프로젝트에서 `ViewSet`를 사용하기로 하였다. 그 이유는
+
+1. DRY (Don't Repeat Yourself) 원칙에 따라 코드를 최대한 간결하게 작성하고 싶었고
+2. 데이터 생성 및 디버깅 시 JSON 형태로 일일히 집어넣기 보다는 보다 편리하게 HTML 폼 형태로 관리하고 싶었기 때문이다.
+
+> `APIView`와 `ViewSet`의 차이점
+>
+> [`APIView`](https://www.django-rest-framework.org/api-guide/views/#class-based-views)의 경우 `.get()`이나 `.post()` 등 들어오는 요청에 따라 알맞는 핸들러 메소드로 전달된다[^1].
+> 따라서 하나의 `APIView` 안에 본인이 원하는 요청을 처리할 수 있는 View를 알맞은 핸들러 메소드를 통해 직접 만들어야 하며 그에 맞는 URL도 [Django 공식 문서에 나온 예시](https://docs.djangoproject.com/en/dev/topics/http/urls/#example)와 같이 설정을 해주어야 한다.
+>
+> 반면 [`ViewSet`](https://www.django-rest-framework.org/api-guide/viewsets/)의 경우 `APIView`의 추상화된 버전으로써 핸들러 메소드를 제공하지 않고 핸들러 메소드들이 수행하는 작업들을 하나로 뭉쳐 **action**을 제공하며 각 action의 형태에 따라 `.list()` (전체를 보여주는 GET 방식), `.retrieve()` (특정 조건에 맞는 하나의 Queryset을 보여주는 GET 방식), `.create()` (생성하는 POST 방식) 등으로 나뉘어진다.
+> 또한 `APIView`와는 다르게 URL을 따로 지정하지 않는 대신 [Router](https://www.django-rest-framework.org/api-guide/routers/)를 이용한다.
+> [^1]: [generics vs viewset in django rest framework, how to prefer which one to use?](https://stackoverflow.com/a/49489829/13121145)
+
+### `id` 값에 해당하는 제품 디테일을 보여주는 View
+
+[`ViewSet` actions](https://www.django-rest-framework.org/api-guide/viewsets/#viewset-actions) 섹션에 나타난 것처럼 `.retrieve()` 메소드는 Django가 기본적으로 제공해주는 `id` 혹은 `pk`값에 해당하는 Queryset을 보여주게 한다.
+따라서, `ViewSet` 클래스를 상속받은 후 하나의 제품에 대한 디테일을 보여주기 위한 View를 작성하였다.
+
+<CH.Section>
+
+<CH.Code>
+
+```py serializers.py
+from rest_framework import serializers
+from .models import *
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = "__all__"
+```
+
+---
+
+```py views.py
+from django.shortcuts import get_object_or_404
+from rest_framework.decorators import permission_classes
+from .models import *
+from .serializers import *
+from .permissions import *
+
+@permission_classes([ViewAllOrAdminOnly])
+class ProductDetailViewset(viewsets.ViewSet):
+    def retrieve(self, request, pk=None):
+        queryset = Product.objects.all()
+        product = get_object_or_404(queryset, pk=pk)
+        serializer = ProductSerializer(product)
+        return Response(serializer.data)
+```
+
+</CH.Code>
+
+1.
+2. 먼저 [`get_object_or_404()`](https://docs.djangoproject.com/en/dev/topics/http/shortcuts/#get-object-or-404) 함수를 이용하여 [`pk` 값에 해당하는 Queryset을 가져오고 없으면 404 에러를 발생](focus://11[19:35])시키게끔 하였다.
+
+</CH.Section>

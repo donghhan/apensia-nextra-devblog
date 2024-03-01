@@ -1,5 +1,11 @@
 {
     "intro": "개요",
+    "-- Design --": {
+        "type": "separator",
+        "title": "기획"
+    },
+    "user-design": "유저 설계",
+    "order": "주문",
     "-- Model --": {
         "type": "separator",
         "title": "모델"
@@ -15,6 +21,7 @@
         "title": "뷰"
     },
     "transaction": "Transaction을 통한 DB 과부하 줄이기",
+    "products": "Product 뷰",
     "auth": "인증",
     "-- Deploy --": {
         "type": "separator",

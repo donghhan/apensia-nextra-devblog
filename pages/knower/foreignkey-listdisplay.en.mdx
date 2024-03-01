@@ -1,0 +1,97 @@
+# Showing Customer Information With Order
+
+## Introduction
+
+In order that admin users can effectively control customers' orders, I decided to show some customers' information attached to the order that they created.
+
+## Analysis
+
+In Django, we can show model fields with [`list_display`](https://docs.djangoproject.com/en/dev/ref/contrib/admin/#django.contrib.admin.ModelAdmin.list_display).
+For relationship fields such as [`ForeignKey`](https://docs.djangoproject.com/en/dev/ref/models/fields/#django.db.models.ForeignKey) or [`ManyToManyField`](https://docs.djangoproject.com/en/dev/ref/models/fields/#django.db.models.ManyToManyField), however, are different story.
+
+1. `ForeignKey` will explicitly show the value that `__str__()` method returns.
+2. `ManyToManyField` is not supported since it makes Django to carry out different SQL commands on each rows of table which is quite costly.
+
+> As of Feburary 6th, 2024, we can use `__` lookups in dev version, but still not in 5.0 version.
+
+I implemented this feature by creating extra methods with [`display` decorator](https://docs.djangoproject.com/en/dev/ref/contrib/admin/#the-display-decorator).
+
+## Solution
+
+<CH.Scrollycoding>
+
+### Creating `OrderAdmin` class
+
+Connecting `Order` model with `OrderAdmin` class with [`register` decorator](https://docs.djangoproject.com/en/dev/ref/contrib/admin/#the-register-decorator).
+
+```py admin.py
+from django.contrib import admin
+from .models import *
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = []
+```
+
+---
+
+### Creating method for customer name
+
+I created `get_customer_full_name()` method with using `display` decorator that returns the full name of customers.
+The second parameter `obj` indicates the queryset of `Order` connected to `OrderAdmin`, and I `return`ed `first_name` and `last_name` of `user` that is connected with `ForeignKey`.
+
+Then, I put it into `list_display` array.
+
+```py admin.py focus=5,9:11
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = [
+        "order_number",
+        "get_customer_full_name",
+        "created_at",
+    ]
+
+    @admin.display(description="고객명")
+    def get_customer_full_name(self, obj):
+        return f"{obj.user.last_name} {obj.user.first_name}"
+```
+
+---
+
+### Creating customer contact info
+
+I did same thing over again for customers' contact info and put it in `list_display`.
+
+```py admin.py focus=15:21
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = [
+        "order_number",
+        "get_customer_full_name",
+        "get_customer_mobile_number",
+        "get_customer_email",
+        "created_at",
+    ]
+
+    @admin.display(description="고객명")
+    def get_customer_full_name(self, obj):
+        return f"{obj.user.last_name} {obj.user.first_name}"
+
+    @admin.display(description="고객 연락처")
+    def get_customer_mobile_number(self, obj):
+        return obj.user.mobile_number
+
+    @admin.display(description="고객 이메일")
+    def get_customer_email(self, obj):
+        return obj.user.email
+```
+
+</CH.Scrollycoding>
+
+## Result
+
+Works like a charm as shown image below.
+
+<center>
+  ![result](../../media/knower/admin/foreignkey-listdisplay/result.png)
+</center>
