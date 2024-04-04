@@ -7,20 +7,9 @@
       "typesetting": "article"
     }
   },
-  "react": {
-    "title": "React",
-    "type": "page",
-    "display": "hidden"
-  },
-  "next": {
-    "title": "Next",
-    "type": "page",
-    "display": "hidden"
-  },
-  "svelte": {
-    "title": "Svelte",
-    "type": "page",
-    "display": "hidden"
+  "wownexus": {
+    "title": "Wownexus",
+    "type": "page"
   },
   "letsh": {
     "title": "Let'sh",
@@ -35,11 +24,6 @@
     "type": "page",
     "display": "hidden"
   },
-  "nest": {
-    "title": "Nest",
-    "type": "page",
-    "display": "hidden"
-  }, 
   "sfm" : {
     "title": "SFM",
     "type": "page",
