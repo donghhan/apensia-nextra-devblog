@@ -11,6 +11,10 @@
     "title": "Wownexus",
     "type": "page"
   },
+  "boochoo-camp": {
+    "title": "부추캠프",
+    "type": "page"
+  },
   "letsh": {
     "title": "Let'sh",
     "type": "page"
@@ -34,10 +38,6 @@
       "breadcrumb": false,
       "typesetting": "default"
     }
-  },
-  "css": {
-    "title": "CSS",
-    "type": "page"
   },
   "blog": {
     "title": "블로그",
