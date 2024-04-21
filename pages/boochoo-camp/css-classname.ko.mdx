@@ -57,9 +57,11 @@ export default function Home() {
 
 그렇다면 이를 어떤 식으로 해결하는 게 좋았을까?
 
-### 1-1. BEM 방법론
+### 1. BEM 방법론
 
-[BEM 방법론](https://codeburst.io/understanding-css-bem-naming-convention-a8cca116d252)이란 _블록_, _요소_ 그리고 *수식어*를 구분하여 클래스명을 짓는 방법을 말한다.
+[BEM 방법론](https://codeburst.io/understanding-css-bem-naming-convention-a8cca116d252)[^1]이란 _블록_, _요소_ 그리고 *수식어*를 구분하여 클래스명을 짓는 방법을 말한다.
+
+[^1]: [Understnading CSS BEM](https://codeburst.io/understanding-css-bem-naming-convention-a8cca116d252)
 
 #### 블록
 
@@ -213,7 +215,7 @@ export default function Footer(): JSX.Element {
 }
 ```
 
-### 2-1. 모듈화
+### 2. 모듈화
 
 모듈화란 말 그대로 스타일링 파일을 모듈화하여 마치 자바스크립트처럼 `import`하여 사용하는 것을 의미한다.
 
@@ -258,3 +260,8 @@ export default function Footer(): JSX.Element {
   );
 }
 ```
+
+## 효과
+
+BEM 방법론의 경우 규칙성있게 클래스명을 작성하는 가이드라인을 제공하는 데에는 충분하였지만 결국 수없이 남발하게 되는 요소와 수식어로 인해 클래스명이 복잡해질 뿐더러 디버깅하는 데에도 오히려 불편했다.
+모듈 방식을 사용하게 되면서 클래스명의 복잡성에 대한 부분도 해소되었고 디버깅하는 시간도 15% 가량 다소 줄어들었다.
