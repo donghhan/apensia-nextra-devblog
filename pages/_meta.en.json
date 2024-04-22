@@ -23,11 +23,6 @@
     "title": "Knower",
     "type": "page"
   },
-  "nlp": {
-    "title": "NLP",
-    "type": "page",
-    "display": "hidden"
-  },
   "sfm" : {
     "title": "SFM",
     "type": "page",
@@ -43,7 +38,8 @@
     "title": "Blog",
     "type": "page",
     "href": "https://apensia-single-devblog.vercel.app/",
-    "newWindow": true
+    "newWindow": true,
+    "display": "hidden"
   },
   "project": {
     "title": "Projects",
