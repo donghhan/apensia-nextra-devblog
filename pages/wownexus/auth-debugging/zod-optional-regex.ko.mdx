@@ -1,0 +1,119 @@
+# Zod Optional 필드 타입 에러
+
+유저가 회원가입 폼에서 닉네임을 작성할 때 닉네임에 대한 유효성 검증 로직을 Zod를 통해 작성하고 있었다.
+닉네임은 필수 입력 사항은 아니었지만 다음 조건을 만족해야만 했다.
+
+1. 닉네임은 오직 영소문자와 숫자의 조합으로만 이루어질 수 있으며 그 이외의 문자(특수기호, 공백 등)는 허용되지 않는다.
+2. 최대 12글자를 넘길 수 없다.
+
+## Problem
+
+다음과 같이 [`.optional()`](https://zod.dev/?id=optional) 메소드를 이용하여 `string` 혹은 `undefined` 값을 받기로 하였다.
+그리고 [`.refine()`](https://zod.dev/?id=refine) 메소드를 통하여 `REGEX_NICKNAME` 정규표현식 조건에 부합하는지 검증하고자 했다.
+
+```ts auth/create-account/action.ts
+const REGEX_NICKNAME = new RegExp(/^[a-z0-9]+$/);
+
+const createAccountSchema = z.object({
+  nickname: z
+    .string()
+    .trim()
+    .optional()
+    .refine((value) => REGEX_NICKNAME.test(value), {
+      message: t("nickname_invalid_error"),
+    }),
+
+  // ...
+});
+```
+
+그런데 다음과 같은 에러가 발생하였다.
+
+```
+Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.ts(2345)
+```
+
+## Analysis
+
+`.refine()` 메소드에 전달한 콜백 함수의 파라미터인 `value` (즉, 유저가 기입한 닉네임 값) 값이 `undefined`일 경우 타입이 일치하지 않기 때문에 발생하는 에러였다.
+따라서, 타입 가드를 한 번 씌우기로 하였다.
+
+<CH.Scrollycoding>
+
+### 타입 가드 전
+
+`value` 값을 집어서
+
+```ts auth/create-account/action.ts focus=8
+const REGEX_NICKNAME = new RegExp(/^[a-z0-9]+$/);
+
+const createAccountSchema = z.object({
+  nickname: z
+    .string()
+    .trim()
+    .optional()
+    .refine((value) => REGEX_NICKNAME.test(value), {
+      message: t("nickname_invalid_error"),
+    }),
+
+  // ...
+});
+```
+
+---
+
+### 타입 가드 후
+
+`value`가 `undefined`가 아닐 경우에 대한 타입 가드를 씌워주었다.
+
+```ts auth/create-account/action.ts focus=8
+const REGEX_NICKNAME = new RegExp(/^[a-z0-9]+$/);
+
+const createAccountSchema = z.object({
+  nickname: z
+    .string()
+    .trim()
+    .optional()
+    .refine((value) => value !== undefined && REGEX_NICKNAME.test(value), {
+      message: t("nickname_invalid_error"),
+    }),
+
+  // ...
+});
+```
+
+</CH.Scrollycoding>
+
+## Problem 2
+
+타입에 대한 에러는 사라졌지만 프론트엔드 상에서 닉네임 값을 적지 않았을 경우 정규표현식 검증이 여전히 이루어지는 오류가 발생하였다.
+닉네임 값은 필수값이 아니기 때문에 값이 전달 되었을 경우에 한해서만 정규표현식 검증이 이루어지게끔 하고 싶었다.
+
+## Analysis
+
+[Github의 colinhacks의 코멘트](https://github.com/colinhacks/zod/issues/310#issuecomment-794533682)를 참고하였다.
+
+## Solution
+
+```ts auth/create-account/action.ts focus=11
+const REGEX_NICKNAME = new RegExp(/^[a-z0-9]+$/);
+
+const createAccountSchema = z.object({
+  nickname: z
+    .string()
+    .trim()
+    .optional()
+    .refine((value) => value !== undefined && REGEX_NICKNAME.test(value), {
+      message: t("nickname_invalid_error"),
+    })
+    .or(z.literal("")),
+  // ...
+});
+```
+
+## Epilogue
+
+값을 제공하지 않은 것은 `undefined` 보다는 오히려 `null`에 가깝지 않을까 해서 `undefined` 값을 허용하는 `.optional()` 보다는 [`.nullable()`](https://zod.dev/?id=nullable)을 쓰는 게 더 맞지 않을까라고 생각되었다.
+하지만 Prisma에서 닉네임 중복값이 있는지 확인하는 절차에서 값을 전달하지 않았을 때는 `null`이 아닌 `undefined`을 받았기에 타입을 통일시키기로 하였다.
+추후에 로직 상으로 바꿀 수 있다면 바꾸는 것이 좋을 것 같다.

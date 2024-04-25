@@ -1,3 +1,7 @@
 {
-    "intro": "Introduction"
+    "intro": "Introduction",
+    "-- Auth --": {
+        "type": "separator",
+        "title": "Auth"
+    }
 }

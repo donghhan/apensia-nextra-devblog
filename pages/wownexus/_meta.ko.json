@@ -1,3 +1,8 @@
 {
-    "intro": "개요"
+    "intro": "개요",
+    "-- Auth --": {
+        "type": "separator",
+        "title": "인증"
+    },
+    "auth-debugging": "디버깅"
 }
