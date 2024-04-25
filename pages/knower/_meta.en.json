@@ -1,13 +1,11 @@
 {
     "intro": "Introduction",
-    "-- Design --": {
-        "type": "separator",
-        "title": "Design"
-    },
+    "design": "Design",
     "-- Model --": {
         "type": "separator",
-        "title": "Model"
+        "title": "모델"
     },
+    "custom-model-field-validator": "Creating custom validator for model field",
     "-- Admin --": {
         "type": "separator",
         "title": "Admin"

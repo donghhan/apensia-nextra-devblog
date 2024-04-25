@@ -1,16 +1,11 @@
 {
     "intro": "개요",
-    "-- Design --": {
-        "type": "separator",
-        "title": "기획"
-    },
-    "user-design": "유저 설계",
-    "order": "주문",
+    "design": "설계",
     "-- Model --": {
         "type": "separator",
         "title": "모델"
     },
-    "model": "모델",
+    "custom-model-field-validator": "커스텀 모델 필드 Validator 만들기",
     "-- Admin --": {
         "type": "separator",
         "title": "어드민"
