@@ -1,0 +1,120 @@
+# Zod Optional Field TypeError
+
+I was trying to write logic for validation on nickname when users provide value in sign-up form.
+Although nickname is not required, it should meet conditions below:
+
+1. Nickname should be combination of lowercase and numbers only, and special characters or whitespaces are not allowed.
+2. Nickname should not exceed 12 characters.
+
+## Problem
+
+I used [`.optional()`](https://zod.dev/?id=optional) method so that nickname filed can be `string` or `undefined`.
+And used [`.refine()`](https://zod.dev/?id=refine) method to check whether nickname against `REGEX_NICKNAME` RegEx expression.
+
+```ts auth/create-account/action.ts
+const REGEX_NICKNAME = new RegExp(/^[a-z0-9]+$/);
+
+const createAccountSchema = z.object({
+  nickname: z
+    .string()
+    .trim()
+    .optional()
+    .refine((value) => REGEX_NICKNAME.test(value), {
+      message: t("nickname_invalid_error"),
+    }),
+
+  // ...
+});
+```
+
+But then I got the following error.
+
+```
+Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.ts(2345)
+```
+
+## Analysis
+
+The type of `value`, the parameter of callback function passed to `.refine()` method which is nickname value that users provided,
+did not match up with `undefined`. Therefore, I decided to do type guard.
+
+<CH.Scrollycoding>
+
+### Before Type Guard
+
+I revised `value` type checking
+
+```ts auth/create-account/action.ts focus=8
+const REGEX_NICKNAME = new RegExp(/^[a-z0-9]+$/);
+
+const createAccountSchema = z.object({
+  nickname: z
+    .string()
+    .trim()
+    .optional()
+    .refine((value) => REGEX_NICKNAME.test(value), {
+      message: t("nickname_invalid_error"),
+    }),
+
+  // ...
+});
+```
+
+---
+
+### After Type Guard
+
+with type guard for the case when `value` is `undefined`.
+
+```ts auth/create-account/action.ts focus=8
+const REGEX_NICKNAME = new RegExp(/^[a-z0-9]+$/);
+
+const createAccountSchema = z.object({
+  nickname: z
+    .string()
+    .trim()
+    .optional()
+    .refine((value) => value !== undefined && REGEX_NICKNAME.test(value), {
+      message: t("nickname_invalid_error"),
+    }),
+
+  // ...
+});
+```
+
+</CH.Scrollycoding>
+
+## Problem 2
+
+Type error was resolved, but then there was still an error happening on the frontend that even when I did not provide any value for nickname it still carried out RegEx expression validation.
+As nickname is not required field, I just wanted to carry out RegEx validation only when value was provided.
+
+## Analysis
+
+I took a look at [colinhacks's comment on Github](https://github.com/colinhacks/zod/issues/310#issuecomment-794533682).
+
+## Solution
+
+```ts auth/create-account/action.ts focus=11
+const REGEX_NICKNAME = new RegExp(/^[a-z0-9]+$/);
+
+const createAccountSchema = z.object({
+  nickname: z
+    .string()
+    .trim()
+    .optional()
+    .refine((value) => value !== undefined && REGEX_NICKNAME.test(value), {
+      message: t("nickname_invalid_error"),
+    })
+    .or(z.literal("")),
+  // ...
+});
+```
+
+## Epilogue
+
+I thought it'd be better using [`.nullable()`](https://zod.dev/?id=nullable) rather than `.optional()`.
+This is because not providing any value is pretty much as same as `null` than `undefined`.
+But as logic of checking uniqueness of nickname with Prisma tried to accept `undefined` when value was not provided, I ended up using `undefined` type.
+Later, I'd better change my logic to accept `null` instead of `undefined` if possible.
