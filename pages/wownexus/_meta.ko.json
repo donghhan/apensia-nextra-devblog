@@ -4,5 +4,6 @@
         "type": "separator",
         "title": "인증"
     },
+    "cloudflare-image-upload": "Cloudflare로 이미지 업로드하기",
     "auth-debugging": "디버깅"
 }

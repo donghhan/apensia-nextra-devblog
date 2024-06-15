@@ -3,5 +3,7 @@
     "-- Auth --": {
         "type": "separator",
         "title": "Auth"
-    }
+    },
+    "cloudflare-image-upload": "Uploading Image with Cloudflare",
+    "auth-debugging": "Debugging"
 }

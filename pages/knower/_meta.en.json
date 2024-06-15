@@ -1,4 +1,8 @@
 {
+    "-- Admin Panel --": {
+        "type": "separator",
+        "title": "Admin Panel"
+    },
     "intro": "Introduction",
     "design": "Design",
     "-- Model --": {
@@ -6,6 +10,7 @@
         "title": "모델"
     },
     "custom-model-field-validator": "Creating custom validator for model field",
+    "seed-fake-data": "Creating dummy data",
     "-- Admin --": {
         "type": "separator",
         "title": "Admin"

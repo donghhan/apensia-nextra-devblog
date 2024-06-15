@@ -1,4 +1,8 @@
-{
+{   
+    "-- Admin Panel --": {
+        "type": "separator",
+        "title": "어드민"
+    },
     "intro": "개요",
     "design": "설계",
     "-- Model --": {
@@ -6,6 +10,7 @@
         "title": "모델"
     },
     "custom-model-field-validator": "커스텀 모델 필드 Validator 만들기",
+    "seed-fake-data": "더미 데이터 만들기",
     "-- Admin --": {
         "type": "separator",
         "title": "어드민"
