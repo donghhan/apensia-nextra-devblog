@@ -1,4 +1,238 @@
+import { Callout, Tabs, Tab, Steps, FileTree } from "nextra/components";
+
 # Creating Dummy Data
+
+## Introduction
+
+I was trying to figure out way to create bunch of dummy data for testing that can be done automatically instead of manually.
+
+## Solution
+
+I ended up finding out [django-seed](https://github.com/Brobin/django-seed) package that allows me to create dummy data as much as I want.
+I referred to [How to create custom `django-admin` commands](https://docs.djangoproject.com/en/dev/howto/custom-management-commands/#module-django.core.management)
+and tried to create custom command with using that package.
+
+## Process
+
+<Steps>
+
+### Installing Package
+
+Install django-seed package.
+
+```bash
+pip install django-seed
+```
+
+### Configuring `INSTALLED_APPS`
+
+[Install](https://github.com/Brobin/django-seed?tab=readme-ov-file#configuration) package in `INSTALLED_APPS` of `settings.py`.
+
+```py
+# settings.py
+INSTALLED_APPS = [
+    # ...
+    "django_seed",
+    # ...
+]
+```
+
+### Create File
+
+Create file for custom command creating user dummy data.
+I followed exactly what [Django suggested](https://docs.djangoproject.com/en/dev/howto/custom-management-commands/#module-django.core.management).
+
+<FileTree>
+    <FileTree.Folder name="users" defaultOpen>
+        <FileTree.Folder name="management" defaultOpen>
+            <FileTree.File name="__init__.py"/ >
+            <FileTree.Folder name="commands" defaultOpen>
+                <FileTree.File name="__init__.py"/ >
+                <FileTree.File name="fake_users.py"/ >
+            </FileTree.Folder>
+        </FileTree.Folder>
+    </FileTree.Folder>
+
+</FileTree>
+
+<CH.Scrollycoding>
+
+### Creating Custom Command Class
+
+Create `Command` class inherited from [`BaseCommand`](https://docs.djangoproject.com/en/dev/howto/custom-management-commands/#django.core.management.BaseCommand).
+
+```py fake_users.py
+from django.core.management.base import BaseCommand
+
+class Command(BaseCommand):
+    pass
+```
+
+---
+
+### `django_seed` Initialization
+
+Initialize `seeder` Provider in order to utilize django-seed pacakge.
+
+```py fake_users.py focus=2,4
+from django.core.management.base import BaseCommand
+from django_seed import Seed
+
+seeder = Seed.seeder()
+
+class Command(BaseCommand):
+    pass
+```
+
+---
+
+### Help Text
+
+I used [`help`](https://docs.djangoproject.com/en/dev/howto/custom-management-commands/#django.core.management.BaseCommand.help) attribute for adding help text of command.
+
+```py fake_users.py focus=7
+from django.core.management.base import BaseCommand
+from django_seed import Seed
+
+seeder = Seed.seeder()
+
+class Command(BaseCommand):
+    help = "Creating fake user data"
+```
+
+---
+
+### Designating Command Argument
+
+I designated argument that can be passed to my custom command with using [`add_arguments()`](https://docs.djangoproject.com/en/dev/howto/custom-management-commands/#django.core.management.BaseCommand.add_arguments) method.
+I created argument called `--number` and set its default value as `1`.
+
+```py fake_users.py focus=9:12
+from django.core.management.base import BaseCommand
+from django_seed import Seed
+
+seeder = Seed.seeder()
+
+class Command(BaseCommand):
+    help = "Creating fake user data"
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--number", default=1, help="How many users do you want to create"
+        )
+```
+
+---
+
+### Command Logic
+
+Create command logic with using [`handle()`](https://docs.djangoproject.com/en/dev/howto/custom-management-commands/#django.core.management.BaseCommand.handle) method.
+First, bring `--number` argument that is passed to our custom command.
+
+```py fake_users.py focus=14:15
+from django.core.management.base import BaseCommand
+from django_seed import Seed
+
+seeder = Seed.seeder()
+
+class Command(BaseCommand):
+    help = "Creating fake user data"
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--number", default=1, help="How many users do you want to create"
+        )
+
+    def handle(self, *args, **kwargs):
+        number = kwargs.get("number")
+```
+
+---
+
+### Seeder Configuration
+
+After importing `User` model set in `models.py`, I specified which values should be filled in each field[^1].
+
+```py fake_users.py focus=17:27
+from django.core.management.base import BaseCommand
+from django_seed import Seed
+from users.models import User
+
+seeder = Seed.seeder()
+
+class Command(BaseCommand):
+    help = "Creating fake user data"
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--number", default=1, help="How many users do you want to create"
+        )
+
+    def handle(self, *args, **kwargs):
+        number = kwargs.get("number")
+        seeder.add_entity(
+            User,
+            number,
+            {
+                "email": lambda x: seeder.faker.email(),
+                "phone_number": lambda x: seeder.faker.phone_number(),
+                "is_staff": False,
+                "is_active": True,
+            },
+        )
+        seeder.execute()
+```
+
+---
+
+### Editing Success Message
+
+Lastly, I customized style of success syntax message with using [`style`](https://docs.djangoproject.com/en/dev/howto/custom-management-commands/#django.core.management.BaseCommand.style) property.
+I passed `number` argument value with using f-string.
+
+```py fake_users.py focus=29
+from django.core.management.base import BaseCommand
+from django_seed import Seed
+from users.models import User
+
+seeder = Seed.seeder()
+
+class Command(BaseCommand):
+    help = "Creating fake user data"
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--number", default=1, help="How many users do you want to create"
+        )
+
+    def handle(self, *args, **kwargs):
+        number = kwargs.get("number")
+        seeder.add_entity(
+            User,
+            number,
+            {
+                "email": lambda x: seeder.faker.email(),
+                "phone_number": lambda x: seeder.faker.phone_number(),
+                "is_staff": False,
+                "is_active": True,
+            },
+        )
+        seeder.execute()
+
+        self.stdout.write(self.style.SUCCES(f"{number} fake users created!"))
+```
+
+[^1]: [Using with code](https://github.com/Brobin/django-seed?tab=readme-ov-file#using-with-code)
+
+</CH.Scrollycoding>
+
+</Steps>
+
+## Result
+
+It works like a charm as shown in image below.
+
+<center>![result](../../media/knower/seed-fake-data/result.png)</center>
 
 ## Debugging
 
