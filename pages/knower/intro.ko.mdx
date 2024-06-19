@@ -1,3 +1,90 @@
+import {
+  SiDjango,
+  SiJavascript,
+  SiSass,
+  SiHtml5,
+  SiPostgresql,
+  SiGulp,
+  SiSqlite,
+  SiNextdotjs,
+  SiTypescript,
+} from "react-icons/si";
+
 # 개요
 
-Knower는
+Knower는 모던한 심플을 추구하되 스타일리쉬한 빈티지 옷을 판매하는 패션 이커머스 플랫폼이다.
+빈티지 패션에 대한 국내 소비자들의 니즈는 많지만 정작 네이버 쇼핑몰이나 자사몰에서는 그들의 니즈를 충족시킬만한 패션 이커머스 플랫폼이 존재하지 않았으며
+설령 존재한다 하더라도 값들이 터무니없이 비싸거나 접근성이 어렵다는 단점이 있었다.
+
+이러한 문제를 해결하기 위하여 Knower가 탄생하게 되었다.
+
+## 기술 스택
+
+본 프로젝트에선 다음 2개의 앱이 있으며, 앱의 성격에 따라 사용된 기술 스택이 상이하다.
+
+1. 어드민 페이지
+2. 클라이언트
+
+### 어드민 페이지
+
+어드민 페이지는 어드민 유저들만 접근이 가능한 페이지이며 Knower에서 게시되는 상품들에 대한 관리, 유저들의 주문 관리 등
+Knower의 서비스들을 전반적으로 관리하게 해준다.
+
+#### Frontend
+
+<br />
+
+<div className="tech-grid">
+  <span>
+    <SiHtml5 />
+  </span>
+  <span>
+    <SiSass />
+  </span>
+  <span>
+    <SiJavascript />
+  </span>
+  <span>
+    <SiGulp />
+  </span>
+</div>
+
+#### Backend
+
+<br />
+
+<div className="tech-grid">
+  <span>
+    <SiDjango />
+  </span>
+</div>
+
+#### DB
+
+<br />
+
+<div className="tech-grid">
+  <span>
+    <SiSqlite />
+  </span>
+  <span>
+    <SiPostgresql />
+  </span>
+</div>
+
+### 클라이언트
+
+클라이언트 페이지는 일반 유저들 및 Knower 어드민 유저들이 접근이 가능하며 Knower 상품이 거래되는 유저들을 위한 메인 페이지를 일컫는다.
+
+#### Frontend
+
+<br />
+
+<div className="tech-grid">
+  <span>
+    <SiNextdotjs />
+  </span>
+  <span>
+    <SiTypescript />
+  </span>
+</div>

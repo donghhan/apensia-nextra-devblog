@@ -1,9 +1,9 @@
 {
+    "intro": "Introduction",
     "-- Admin Panel --": {
         "type": "separator",
         "title": "Admin Panel"
     },
-    "intro": "Introduction",
     "design": "Design",
     "-- Model --": {
         "type": "separator",

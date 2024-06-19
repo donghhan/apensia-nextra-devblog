@@ -1,9 +1,9 @@
 {   
+    "intro": "개요",
     "-- Admin Panel --": {
         "type": "separator",
         "title": "어드민"
     },
-    "intro": "개요",
     "design": "설계",
     "-- Model --": {
         "type": "separator",
