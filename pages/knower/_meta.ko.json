@@ -5,12 +5,9 @@
         "title": "어드민"
     },
     "design": "설계",
-    "-- Model --": {
-        "type": "separator",
-        "title": "모델"
-    },
     "custom-model-field-validator": "커스텀 모델 필드 Validator 만들기",
     "seed-fake-data": "더미 데이터 만들기",
+    "integrating-with-gulp": "Django와 Gulp의 만남",
     "-- Admin --": {
         "type": "separator",
         "title": "어드민"

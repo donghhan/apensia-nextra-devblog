@@ -17,11 +17,17 @@
   },
   "letsh": {
     "title": "Let'sh",
+    "type": "page",
+    "display": "hidden"
+  },
+  "letha": {
+    "title": "Letha",
     "type": "page"
   },
   "knower": {
     "title": "Knower",
-    "type": "page"
+    "type": "page",
+    "display": "hidden"
   },
   "sfm" : {
     "title": "SFM",
