@@ -1,37 +1,25 @@
-import { remarkCodeHike } from "@code-hike/mdx";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import githubDarkDimmed from "shiki/themes/github-dark-dimmed.json" assert { type: "json" };
-import nextra from "nextra";
+import nextra from "nextra"
+import { remarkCodeHike, recmaCodeHike } from "codehike/mdx"
+
+/** @type {import('codehike/mdx').CodeHikeConfig} */
+const chConfig = {
+  components: { code: "Code" },
+  syntaxHighlighting: {
+    theme: "github-dark",
+  },
+}
+
+const mdxOptions = {
+  remarkPlugins: [[remarkCodeHike, chConfig]],
+  recmaPlugins: [[recmaCodeHike, chConfig]],
+  // jsx: true,
+}
 
 const withNextra = nextra({
   theme: "nextra-theme-docs",
-  themeConfig: "./theme.config.tsx",
-  staticImage: true,
-  flexsearch: {
-    codeblocks: false,
-  },
-  latex: true,
-  defaultShowCopyCode: true,
-  mdxOptions: {
-    remarkPlugins: [
-      [
-        remarkCodeHike,
-        {
-          lineNumbers: false,
-          showCopyButton: true,
-          theme: githubDarkDimmed,
-          autoImport: true,
-        },
-      ],
-    ],
-  },
-});
+  themeConfig: "./theme.config.jsx",
+  codeHighlight: false,
+  mdxOptions,
+})
 
-export default withNextra({
-  reactStrictMode: true,
-  i18n: {
-    locales: ["en", "ko"],
-    defaultLocale: "en",
-  },
-});
+export default withNextra()

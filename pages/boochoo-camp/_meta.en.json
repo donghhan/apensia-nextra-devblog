@@ -1,8 +1,0 @@
-{
-    "intro": "Introduction",
-    "-- Problem --": {
-        "type": "separator",
-        "title": "Episodes"
-    },
-    "css-classname": "Making Class Name"
-}

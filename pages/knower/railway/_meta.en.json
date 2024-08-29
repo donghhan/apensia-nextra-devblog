@@ -1,6 +1,0 @@
-{
-    "invalid_http_host_header": "Invalid HTTP_HOST header",
-    "failure-translation-hostname-to-address": "Failing to connect DB URL with host",
-    "csrf_authentication_failure": "CSRF authentication failure", 
-    "createsuperuser-command": "Creating Django admin account"
-}

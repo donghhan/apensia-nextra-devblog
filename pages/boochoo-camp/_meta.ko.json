@@ -1,8 +1,0 @@
-{
-    "intro": "개요",
-    "-- Problem --": {
-        "type": "separator",
-        "title": "에피소드"
-    },
-    "css-classname": "클래스명 짓기"
-}
