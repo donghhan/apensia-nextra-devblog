@@ -1,0 +1,13 @@
+{
+    "about": {
+        "title": "About",
+        "type": "page",
+        "theme": {
+            "typesetting": "article"
+        }
+    },
+    "letha": {
+        "type": "page",
+        "title": "Letha"
+    }
+}
