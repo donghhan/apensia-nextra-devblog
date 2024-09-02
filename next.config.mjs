@@ -22,9 +22,4 @@ const withNextra = nextra({
   mdxOptions,
 });
 
-export default withNextra({
-  i18n: {
-    locales: ["en", "ko"],
-    defaultLocale: "en",
-  },
-});
+export default withNextra();

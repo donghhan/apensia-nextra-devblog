@@ -1,21 +1,15 @@
-import { HighlightedCode, Pre, highlight, RawCode } from "codehike/code";
-import { callout } from "./utils/callout";
-import { className } from "./utils/classname";
-import { hover } from "./utils/code-mentions";
-import { wordWrap } from "./utils/word-wrap";
-import { lineNumbers } from "./utils/line-numbers";
-import { link } from "./utils/link";
-import { mark } from "./utils/mark";
-import { CopyButton } from "./utils/button";
-import { diff } from "./utils/diff";
+import { HighlightedCode, Pre, RawCode } from "codehike/code";
+import { callout } from "./annotations/callout";
+import { className } from "./annotations/classname";
+import { CopyButton } from "./annotations/copy-button";
+import { diff } from "./annotations/diff";
+import { mark } from "./annotations/mark";
 
 export function Code({ codeblock }: { codeblock: HighlightedCode }) {
-  const highlighted = codeblock;
-
   return (
     <Pre
-      code={highlighted}
-      handlers={[callout, className, CopyButton, diff]}
+      code={codeblock}
+      handlers={[callout, className, CopyButton, diff, mark]}
       className="border border-zinc-500/50 rounded py-2 px-4 my-4"
       style={codeblock.style}
     />

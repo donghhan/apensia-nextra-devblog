@@ -1,6 +1,6 @@
 "use client";
 import { Copy, Check } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 
 export function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);

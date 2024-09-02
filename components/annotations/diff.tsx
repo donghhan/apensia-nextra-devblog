@@ -1,4 +1,3 @@
-import React from "react";
 import { AnnotationHandler, InnerLine, BlockAnnotation } from "codehike/code";
 
 export const diff: AnnotationHandler = {
