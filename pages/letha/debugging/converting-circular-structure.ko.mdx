@@ -1,0 +1,100 @@
+# TypeError: Converting circular structure to JSON
+
+## 개요
+
+ReviewController 클래스 내부에 모든 리뷰를 불러들이는 메소드를 구현하고 있었다.
+
+## 문제 발생
+
+유저가 남긴 리뷰에 연결된 프로그램들까지 함께 불러들이는 쿼리문을 작성하던 도중 `TypeError: Converting circular structure to JSON` 에러가 발생하였다.
+
+```bash
+TypeError: Converting circular structure to JSON
+    --> starting at object with constructor 'MongoClient'
+    |     property 's' -> object with constructor 'Object'
+    |     property 'sessionPool' -> object with constructor 'ServerSessionPool'
+    --- property 'client' closes the circle
+    at JSON.stringify (<anonymous>)
+    at stringify (/Users/apensia/dev/letha-api/node_modules/.pnpm/express@4.19.2/node_modules/express/lib/response.js:1159:12)
+    at ServerResponse.json (/Users/apensia/dev/letha-api/node_modules/.pnpm/express@4.19.2/node_modules/express/lib/response.js:272:14)
+    at UserController.getAllReviews (/Users/apensia/dev/letha-api/src/controllers/userController.ts:124:30)
+    at Layer.handle [as handle_request] (/Users/apensia/dev/letha-api/node_modules/.pnpm/express@4.19.2/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/apensia/dev/letha-api/node_modules/.pnpm/express@4.19.2/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/apensia/dev/letha-api/node_modules/.pnpm/express@4.19.2/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/apensia/dev/letha-api/node_modules/.pnpm/express@4.19.2/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/apensia/dev/letha-api/node_modules/.pnpm/express@4.19.2/node_modules/express/lib/router/index.js:284:15
+    at param (/Users/apensia/dev/letha-api/node_modules/.pnpm/express@4.19.2/node_modules/express/lib/router/index.js:365:14)
+```
+
+## 연관 코드
+
+### `ReviewController`
+
+```ts src/controller/reviewController.ts
+import { Request, Response } from "express";
+
+class ReviewController {
+  public getReview = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+      const review = await Review.findById(id).populate("user");
+      if (!review) return res.status(404).json({ error: "Not found" });
+
+      return res.status(200).json({ review });
+    } catch (error: unknown) {
+      return res.status(500).json({ error });
+    }
+  };
+}
+```
+
+### `ReviewRouter`
+
+```ts src/controller/reviewRouter.ts
+import { Router } from "express";
+import ReviewController from "../controllers/reviewController";
+
+const reviewRouter = Router();
+const reviewController = new ReviewController();
+
+reviewRouter.route("/:id").get(reviewController.getReview);
+
+export default reviewRouter;
+```
+
+## 분석
+
+먼저, `TypeError: Converting circular structure to JSON`에서 나타난 circular structure에 관해서 조사를 해보았다.
+
+Circular reference(혹은 Circular dependency)란 2개 이상의 객체들이 상호 참조하고 있어 그 값들이 끊임없이 참조값을 가리키는 현상을 의미한다[^1].
+예를 들자면 다음과 같을 수 있다.
+
+[^1]: [Circular References in JavaScript](https://medium.com/@stheodorejohn/circular-references-in-javascript-1a798940e7eb)
+
+```js
+const a = {};
+// !callout[/amet/] This is a callout
+a.b = a;
+```
+
+하지만 이것으로는 갈피를 잡을 수 없어서 `ReviewRouter`와 `ReviewController` 클래스 내부의 `getReview` 메소드의 코드들을 만져가면서 디버깅했다.
+그러다 [`.populate()`](<https://mongoosejs.com/docs/api/document.html#Document.prototype.populate()>) 메소드 부분에서 에러가 나는 것으로 판명났지만 여전히 오리무중이었다.
+
+결국 [StackOverflow의 JohnnyHK의 답변](https://stackoverflow.com/a/14942113/13121145)의 참고하여
+Mongoose의 [`findById`](<https://mongoosejs.com/docs/api/model.html#Model.findById()>) 메소드는 모델에서 정의할 때 자동적으로 부여되는 `_id`값의 타입과 일치하는지 확인한 후 해당 쿼리문에 맞는 결과물을 반환하므로
+필자가 전달한 `id`값 자체는 [`ObjectId`](https://mongoosejs.com/docs/schematypes.html#objectid)에 부합하지 않는 값일 수도 있기에 에러가 발생했을 것이라는 예상을 하였다.
+
+## 해결
+
+`req.params`로 받아온 `id` 값이 `ObjectId` 값 형태를 따르는지 체크를 하는 것이 필요했고
+정확한 `id` 값을 받아오게 하기 위하여 정규표현식을 이용하여 다음과 같이 `ReviewRouter`를 바꾸었다.
+
+```ts
+reviewRouter.route("/").get(reviewController.getAllReviews);
+reviewRouter
+  .route("/:id")
+  .route("/:id([0-9a-f]{24})")
+  .get(reviewController.getReview)
+  .put(reviewController.updateReview);
+```

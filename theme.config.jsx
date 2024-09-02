@@ -16,7 +16,6 @@ const config = {
   editLink: {
     component: null,
   },
-  gitTimestamp: true,
   head: () => {
     const { asPath, defaultLocale, locale } = useRouter();
     const { frontMatter } = useConfig();
