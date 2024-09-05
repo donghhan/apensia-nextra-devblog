@@ -4,6 +4,7 @@ This is an example website using Nextra (v3) and Code Hike.
 - [Nextra](https://nextra.site) - learn about Nextra
 
 Clone it with:
+d
 
 ```bash
 $ npx degit code-hike/examples/with-nextra my-docs
