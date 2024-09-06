@@ -1,3 +1,4 @@
+"use client";
 import { AnnotationHandler, InnerToken } from "codehike/code";
 import { CustomPreProps, InnerPre, getPreRef } from "codehike/code";
 import {
@@ -49,6 +50,7 @@ export class SmoothPre extends React.Component<CustomPreProps> {
     });
   }
 }
+
 export const tokenTransitions: AnnotationHandler = {
   name: "token-transitions",
   PreWithRef: SmoothPre,
