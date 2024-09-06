@@ -53,7 +53,7 @@ export class SmoothPre extends React.Component<CustomPreProps> {
 
 export const tokenTransitions: AnnotationHandler = {
   name: "token-transitions",
-  PreWithRef: SmoothPre,
+  // PreWithRef: SmoothPre,
   Token: (props) => (
     <InnerToken merge={props} style={{ display: "inline-block" }} />
   ),
