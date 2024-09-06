@@ -13,7 +13,8 @@
     "nextra": "3.0.0-alpha.31",
     "nextra-theme-docs": "3.0.0-alpha.31",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "20.12.7",

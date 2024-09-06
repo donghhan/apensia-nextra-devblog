@@ -1,4 +1,4 @@
-import { Code } from "./components/code"
+import { Code } from "./components/code";
 
 /** @type {import('nextra-theme-docs').DocsThemeConfig } */
 const config = {
@@ -9,6 +9,6 @@ const config = {
   components: {
     Code,
   },
-}
+};
 
-export default config
+export default config;

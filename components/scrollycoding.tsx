@@ -1,21 +1,21 @@
-import { z } from "zod"
+import { z } from "zod";
 import {
   Selection,
   Selectable,
   SelectionProvider,
-} from "codehike/utils/selection"
-import { Block, HighlightedCodeBlock, parseProps } from "codehike/blocks"
-import { HighlightedCode, Pre } from "codehike/code"
-
-import { tokenTransitions } from "./annotations/token-transitions"
-import { wordWrap } from "./annotations/word-wrap"
+} from "codehike/utils/selection";
+import { Block, HighlightedCodeBlock, parseProps } from "codehike/blocks";
+import { HighlightedCode, Pre } from "codehike/code";
+import { tokenTransitions } from "./annotations/token-transitions";
+import { wordWrap } from "./annotations/word-wrap";
 
 const Schema = Block.extend({
   steps: z.array(Block.extend({ code: HighlightedCodeBlock })),
-})
+});
 
-export function Scrollycoding(props: unknown) {
-  const { steps } = parseProps(props, Schema)
+export function Scrollycoding(props) {
+  const { steps } = parseProps(props, Schema);
+  console.log(props);
   return (
     <SelectionProvider className="flex gap-4 my-4">
       <div className="flex-1 mt-32 mb-[60vh] ml-2 prose">
@@ -41,7 +41,7 @@ export function Scrollycoding(props: unknown) {
         </div>
       </div>
     </SelectionProvider>
-  )
+  );
 }
 
 function Code({ codeblock }: { codeblock: HighlightedCode }) {
@@ -51,5 +51,5 @@ function Code({ codeblock }: { codeblock: HighlightedCode }) {
       handlers={[tokenTransitions, wordWrap]}
       className="min-h-[40rem] p-3"
     />
-  )
+  );
 }
