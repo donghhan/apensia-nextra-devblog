@@ -1,3 +1,4 @@
 {
-  "/[[...mdxPath]]/page": "app/[[...mdxPath]]/page.js"
+  "/docs/page": "app/docs/page.js",
+  "/page": "app/page.js"
 }
