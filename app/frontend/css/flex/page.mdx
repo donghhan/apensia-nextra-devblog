@@ -1,5 +1,11 @@
 import { Sandpack } from "@codesandbox/sandpack-react";
-import { sandboxOptions, initial } from "./_code/code";
+import {
+  sandboxOptions,
+  initial,
+  flexGrowFirst,
+  flexGrowSecond,
+  flexGrowThird,
+} from "./_code/code";
 import { Code } from "../../../../components/code";
 import { CodeWithTabs } from "../../../../components/annotations/tabs";
 import { callout } from "../../../../components/annotations/callout";
@@ -8,49 +14,19 @@ import { callout } from "../../../../components/annotations/callout";
 
 ## `flex-grow`
 
-[`flex_grow`](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-grow) is a CSS property
-
+[`flex-grow`](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-grow) is a CSS property that allows the flex items to grow to specific amount inside of the parent container.
 Let's say we have the code example below.
-
-```js index.js
-const lorem = ipsum(dolor, sit);
-// !callout[/amet/] This is a callout
-const [amet, consectetur] = [0, 0];
-lorem.adipiscing((sed, elit) => {
-  if (sed) {
-    amet += elit;
-  }
-});
-```
 
 <br />
 
 <CodeWithTabs>
 
-```js !!tabs main.js
-function lorem(ipsum, dolor = 1) {
-  const sit = ipsum == null ? 0 : ipsum.sit;
-  dolor = sit - amet(dolor);
-  return sit ? consectetur(ipsum) : [];
-}
-```
-
-```css !!tabs styles.css
-body {
-  margin: 0;
-  padding: 0;
-}
-```
-
-</CodeWithTabs>
-{/* 
-```html index.html
+```html !!tabs index.html
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link ref="stylesheet" href="/styles.css" />
     <title>Document</title>
   </head>
   <body>
@@ -63,7 +39,7 @@ body {
 </html>
 ```
 
-````css copy filename="styles.css"
+```css !!tabs styles.css
 body {
   height: 80vh;
   display: flex;
@@ -100,7 +76,9 @@ body {
   margin: auto;
   font-size: 1.5rem;
 }
-``` */}
+```
+
+</CodeWithTabs>
 
 <br />
 
@@ -117,6 +95,115 @@ body {
 
 <br />
 
-The whole container's width that containing three colored boxes is `1000px`, of which each box's width is `200px`.
-That is there are _positive empty space_ of `400px` on the right-hand side.
-````
+The initial value of `flex-grow` of elements is set to `0`, which means each flex items cannot grow its value.
+As we have not given any `flex-grow` value for `.box` element yet, `.box` elements keep their width same (`200px`).
+
+Now, let's give `flex-grow` value to `1` to the first element and see what happens.
+
+<br />
+
+```css style.css
+.box:nth-of-type(1) {
+  background-color: orange;
+  /* !diff + */
+  flex-grow: 1;
+}
+```
+
+<br />
+
+<Sandpack
+  files={{
+    "index.html": {
+      code: flexGrowFirst,
+    },
+  }}
+  theme="dark"
+  customSetup={{ entry: "/index.html" }}
+  options={sandboxOptions}
+/>
+
+<br />
+
+As you can see from above, `.box` element of **One** occupied all of the free space whereas **Two** and **Three** `.box` elements still remained same,
+as we haven't given any `flex-grow` value.
+
+From here, we can think of `flex-grow` as a <u>**_fraction_**</u>. In other words, element with `flex-grow` value will take <u>`n` fraction or slice of free space</u>.
+
+Now, let's give `flex-grow` value of `1` to **Two** element also and see what happens.
+
+<br />
+
+```css style.css
+.box:nth-of-type(2) {
+  background-color: aqua;
+  /* !diff + */
+  flex-grow: 1;
+}
+```
+
+<br />
+
+<Sandpack
+  files={{
+    "index.html": {
+      code: flexGrowSecond,
+    },
+  }}
+  theme="dark"
+  customSetup={{ entry: "/index.html" }}
+  options={sandboxOptions}
+/>
+
+<br />
+
+This time, **One** element and **Two** element are both sharing the same free space and they took as same proportion of remaining free space while **Three** element still remained same.
+Likewise, if we give `flex-grow` value for **One**, **Two** and **Three** as `1`, `2`, and `3` respectively, this means:
+
+1. **One** element will take **1** fraction of free space (1/6).
+2. **Two** element will take **2** fractions of free space (2/6).
+3. **Three** element will take **3** fractions of free space (3/6).
+
+<br />
+
+```css style.css
+.box:nth-of-type(1) {
+  background-color: orange;
+  flex-grow: 1;
+}
+
+.box:nth-of-type(2) {
+  background-color: aqua;
+  /* !diff - */
+  flex-grow: 1;
+  /* !diff + */
+  flex-grow: 2;
+}
+
+.box:nth-of-type(3) {
+  background-color: green;
+  /* !diff + */
+  flex-grow: 3;
+}
+```
+
+<br />
+
+Which will end up showing as below:
+
+<br />
+
+<Sandpack
+  files={{
+    "index.html": {
+      code: flexGrowThird,
+    },
+  }}
+  theme="dark"
+  customSetup={{ entry: "/index.html" }}
+  options={sandboxOptions}
+/>
+
+## `flex-shrink`
+
+On the other hand, `flex-shrink` is a CSS property
