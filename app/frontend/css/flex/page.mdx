@@ -5,6 +5,10 @@ import {
   flexGrowFirst,
   flexGrowSecond,
   flexGrowThird,
+  flexShrinkInitial,
+  flexShrinkFirst,
+  flexShrinkSecond,
+  flexShrinkThird,
 } from "./_code/code";
 import { Code } from "../../../../components/code";
 import { CodeWithTabs } from "../../../../components/annotations/tabs";
@@ -206,4 +210,181 @@ Which will end up showing as below:
 
 ## `flex-shrink`
 
-On the other hand, `flex-shrink` is a CSS property
+On the other hand, `flex-shrink` is a CSS property to allow child flex elements to be **shrinked**.
+
+Let's take another example code below.
+
+<br />
+
+<CodeWithTabs>
+
+```html !!tabs index.html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="box one"><span>One</span></div>
+      <div class="box two"><span>Two</span></div>
+      <div class="box three"><span>Three</span></div>
+    </div>
+  </body>
+</html>
+```
+
+```css !!tabs styles.css
+body {
+  height: 80vh;
+  display: flex;
+  background-color: gray;
+}
+
+.container {
+  width: 500px;
+  margin: auto;
+  border: 1.5px solid black;
+  background-color: lightgray;
+  display: flex;
+}
+
+.box {
+  display: flex;
+  width: 200px;
+  height: 60px;
+}
+
+.box:nth-of-type(1) {
+  background-color: orange;
+}
+
+.box:nth-of-type(2) {
+  background-color: aqua;
+}
+
+.box:nth-of-type(3) {
+  background-color: green;
+}
+
+.box span {
+  margin: auto;
+  font-size: 1.5rem;
+}
+```
+
+</CodeWithTabs>
+
+<br />
+
+<Sandpack
+  files={{
+    "index.html": {
+      code: flexShrinkInitial,
+    },
+  }}
+  theme="dark"
+  customSetup={{ entry: "/index.html" }}
+  options={sandboxOptions}
+/>
+
+<br />
+
+Unlike the `flex-grow` example, this time each `.box` elements' width are increased to `200px` (from `90px`) which exceeds the `.container` total width of `600px`.
+If we give `flex-shrink` value to `0` to the all `.box` elements, this means we are not allowing any `.box` elements to be shrinked whatsoever.
+
+<br />
+
+```css style.css
+.box {
+  display: flex;
+  width: 200px;
+  height: 60px;
+  /* !diff + */
+  flex-shrink: 0;
+}
+```
+
+<br />
+
+<Sandpack
+  files={{
+    "index.html": {
+      code: flexShrinkFirst,
+    },
+  }}
+  theme="dark"
+  customSetup={{ entry: "/index.html" }}
+  options={sandboxOptions}
+/>
+
+<br />
+
+The default value of `flex-shrink` is set to `1`, which means all child flex elements can be shrinked based on the width of the parent's element.
+
+Now, let's give `flex-shrink` value of `2` to the **Three** `.box` element and see what happens.
+
+<br />
+
+<br />
+
+```css style.css
+.box {
+  display: flex;
+  width: 200px;
+  height: 60px;
+  /* !diff - */
+  flex-shrink: 0;
+}
+
+.box:nth-of-type(3) {
+  display: flex;
+  /* !diff + */
+  flex-shrink: 2;
+}
+```
+
+<br />
+
+<Sandpack
+  files={{
+    "index.html": {
+      code: flexShrinkSecond,
+    },
+  }}
+  theme="dark"
+  customSetup={{ entry: "/index.html" }}
+  options={sandboxOptions}
+/>
+
+<br />
+
+It seems there weren't any significant differences but if you take a look when shrink your browser window horizontally,
+you will notice that **Three** element will shrink twich as much as **One** and **Two** elements do.
+
+If you give `flex-shrink` value of `3` to **Two** element as below. That means **Two** element will shrink as third times as it do compared to the **One** element whose `flex-shrink` value is set to `1`.
+
+<br />
+
+```css style.css
+.box:nth-of-type(2) {
+  display: flex;
+  /* !diff + */
+  flex-shrink: 3;
+}
+```
+
+<br />
+
+<Sandpack
+  files={{
+    "index.html": {
+      code: flexShrinkThird,
+    },
+  }}
+  theme="dark"
+  customSetup={{ entry: "/index.html" }}
+  options={sandboxOptions}
+/>

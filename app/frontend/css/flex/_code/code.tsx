@@ -234,3 +234,231 @@ export const flexGrowThird = `
   </body>
 </html>
 `;
+
+export const flexShrinkInitial = `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="box one"><span>One</span></div>
+      <div class="box two"><span>Two</span></div>
+      <div class="box three"><span>Three</span></div>
+    </div>
+    <style>
+        body {
+            height: 80vh;
+            display: flex;
+            background-color: gray;
+        }
+        
+        .container {
+            width: 500px;
+            margin: auto;
+            border: 1.5px solid black;
+            background-color: lightgray;
+            display: flex;
+        }
+
+        .box {
+            display: flex;
+            width: 200px;
+            height: 60px;
+        }
+
+        .box:nth-of-type(1) {
+            background-color: orange;
+        }
+
+        .box:nth-of-type(2) {
+            background-color: aqua;
+        }
+
+        .box:nth-of-type(3) {
+            background-color: green;
+        }
+
+        .box span {
+            margin: auto;
+            font-size: 1.5rem;
+        }
+    </style>
+  </body>
+</html>
+`;
+
+export const flexShrinkFirst = `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="box one"><span>One</span></div>
+      <div class="box two"><span>Two</span></div>
+      <div class="box three"><span>Three</span></div>
+    </div>
+    <style>
+        body {
+            height: 80vh;
+            display: flex;
+            background-color: gray;
+        }
+        
+        .container {
+            width: 500px;
+            margin: auto;
+            border: 1.5px solid black;
+            background-color: lightgray;
+            display: flex;
+        }
+
+        .box {
+            display: flex;
+            width: 200px;
+            height: 60px;
+            flex-shrink: 0;
+        }
+
+        .box:nth-of-type(1) {
+            background-color: orange;
+        }
+
+        .box:nth-of-type(2) {
+            background-color: aqua;
+        }
+
+        .box:nth-of-type(3) {
+            background-color: green;
+        }
+
+        .box span {
+            margin: auto;
+            font-size: 1.5rem;
+        }
+    </style>
+  </body>
+</html>
+`;
+
+export const flexShrinkSecond = `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="box one"><span>One</span></div>
+      <div class="box two"><span>Two</span></div>
+      <div class="box three"><span>Three</span></div>
+    </div>
+    <style>
+        body {
+            height: 80vh;
+            display: flex;
+            background-color: gray;
+        }
+        
+        .container {
+            width: 500px;
+            margin: auto;
+            border: 1.5px solid black;
+            background-color: lightgray;
+            display: flex;
+        }
+
+        .box {
+            display: flex;
+            width: 200px;
+            height: 60px;
+        }
+
+        .box:nth-of-type(1) {
+            background-color: orange;
+        }
+
+        .box:nth-of-type(2) {
+            background-color: aqua;
+        }
+
+        .box:nth-of-type(3) {
+            background-color: green;
+            flex-shrink: 2;
+        }
+
+        .box span {
+            margin: auto;
+            font-size: 1.5rem;
+        }
+    </style>
+  </body>
+</html>
+`;
+
+export const flexShrinkThird = `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="box one"><span>One</span></div>
+      <div class="box two"><span>Two</span></div>
+      <div class="box three"><span>Three</span></div>
+    </div>
+    <style>
+        body {
+            height: 80vh;
+            display: flex;
+            background-color: gray;
+        }
+        
+        .container {
+            width: 500px;
+            margin: auto;
+            border: 1.5px solid black;
+            background-color: lightgray;
+            display: flex;
+        }
+
+        .box {
+            display: flex;
+            width: 200px;
+            height: 60px;
+        }
+
+        .box:nth-of-type(1) {
+            background-color: orange;
+        }
+
+        .box:nth-of-type(2) {
+            background-color: aqua;
+            flex-shrink: 3;
+        }
+
+        .box:nth-of-type(3) {
+            background-color: green;
+            flex-shrink: 2;
+        }
+
+        .box span {
+            margin: auto;
+            font-size: 1.5rem;
+        }
+    </style>
+  </body>
+</html>
+`;
