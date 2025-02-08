@@ -5,16 +5,28 @@
     "start": "next start"
   },
   "dependencies": {
+    "@codesandbox/sandpack-react": "^2.19.11",
+    "@radix-ui/react-tabs": "^1.1.3",
+    "clsx": "^2.1.1",
     "codehike": "^1.0.4",
     "next": "^15.1.6",
     "nextra": "^4.2.4",
     "nextra-theme-docs": "^4.2.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "simple-icons": "^14.5.0",
+    "tailwind-merge": "^3.0.1"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@tailwindcss/postcss": "^4.0.4",
     "@types/node": "22.13.1",
     "@types/react": "19.0.8",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.5.1",
+    "tailwindcss": "^4.0.4",
     "zod": "^3.24.1"
   }
 }

@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"]
+    },
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -24,7 +27,10 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx",
-    "app/page.mdx"
+    "app/page.mdx",
+    "app/frontend/css/page.mdx",
+    "app/frontend/css/flex/page.mdx",
+    "app/frontend/css/animation/page.mdx"
   ],
   "exclude": ["node_modules"]
 }

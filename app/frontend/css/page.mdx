@@ -1,0 +1,33 @@
+---
+asIndexPage: true
+---
+
+import { Cards } from "nextra/components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faTableCells,
+  faF,
+  faPersonRunning,
+} from "@fortawesome/free-solid-svg-icons";
+
+# CSS
+
+This section covers everything useful about CSS.
+
+<Cards>
+  <Cards.Card
+    icon={<FontAwesomeIcon icon={faF} size="xs" />}
+    title="Flex"
+    href="/frontend/css/flex"
+  />
+  <Cards.Card
+    icon={<FontAwesomeIcon icon={faTableCells} />}
+    title="Grid"
+    href="/frontend/css/grid"
+  />
+  <Cards.Card
+    icon={<FontAwesomeIcon icon={faPersonRunning} />}
+    title="Animation"
+    href="/frontend/css/animation"
+  />
+</Cards>

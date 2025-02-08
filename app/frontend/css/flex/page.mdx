@@ -1,0 +1,122 @@
+import { Sandpack } from "@codesandbox/sandpack-react";
+import { sandboxOptions, initial } from "./_code/code";
+import { Code } from "../../../../components/code";
+import { CodeWithTabs } from "../../../../components/annotations/tabs";
+import { callout } from "../../../../components/annotations/callout";
+
+# Flex
+
+## `flex-grow`
+
+[`flex_grow`](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-grow) is a CSS property
+
+Let's say we have the code example below.
+
+```js index.js
+const lorem = ipsum(dolor, sit);
+// !callout[/amet/] This is a callout
+const [amet, consectetur] = [0, 0];
+lorem.adipiscing((sed, elit) => {
+  if (sed) {
+    amet += elit;
+  }
+});
+```
+
+<br />
+
+<CodeWithTabs>
+
+```js !!tabs main.js
+function lorem(ipsum, dolor = 1) {
+  const sit = ipsum == null ? 0 : ipsum.sit;
+  dolor = sit - amet(dolor);
+  return sit ? consectetur(ipsum) : [];
+}
+```
+
+```css !!tabs styles.css
+body {
+  margin: 0;
+  padding: 0;
+}
+```
+
+</CodeWithTabs>
+{/* 
+```html index.html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link ref="stylesheet" href="/styles.css" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="box one"><span>One</span></div>
+      <div class="box two"><span>Two</span></div>
+      <div class="box three"><span>Three</span></div>
+    </div>
+  </body>
+</html>
+```
+
+````css copy filename="styles.css"
+body {
+  height: 80vh;
+  display: flex;
+  background-color: gray;
+}
+
+.container {
+  width: 500px;
+  margin: auto;
+  border: 1.5px solid black;
+  background-color: lightgray;
+  display: flex;
+}
+
+.box {
+  display: flex;
+  width: 90px;
+  height: 60px;
+}
+
+.box:nth-of-type(1) {
+  background-color: orange;
+}
+
+.box:nth-of-type(2) {
+  background-color: aqua;
+}
+
+.box:nth-of-type(3) {
+  background-color: green;
+}
+
+.box span {
+  margin: auto;
+  font-size: 1.5rem;
+}
+``` */}
+
+<br />
+
+<Sandpack
+  files={{
+    "index.html": {
+      code: initial,
+    },
+  }}
+  theme="dark"
+  customSetup={{ entry: "/index.html" }}
+  options={sandboxOptions}
+/>
+
+<br />
+
+The whole container's width that containing three colored boxes is `1000px`, of which each box's width is `200px`.
+That is there are _positive empty space_ of `400px` on the right-hand side.
+````
