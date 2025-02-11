@@ -9,10 +9,16 @@ import {
   flexShrinkFirst,
   flexShrinkSecond,
   flexShrinkThird,
+  flexBasisFirst,
+  flexBasisSecond,
+  flexBasisThird,
+  flexBasisFourth,
+  flexBasisFifth,
 } from "./_code/code";
 import { Code } from "../../../../components/code";
 import { CodeWithTabs } from "../../../../components/annotations/tabs";
 import { callout } from "../../../../components/annotations/callout";
+import { Callout } from "nextra/components";
 
 # Flex
 
@@ -388,3 +394,197 @@ If you give `flex-shrink` value of `3` to **Two** element as below. That means *
   customSetup={{ entry: "/index.html" }}
   options={sandboxOptions}
 />
+
+## `flex-basis`
+
+[`flex-basis`](https://developer.mozilla.org/en-US/docs/Web/CSS/flex-basis) CSS property determines the initial starting size of flex child item before `flex-grow` or `flex-shrink` works.
+
+We will be using the same example we used at the `flex-grow` section earlier.
+
+<br />
+
+<Sandpack
+  files={{
+    "index.html": {
+      code: initial,
+    },
+  }}
+  theme="dark"
+  customSetup={{ entry: "/index.html" }}
+  options={sandboxOptions}
+/>
+
+<br />
+
+The default `flex-basis` value is set to `auto`, which means child flex items will follow the initial `width` that we gave.
+If `width` of element is not given, then child flex item will have `width` as wide as the inner content has.
+
+<Callout type="info" emoji="ℹ️">
+  `auto` value could be written as `content` as well but not widely supported
+  for many browsers.
+</Callout>
+
+<br />
+
+<Sandpack
+  files={{
+    "index.html": {
+      code: flexBasisFirst,
+    },
+  }}
+  theme="dark"
+  customSetup={{ entry: "/index.html" }}
+  options={sandboxOptions}
+/>
+
+<br />
+
+Now, let's take a look what happens if we give different CSS `flex-basis` value for each boxes,
+which means `50px` for **One**, `100px` for **Two**, `150px` for **Three**, respectively.
+
+<br />
+
+```css
+.box:nth-of-type(1) {
+  background-color: orange;
+  /* !diff + */
+  flex-basis: 50px;
+}
+
+.box:nth-of-type(2) {
+  background-color: aqua;
+  /* !diff + */
+  flex-basis: 100px;
+}
+
+.box:nth-of-type(3) {
+  background-color: green;
+  /* !diff + */
+  flex-basis: 150px;
+}
+```
+
+<br />
+
+<Sandpack
+  files={{
+    "index.html": {
+      code: flexBasisSecond,
+    },
+  }}
+  theme="dark"
+  customSetup={{ entry: "/index.html" }}
+  options={sandboxOptions}
+/>
+
+<br />
+
+As you can see, each boxes now has minimum `width` as we specified in `flex-basis`.
+
+### Mixing `flex-basis` and `flex-grow`
+
+Let's give another example. This time, we will
+
+1. Give `flex-basis` for **One** element as `300px`.
+2. Give `flex-grow` of `1` for all `.box` elements with each elements' size of `200px`.
+
+and see what will happen.
+
+<br />
+
+```css
+.box {
+  display: flex;
+  height: 60px;
+  /* !diff + */
+  width: 200px;
+  /* !diff + */
+  flex-grow: 1;
+}
+
+.box:nth-of-type(1) {
+  background-color: orange;
+  /* !diff + */
+  flex-basis: 300px;
+}
+```
+
+<br />
+
+<Sandpack
+  files={{
+    "index.html": {
+      code: flexBasisThird,
+    },
+  }}
+  theme="dark"
+  customSetup={{ entry: "/index.html" }}
+  options={sandboxOptions}
+/>
+
+<br />
+
+Unlike the `flex-grow` cases, this time **One** element took a little bit longer space than others because `flex-basis` is given to `300px`.
+
+### Resizing flex child elements equally
+
+What if we would like to ignore the initial size of child flex elements and make it all equally same?
+In this case, you can give `0` value to `flex-basis`.
+What this will do is to tell browser to divide sizes of child flex elements equally based on the total parent flex container.
+
+<br />
+
+```css
+.box {
+  display: flex;
+  height: 60px;
+  /* !diff - */
+  width: 200px;
+  /* !diff - */
+  flex-grow: 1;
+  /* !diff + */
+  flex-basis: 0;
+}
+
+.box:nth-of-type(1) {
+  background-color: orange;
+  /* !diff - */
+  flex-basis: 300px;
+}
+```
+
+<br />
+
+<Sandpack
+  files={{
+    "index.html": {
+      code: flexBasisFourth,
+    },
+  }}
+  theme="dark"
+  customSetup={{ entry: "/index.html" }}
+  options={sandboxOptions}
+/>
+
+<center>Before: Only using `flex-grow` `1`</center>
+
+<br />
+
+<Sandpack
+  files={{
+    "index.html": {
+      code: flexBasisFifth,
+    },
+  }}
+  theme="dark"
+  customSetup={{ entry: "/index.html" }}
+  options={sandboxOptions}
+/>
+
+<center>
+  After: Combining both `flex-grow` of `1` and `flex-basis` of `0`
+</center>
+
+As you can compare two different cases, when we applied only `flex-grow` of `1` to all `.box` elements,
+each child flex elements will take up free empty spaces but with different proportion of its contents (_Before_).
+However, if we applied `flex-basis` of `0` altogether, child flex elements now began to have equal widths based on the parent flex container.
