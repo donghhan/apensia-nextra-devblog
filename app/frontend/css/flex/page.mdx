@@ -1,19 +1,18 @@
 import { Sandpack } from "@codesandbox/sandpack-react";
 import {
-  sandboxOptions,
-  initial,
-  flexGrowFirst,
-  flexGrowSecond,
-  flexGrowThird,
-  flexShrinkInitial,
-  flexShrinkFirst,
-  flexShrinkSecond,
-  flexShrinkThird,
-  flexBasisFirst,
-  flexBasisSecond,
-  flexBasisThird,
-  flexBasisFourth,
-  flexBasisFifth,
+  Initial,
+  FlexGrowFirst,
+  FlexGrowSecond,
+  FlexGrowThird,
+  FlexShrinkInitial,
+  FlexShrinkFirst,
+  FlexShrinkSecond,
+  FlexShrinkThird,
+  FlexBasisFirst,
+  FlexBasisSecond,
+  FlexBasisThird,
+  FlexBasisFourth,
+  FlexBasisFifth,
 } from "./_code/code";
 import { Code } from "../../../../components/code";
 import { CodeWithTabs } from "../../../../components/annotations/tabs";
@@ -92,16 +91,7 @@ body {
 
 <br />
 
-<Sandpack
-  files={{
-    "index.html": {
-      code: initial,
-    },
-  }}
-  theme="dark"
-  customSetup={{ entry: "/index.html" }}
-  options={sandboxOptions}
-/>
+<Initial />
 
 <br />
 
@@ -122,16 +112,7 @@ Now, let's give `flex-grow` value to `1` to the first element and see what happe
 
 <br />
 
-<Sandpack
-  files={{
-    "index.html": {
-      code: flexGrowFirst,
-    },
-  }}
-  theme="dark"
-  customSetup={{ entry: "/index.html" }}
-  options={sandboxOptions}
-/>
+<FlexGrowFirst />
 
 <br />
 
@@ -154,16 +135,7 @@ Now, let's give `flex-grow` value of `1` to **Two** element also and see what ha
 
 <br />
 
-<Sandpack
-  files={{
-    "index.html": {
-      code: flexGrowSecond,
-    },
-  }}
-  theme="dark"
-  customSetup={{ entry: "/index.html" }}
-  options={sandboxOptions}
-/>
+<FlexGrowSecond />
 
 <br />
 
@@ -203,16 +175,7 @@ Which will end up showing as below:
 
 <br />
 
-<Sandpack
-  files={{
-    "index.html": {
-      code: flexGrowThird,
-    },
-  }}
-  theme="dark"
-  customSetup={{ entry: "/index.html" }}
-  options={sandboxOptions}
-/>
+<FlexGrowThird />
 
 ## `flex-shrink`
 
@@ -285,16 +248,7 @@ body {
 
 <br />
 
-<Sandpack
-  files={{
-    "index.html": {
-      code: flexShrinkInitial,
-    },
-  }}
-  theme="dark"
-  customSetup={{ entry: "/index.html" }}
-  options={sandboxOptions}
-/>
+<FlexShrinkInitial />
 
 <br />
 
@@ -315,16 +269,7 @@ If we give `flex-shrink` value to `0` to the all `.box` elements, this means we 
 
 <br />
 
-<Sandpack
-  files={{
-    "index.html": {
-      code: flexShrinkFirst,
-    },
-  }}
-  theme="dark"
-  customSetup={{ entry: "/index.html" }}
-  options={sandboxOptions}
-/>
+<FlexShrinkFirst />
 
 <br />
 
@@ -354,16 +299,7 @@ Now, let's give `flex-shrink` value of `2` to the **Three** `.box` element and s
 
 <br />
 
-<Sandpack
-  files={{
-    "index.html": {
-      code: flexShrinkSecond,
-    },
-  }}
-  theme="dark"
-  customSetup={{ entry: "/index.html" }}
-  options={sandboxOptions}
-/>
+<FlexShrinkSecond />
 
 <br />
 
@@ -384,16 +320,7 @@ If you give `flex-shrink` value of `3` to **Two** element as below. That means *
 
 <br />
 
-<Sandpack
-  files={{
-    "index.html": {
-      code: flexShrinkThird,
-    },
-  }}
-  theme="dark"
-  customSetup={{ entry: "/index.html" }}
-  options={sandboxOptions}
-/>
+<FlexShrinkThird />
 
 ## `flex-basis`
 
@@ -403,16 +330,7 @@ We will be using the same example we used at the `flex-grow` section earlier.
 
 <br />
 
-<Sandpack
-  files={{
-    "index.html": {
-      code: initial,
-    },
-  }}
-  theme="dark"
-  customSetup={{ entry: "/index.html" }}
-  options={sandboxOptions}
-/>
+<Initial />
 
 <br />
 
@@ -426,16 +344,7 @@ If `width` of element is not given, then child flex item will have `width` as wi
 
 <br />
 
-<Sandpack
-  files={{
-    "index.html": {
-      code: flexBasisFirst,
-    },
-  }}
-  theme="dark"
-  customSetup={{ entry: "/index.html" }}
-  options={sandboxOptions}
-/>
+<FlexBasisFirst />
 
 <br />
 
@@ -466,16 +375,7 @@ which means `50px` for **One**, `100px` for **Two**, `150px` for **Three**, resp
 
 <br />
 
-<Sandpack
-  files={{
-    "index.html": {
-      code: flexBasisSecond,
-    },
-  }}
-  theme="dark"
-  customSetup={{ entry: "/index.html" }}
-  options={sandboxOptions}
-/>
+<FlexBasisSecond />
 
 <br />
 
@@ -511,16 +411,7 @@ and see what will happen.
 
 <br />
 
-<Sandpack
-  files={{
-    "index.html": {
-      code: flexBasisThird,
-    },
-  }}
-  theme="dark"
-  customSetup={{ entry: "/index.html" }}
-  options={sandboxOptions}
-/>
+<FlexBasisThird />
 
 <br />
 
@@ -555,31 +446,13 @@ What this will do is to tell browser to divide sizes of child flex elements equa
 
 <br />
 
-<Sandpack
-  files={{
-    "index.html": {
-      code: flexBasisFourth,
-    },
-  }}
-  theme="dark"
-  customSetup={{ entry: "/index.html" }}
-  options={sandboxOptions}
-/>
+<FlexBasisFourth />
 
 <center>Before: Only using `flex-grow` `1`</center>
 
 <br />
 
-<Sandpack
-  files={{
-    "index.html": {
-      code: flexBasisFifth,
-    },
-  }}
-  theme="dark"
-  customSetup={{ entry: "/index.html" }}
-  options={sandboxOptions}
-/>
+<FlexBasisFifth />
 
 <center>
   After: Combining both `flex-grow` of `1` and `flex-basis` of `0`

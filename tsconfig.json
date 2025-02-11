@@ -30,7 +30,8 @@
     "app/page.mdx",
     "app/frontend/css/page.mdx",
     "app/frontend/css/flex/page.mdx",
-    "app/frontend/css/animation/page.mdx"
+    "app/frontend/css/animation/page.mdx",
+    "app/frontend/css/grid/page.mdx"
   ],
   "exclude": ["node_modules"]
 }
