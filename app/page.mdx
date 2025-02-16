@@ -1,3 +1,54 @@
+import { Cards, Image } from "nextra/components";
+import { cloneElement } from "react";
+
 # Welcome to Apensia's Devblog!
 
-Renewal
+## About Me
+
+Passionate and vigorous for learning something new and explore any new creative ideas.
+Striving for building up new worlds with my one line of codes which will end up feeding for all.
+
+## Portfolios
+
+### Landing Pages
+
+{/* prettier-ignore */}
+<Cards>
+    <>[![Taste of History](./media/portfolio_1.gif)](https://apensia-landing-2.vercel.app/)</>
+    <>[![Vintagio](./media/portfolio_2.gif)](https://apensia-portfolio-3.vercel.app/)</>
+    <>[![Scape Park](./media/portfolio_3.gif)](https://apensia-landing-1.vercel.app/)</>
+</Cards>
+
+export default function MdxLayout(props) {
+  return cloneElement(props.children, {
+    components: {
+      img: props => (
+        <Image {...props} className="[aspect-ratio:12/6.3] object-cover" />
+      ),
+      a({ children, href }) {
+        const { alt } = children.props
+        return (
+          <Cards.Card
+            href={href}
+            title={alt.replace(/ preview$/i, '')}
+            target="_blank"
+            rel="noreferrer"
+            arrow
+            className="!no-underline"
+          >
+            {children}
+          </Cards.Card>
+        )
+      },
+      p(props) {
+        return (
+          <p
+            {...props}
+            className="mt-4 mb-16 text-center text-lg text-gray-500 dark:text-gray-400"
+          />
+        )
+      }
+    }
+  })
+
+}
