@@ -16,7 +16,12 @@ const footer = <Footer>MIT {new Date().getFullYear()} © Nextra.</Footer>;
 export default async function RootLayout({ children }) {
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
-      <Head></Head>
+      <Head>
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"
+        />
+      </Head>
       <body>
         <Layout
           navbar={navbar}

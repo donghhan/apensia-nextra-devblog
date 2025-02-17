@@ -18,7 +18,9 @@ const mdxOptions = {
 };
 
 const withNextra = nextra({
-  latex: true,
+  latex: {
+    renderer: "katex",
+  },
   search: {
     codeblocks: false,
   },

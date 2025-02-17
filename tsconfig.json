@@ -31,7 +31,8 @@
     "app/frontend/css/page.mdx",
     "app/frontend/css/flex/page.mdx",
     "app/frontend/css/animation/page.mdx",
-    "app/frontend/css/grid/page.mdx"
+    "app/frontend/css/grid/page.mdx",
+    "app/statistics/multiple-regression/page.mdx"
   ],
   "exclude": ["node_modules"]
 }

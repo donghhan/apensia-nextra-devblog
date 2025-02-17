@@ -10,4 +10,8 @@ export default {
     title: "Frontend",
     type: "page",
   },
+  statistics: {
+    title: "Statistics",
+    type: "page",
+  },
 };
