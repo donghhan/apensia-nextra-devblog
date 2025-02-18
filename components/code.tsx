@@ -2,6 +2,7 @@ import { HighlightedCode, Pre } from "codehike/code";
 import { callout } from "./annotations/callout";
 import { diff } from "./annotations/diff";
 import { mark } from "./annotations/mark";
+import { wordWrap } from "./annotations/word-wrap";
 import { tokenTransitions } from "./annotations/token-transitions";
 
 export function Code({ codeblock }: { codeblock: HighlightedCode }) {
@@ -12,7 +13,7 @@ export function Code({ codeblock }: { codeblock: HighlightedCode }) {
       </div>
       <Pre
         code={codeblock}
-        handlers={[callout, diff, mark, tokenTransitions]}
+        handlers={[callout, diff, mark, tokenTransitions, wordWrap]}
         className="border border-zinc-500/50 rounded p-4"
         style={codeblock.style}
       />

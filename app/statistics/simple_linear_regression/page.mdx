@@ -1,4 +1,4 @@
-import { Scrollycoding } from "../../../components/scrollycoding";
+import { Code } from "../../../components/code";
 
 # Simple Linear Regression
 
@@ -17,187 +17,176 @@ where
 2. $\beta_1$ indicates **regression coefficients**, the changing rate of $y$ according to $x$.
 3. $\epsilon$ indicates **error of the estimate**, showing how much variation there is in our estimate of the regression coefficient.
 
-<Scrollycoding>
+<br />
 
-## !!steps A Game of Thrones
+<center>
+  <figure>
+    <img
+      src="https://media.geeksforgeeks.org/wp-content/uploads/20231129130431/11111111.png"
+      width="70%"
+      alt="Simple linear regression chart"
+    />
+    <figcaption>
+      Source:
+      [GeeksForGeeks](https://www.geeksforgeeks.org/ml-linear-regression/)
+    </figcaption>
+  </figure>
+</center>
 
-A Game of Thrones is the first book in the A Song of Ice and Fire series by George R.R. Martin. Set in a world where seasons last for years, it introduces a complex plot and a wide cast of characters, ranging from noble families vying for the Iron Throne to the supernatural threats in the North.
+<br />
 
-{/* prettier-ignore */}
-```js ! george.js
-const houses = [
-  "Stark",
-  "Lannister",
-  "Baratheon",
-  "Targaryen",
-]
+## Usage
 
-const winner =
-  houses[
-    Math.floor(
-      Math.random() * houses.length,
-    )
-  ]
+Simple linear regression could be useful when we want to find
 
-console.log(`Iron Throne: ${winner}`)
+## Conditions
+
+1. _Linearity_: There should be a linear relationship between independent variable and dependent variable.
+2. _Independence_: Errors (residuals) from each data should be independent, not affecting others.
+   - For the simple linear regression, this condition is not effective.
+3. _Homoscedasticity_: The spread of data points around the regression line should be roughly the same throughout.
+4. _Normality_: The distribution of the errors should be approximately normal (bell-curve shaped).
+5. Both independent variable and dependent variable should be continuous variable.
+
+## Hypotheses
+
+<br/ >
+
+<center>
+$\LARGE H_0$: Independent variable does **NOT** affect dependent variable.
+
+$\LARGE H_1$: Independent variable **DOES** affect dependent variable.
+
+</center>
+
+## Examples
+
+We will be using [Real estate price prediction data](https://www.kaggle.com/datasets/quantbruce/real-estate-price-prediction) from Kaggle.
+
+In dataset, I was wondering if the house age will affect house price or not because normally the older the house age, the lower the house price.
+
+### Hypotheses
+
+<br />
+
+<center>
+$\LARGE H_0$: House age will **NOT** affect house price.
+
+$\LARGE H_1$: House age **WILL** affect house price.
+
+</center>
+
+<br />
+
+### Code
+
+#### Data pre-processing
+
+I changed my current working directory to point the folder where my data file is lying.
+
+<br />
+
+```r statistics.R
+getwd()
+setwd("[Your data folder location]")
+
+data <- read.csv("real_estate.csv")
+head(data)
 ```
 
-## !!steps A Clash of Kings
-
-A Clash of Kings, the second book in the series, continues the epic saga. The Seven Kingdoms are plunged into war, with kings rising and falling. Meanwhile, Daenerys Targaryen seeks to return to Westeros with her growing dragons.
-
-{/* prettier-ignore */}
-```js ! george.js
-const houses = [
-  "Stark",
-  "Lannister",
-  "Baratheon",
-  "Targaryen",
-]
-
-const clash = () => {
-  const winner =
-    houses[
-      Math.floor(
-        Math.random() * houses.length,
-      )
-    ]
-  return `${winner} wins the battle!`
-}
-
-console.log(clash())
+```txt
+> head(data)
+  No X1.transaction.date X2.house.age X3.distance.to.the.nearest.MRT.station X4.number.of.convenience.stores
+1  1            2012.917         32.0                               84.87882                              10
+2  2            2012.917         19.5                              306.59470                               9
+3  3            2013.583         13.3                              561.98450                               5
+4  4            2013.500         13.3                              561.98450                               5
+5  5            2012.833          5.0                              390.56840                               5
+6  6            2012.667          7.1                             2175.03000                               3
+  X5.latitude X6.longitude Y.house.price.of.unit.area
+1    24.98298     121.5402                       37.9
+2    24.98034     121.5395                       42.2
+3    24.98746     121.5439                       47.3
+4    24.98746     121.5439                       54.8
+5    24.97937     121.5425                       43.1
+6    24.96305     121.5125                       32.1
 ```
 
-## !!steps A Storm of Swords
+<br />
 
-The third book, A Storm of Swords, is known for its intense and shocking developments. Battles rage on, alliances shift, and characters face unexpected challenges and betrayals, making it one of the most thrilling books in the series.
+Next, set the variables. For this, I set `house_price` as $Y$ dependant variable and `house_age` as $X$ independent variable.
 
-{/* prettier-ignore */}
-```js ! george.js
-const houses = [
-  "Stark",
-  "Lannister",
-  "Baratheon",
-]
+<br />
 
-const reveal = () => {
-  const traitor =
-    houses[
-      Math.floor(
-        Math.random() * houses.length,
-      )
-    ]
-  return `${traitor} betrays the alliance!`
-}
-
-console.log(reveal())
+```r statistics.R
+house_price <- data$Y.house.price.of.unit.area
+house_age <- data$X2.house.age
 ```
 
-## !!steps A Feast for Crows
+#### Data Visualization
 
-A Feast for Crows, the fourth book, explores the aftermath of the wars, with a focus on the characters in the southern regions of Westeros. It delves into the politics and power struggles in a kingdom weary of battle.
+To view the data visualization, I created plot diagram.
 
-{/* prettier-ignore */}
-```js ! george.js
-const houses = [
-  "Martell",
-  "Lannister",
-  "Baratheon",
-  "Tyrell",
-]
-
-const intrigue = () => {
-  const ally1 =
-    houses[
-      Math.floor(
-        Math.random() * houses.length,
-      )
-    ]
-  const ally2 =
-    houses[
-      Math.floor(
-        Math.random() * houses.length,
-      )
-    ]
-  return `${ally1} and ${ally2} form an alliance!`
-}
-
-console.log(intrigue())
+```r statistics.R
+plot(house_price ~ house_age, data=data)
 ```
 
-## !!steps A Dance with Dragons
+![R Plot](./media/plot.png)
 
-A Dance with Dragons, the fifth book, runs concurrently with A Feast for Crows and focuses on the characters in the North and across the Narrow Sea. The story advances with dragons, the Night’s Watch, and the lingering threat of winter.
+It seems that there is no correlation between `house_price` and `house_age`.
 
-{/* prettier-ignore */}
-```js ! george.js
-const houses = [
-  "Stark",
-  "Lannister",
-  "Baratheon",
-  "Targaryen",
-]
+#### Simple Linear Regression
 
-const dragons = () => {
-  const dragon =
-    houses[
-      Math.floor(
-        Math.random() * houses.length,
-      )
-    ]
-  return `${dragon} has a dragon!`
-}
+In order to get more specific result, let's actually perform simple linear regression.
 
-console.log(dragons())
+<br />
+
+```r statistics.R
+result <- lm(house_price ~ house_age, data=data)
+summary(result)
+summary(result)$r.squared
 ```
 
-## !!steps The Winds of Winter
+### Result
 
-The Winds of Winter, the anticipated sixth book, is expected to continue the intricate storylines and bring new twists and turns to the world of Westeros. Fans eagerly await its release.
+<br />
 
-```js ! george.js
-const houses = [
-  "Stark",
-  "Lannister",
-  "Baratheon",
-  "Targaryen",
-  "Martell",
-  "Tyrell",
-  "Greyjoy",
-];
+```txt
+> summary(result)
 
-const winterIsComing = () => {
-  const isComing = Math.random() > 0.99;
-  if (isComing) {
-    return "Winter is coming!";
-  } else {
-    return "Winter is not coming.";
-  }
-};
+Call:
+lm(formula = house_price ~ house_age, data = data)
 
-console.log(winterIsComing());
+Residuals:
+    Min      1Q  Median      3Q     Max
+-31.113 -10.738   1.626   8.199  77.781
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept) 42.43470    1.21098  35.042  < 2e-16 ***
+house_age   -0.25149    0.05752  -4.372 1.56e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 13.32 on 412 degrees of freedom
+Multiple R-squared:  0.04434,	Adjusted R-squared:  0.04202
+F-statistic: 19.11 on 1 and 412 DF,  p-value: 1.56e-05
+
+> summary(result)$r.squared
+[1] 0.04433848
 ```
 
-## !!steps A Dream of Spring
+### Analysis
 
-A Dream of Spring is the proposed final book in the series, anticipated to conclude the epic saga. It remains one of the most awaited books in modern fantasy literature.
+#### Overall
 
-```js ! george.js
-const houses = [
-  "Stark",
-  "Lannister",
-  "Baratheon",
-  "Targaryen",
-  "Martell",
-  "Tyrell",
-  "Greyjoy",
-];
+1. $R^2$ value is 0.04433848 (4.43%). This means 4.43% of variation in the &Y& values is accounted for by the $X$ values.
+2. p-value of this model is 0.000015605 (1.56e-05) which is lower than 0.05. This means that we can reject the null hypothesis ($H_0$).
+   Therefore, we can say that this statistical model is effective.
 
-const keepDreaming = () => {
-  return "Not gonna happen...";
-};
+#### Coefficients
 
-console.log(keepDreaming());
-```
-
-</Scrollycoding>
+1. Estimate of `house_age` has p-value of 0.000015605 which is lower than 0.05. This means that we can reject the null hypothesis ($H_0$).
+   Therefore, we can say that `house_age` _DOES_ affect `house_price`.
+2. Estimate of `house_age` is -0.25149. This means, `house_price` will _decrease_ 0.25149 per 1 increase in value of `house_age`.
+   In other words, the older the house, the lower the house price becomes by small percentage.
