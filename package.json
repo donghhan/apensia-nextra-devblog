@@ -1,14 +1,16 @@
 {
   "scripts": {
-    "dev": "next",
+    "dev": "next -p 6005",
     "build": "next build",
     "start": "next start"
   },
   "dependencies": {
     "@codesandbox/sandpack-react": "^2.19.11",
+    "@radix-ui/react-select": "^2.1.6",
     "@radix-ui/react-tabs": "^1.1.3",
     "clsx": "^2.1.1",
     "codehike": "^1.0.4",
+    "lucide-react": "^0.475.0",
     "next": "^15.1.6",
     "nextra": "^4.2.4",
     "nextra-theme-docs": "^4.2.4",

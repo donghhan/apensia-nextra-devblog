@@ -5,7 +5,11 @@ import { mark } from "./annotations/mark";
 import { wordWrap } from "./annotations/word-wrap";
 import { tokenTransitions } from "./annotations/token-transitions";
 
-export function Code({ codeblock }: { codeblock: HighlightedCode }) {
+type CodeProps = {
+  codeblock: HighlightedCode;
+};
+
+export function Code({ codeblock }: CodeProps) {
   return (
     <div className="px-4 py-2 bg-zinc-950 rounded">
       <div className="text-center text-zinc-400 text-sm pb-2">

@@ -37,13 +37,13 @@ where
 
 ## Usage
 
-Simple linear regression could be useful when we want to find
+Simple linear regression could be useful when we want to analyze the relationship between two quantitative variables where one variable ($X$) directly affects the other ($Y$).
 
 ## Conditions
 
 1. _Linearity_: There should be a linear relationship between independent variable and dependent variable.
 2. _Independence_: Errors (residuals) from each data should be independent, not affecting others.
-   - For the simple linear regression, this condition is not effective.
+   - For the simple linear regression, this condition is not effective as there is only one independent variable.
 3. _Homoscedasticity_: The spread of data points around the regression line should be roughly the same throughout.
 4. _Normality_: The distribution of the errors should be approximately normal (bell-curve shaped).
 5. Both independent variable and dependent variable should be continuous variable.
@@ -125,7 +125,7 @@ house_age <- data$X2.house.age
 
 #### Data Visualization
 
-To view the data visualization, I created plot diagram.
+##### Plot
 
 ```r statistics.R
 plot(house_price ~ house_age, data=data)
@@ -134,6 +134,10 @@ plot(house_price ~ house_age, data=data)
 ![R Plot](./media/plot.png)
 
 It seems that there is no correlation between `house_price` and `house_age`.
+
+##### Histogram (House age)
+
+![Histogram for house age](./media/histogram_house_age.png)
 
 #### Simple Linear Regression
 
@@ -180,13 +184,13 @@ F-statistic: 19.11 on 1 and 412 DF,  p-value: 1.56e-05
 
 #### Overall
 
-1. $R^2$ value is 0.04433848 (4.43%). This means 4.43% of variation in the &Y& values is accounted for by the $X$ values.
+1. $R^2$ value is 0.04433848 (4.43%). This means 4.43% of variation in the $Y$ values is accounted for by the $X$ values.
 2. p-value of this model is 0.000015605 (1.56e-05) which is lower than 0.05. This means that we can reject the null hypothesis ($H_0$).
-   Therefore, we can say that this statistical model is effective.
+   Therefore, we can say that <u>this statistical model is effective</u>.
 
 #### Coefficients
 
 1. Estimate of `house_age` has p-value of 0.000015605 which is lower than 0.05. This means that we can reject the null hypothesis ($H_0$).
-   Therefore, we can say that `house_age` _DOES_ affect `house_price`.
+   Therefore, we can say that <u>`house_age` _DOES_ affect `house_price`</u>.
 2. Estimate of `house_age` is -0.25149. This means, `house_price` will _decrease_ 0.25149 per 1 increase in value of `house_age`.
-   In other words, the older the house, the lower the house price becomes by small percentage.
+   In other words, <u>the older the house, the lower the house price becomes by small percentage</u>.
