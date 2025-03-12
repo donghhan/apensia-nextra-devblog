@@ -1,6 +1,10 @@
 export default {
-  intro: {
+  separator_intro: {
+    type: "separator",
     title: "Introduction",
+  },
+  glossary: {
+    title: "Glossary",
   },
   _: {
     type: "separator",

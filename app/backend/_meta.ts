@@ -1,9 +1,5 @@
 export default {
-  _: {
-    type: "separator",
+  authentication: {
     title: "Authentication",
-  },
-  session_based_authentication: {
-    title: "Session Based",
   },
 };

@@ -29,5 +29,9 @@ const withNextra = nextra({
 });
 
 export default withNextra({
-  reactStrictMode: true,
+  reactStrictMode: false,
+  // i18n: {
+  //   locales: ["en", "kr", "th"],
+  //   defaultLocale: "en",
+  // },
 });
