@@ -1,0 +1,113 @@
+import { Code } from "../../../components/code";
+
+# Custom permission into generic views
+
+## Introduction
+
+I was writing a test code for testing `DeleteAccountView` that is built with [`DestoryAPIView`](https://www.django-rest-framework.org/api-guide/generic-views/#destroyapiview).
+To be specific, I was testing if another user tried to delete account of owner's account, it will throw [403 Forbidden](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/403) error.
+In order to do this, I created custom permission called `IsOwnerOrAdmin` and connected to my view.
+
+### Relevant codes
+
+#### `permissions.py`
+
+<br />
+
+```py
+from rest_framework.permissions import BasePermission, SAFE_METHODS
+
+
+class IsOwnerOrAdmin(BasePermission):
+    message = "Forbidden"
+
+    def has_permission(self, request, view) -> bool:
+        return request.user.is_authenticated
+
+    def has_object_permission(self, request, view, obj):
+        return obj.id == request.user.id or request.user.is_admin
+
+```
+
+<br />
+
+#### `views.py`
+
+<br />
+
+```py
+from rest_framework import generics
+
+class DeleteAccountView(generics.DestroyAPIView):
+    """
+    Delete user account
+    - Only owner and admin can delete user's account
+    """
+
+    permission_classes = [IsOwnerOrAdmin]
+    serializer_class = PublicUserSerializer
+
+    def get_object(self, id=None):
+        user_to_delete = User.objects.get(id=self.kwargs.get("id"))
+        return user_to_delete
+```
+
+<br />
+
+#### `tests/views.py`
+
+<br />
+
+```py
+# Omitted
+def test_permission(self):
+    """
+    Test permission
+    """
+    # Fail case: anonymous user
+    # Omitted
+
+    # Fail case: another user
+    self.auth.set_client_credentials(self.client, self.another_user)
+    wrong_response_two = self.client.delete(
+        self.get_delete_account_api_uri(self.user.id)
+    )
+    self.assertEqual(wrong_response_two.status_code, 403)
+    self.assertEqual(wrong_response_two.data["detail"].code, "permission_denied")
+```
+
+## Problem
+
+Test code was actually passing 204 status code, which is not correct.
+
+## Analysis
+
+`DetailAccountView` was not properly checking object-level permissions.
+
+According to [Abdul Aziz Barkat's response from Stackoverflow](https://stackoverflow.com/a/67147440/13121145) and [note](https://www.django-rest-framework.org/api-guide/permissions/#custom-permissions) from DRF's documentation about custom permission,
+when using generic views with object-level permissions, I should have ensured that `get_object()` triggers the object-level checks.
+
+However, overriding `get_object()` method caused bypassing DRF's permission checking mechanism, which means `check_object_permissions` method was not called.
+
+## Solution
+
+I followed what DRF suggested on its [Object level permissions](https://www.django-rest-framework.org/api-guide/permissions/#object-level-permissions) wrote down.
+
+I switched from generic views to viewset as I didn't need to worry about manually triggering object-level permission because [`ViewSet`](https://github.com/encode/django-rest-framework/blob/c41314f1fc898490f27e1015cc859e28afe6f7b9/rest_framework/viewsets.py#L220) class already handles this properly out of the box.
+Also I used `lookup_field` and `lookup_url_kwarg` to tell DRF how to find object and removed `get_object()` method.
+
+### `views.py`
+
+```py
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = PublicUserSerializer
+    lookup_field = "id"
+
+    def get_permissions(self):
+        if self.action in ["list", "retrieve", "create"]:
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsOwnerOrAdmin]
+        return [permission() for permission in permission_classes]
+```
